@@ -40,7 +40,7 @@ class Dependency extends vscode.TreeItem {
         this.label = label;
         this.index = index;
         this.collapsibleState = collapsibleState;
-        this.label = `${index + 1}.  ${label}`;
+        this.label = `${index + 1}.  ${label.replace(/\s/g, "")}`;
         this.text = label;
         this.tooltip = label;
     }

@@ -37,6 +37,7 @@ function activate(context) {
         const data = clipboardStore.getItem() || [];
         if (!data.includes(selectText)) {
             updateViews([...data, selectText]);
+            // vscode.window.showInformationMessage(vscode.l10n.t("prompt.insert"));
         }
     });
     context.subscriptions.push(addDisposable);
@@ -48,17 +49,20 @@ function activate(context) {
         const filterData = (clipboardStore.getItem() || []).filter(item => item !== selectText);
         if (data.length !== filterData.length) {
             updateViews(filterData);
+            // vscode.window.showInformationMessage(vscode.l10n.t("prompt.delete"));
         }
     });
     context.subscriptions.push(deleteDisposable);
     // delete all text command
     const deleteAllDisposable = vscode.commands.registerCommand("clipboard.deleteAll", () => {
         updateViews([]);
+        // vscode.window.showInformationMessage(vscode.l10n.t("prompt.delete"));
     });
     context.subscriptions.push(deleteAllDisposable);
     // copy command
     const copyDisposable = vscode.commands.registerCommand("clipboard.copytext", (item) => {
         vscode.env.clipboard.writeText(item.text);
+        // vscode.window.showInformationMessage(vscode.l10n.t("prompt.copy"));
     });
     context.subscriptions.push(copyDisposable);
     // delete command
@@ -66,6 +70,7 @@ function activate(context) {
         const data = clipboardStore.getItem() || [];
         data.splice(item.index, 1);
         updateViews(data);
+        // vscode.window.showInformationMessage(vscode.l10n.t("prompt.delete"));
     });
     context.subscriptions.push(deleteTextDisposable);
 }

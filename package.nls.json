@@ -4,5 +4,8 @@
     "view.ctx.delete": "Remove from the clipboard",
     "menu.deleteAll": "Remove All",
     "menu.copy": "copy",
-    "menu.delete": "Remove All"
+    "menu.delete": "Remove All",
+    "prompt.insert": "Add successfully",
+    "prompt.copy": " Copy successful",
+    "prompt.delete": "Deleted successfully"
 }

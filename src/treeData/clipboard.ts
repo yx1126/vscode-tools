@@ -48,7 +48,7 @@ class Dependency extends vscode.TreeItem {
         public readonly collapsibleState: vscode.TreeItemCollapsibleState
     ) {
         super(label, collapsibleState);
-        this.label = `${index + 1}.  ${label}`;
+        this.label = `${index + 1}.  ${label.replace(/\s/g, "")}`;
         this.text = label;
         this.tooltip = label;
     }

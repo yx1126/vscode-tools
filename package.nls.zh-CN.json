@@ -4,5 +4,8 @@
     "view.ctx.delete": "从剪切板中移除",
     "menu.deleteAll": "删除全部",
     "menu.copy": "复制",
-    "menu.delete": "删除"
+    "menu.delete": "删除",
+    "prompt.insert": "添加成功",
+    "prompt.copy": "复制成功",
+    "prompt.delete": "删除成功"
 }
