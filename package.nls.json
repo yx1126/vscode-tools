@@ -1,0 +1,5 @@
+{
+    "view.clipboard": "clipboard",
+    "view.ctx.add": "Add to the clipboard",
+    "view.ctx.delete": "Remove from the clipboard"
+}

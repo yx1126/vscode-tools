@@ -1,0 +1,125 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "@typescript-eslint/naming-convention": "off",
+        "curly": "warn",
+        "eqeqeq": "warn",
+        "no-throw-literal": "warn",
+        "semi": "off",
+        "@typescript-eslint/semi": [
+            "error"
+        ],
+        "@typescript-eslint/no-explicit-any": "off",
+        "default-param-last": "off",
+        "@typescript-eslint/default-param-last": [
+            "error"
+        ],
+        "func-call-spacing": "off",
+        "@typescript-eslint/func-call-spacing": [
+            "error",
+            "never"
+        ],
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "quotes": "off",
+        "@typescript-eslint/quotes": [
+            "error",
+            "double",
+            {
+                "allowTemplateLiterals": true
+            }
+        ],
+        "space-infix-ops": "off",
+        "@typescript-eslint/space-infix-ops": [
+            "error"
+        ],
+        "comma-dangle": "off",
+        "@typescript-eslint/comma-dangle": [
+            "error",
+            "always-multiline"
+        ],
+        "@typescript-eslint/no-unused-vars": [
+            "warn",
+            {
+                "argsIgnorePattern": "^no_"
+            }
+        ],
+        "space-before-function-paren": "off",
+        "@typescript-eslint/space-before-function-paren": [
+            "error",
+            {
+                "anonymous": "never",
+                "named": "never",
+                "asyncArrow": "always"
+            }
+        ],
+        "no-useless-escape": "off",
+        "max-len": [
+            "error",
+            {
+                "code": 200
+            }
+        ],
+        "array-bracket-spacing": "error",
+        "block-spacing": "error",
+        "brace-style": "off",
+        "@typescript-eslint/brace-style": [
+            "error"
+        ],
+        "comma-spacing": "off",
+        "@typescript-eslint/comma-spacing": [
+            "error"
+        ],
+        "comma-style": "error",
+        "computed-property-spacing": "error",
+        "key-spacing": [
+            "error",
+            {
+                "mode": "strict"
+            }
+        ],
+        "keyword-spacing": [
+            "error",
+            {
+                "overrides": {
+                    "if": {
+                        "after": false
+                    },
+                    "for": {
+                        "after": false
+                    },
+                    "while": {
+                        "after": false
+                    }
+                }
+            }
+        ],
+        "object-curly-spacing": "off",
+        "@typescript-eslint/object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "space-before-blocks": "off",
+        "@typescript-eslint/space-before-blocks": [
+            "error"
+        ],
+        "@typescript-eslint/type-annotation-spacing": [
+            "error"
+        ],
+        "@typescript-eslint/member-delimiter-style": [
+            "error"
+        ]
+    },
+    "ignorePatterns": [
+        "out",
+        "dist",
+        "**/*.d.ts"
+    ]
+}
