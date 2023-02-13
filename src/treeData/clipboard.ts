@@ -24,7 +24,10 @@ export class ClipboardProvider implements vscode.TreeDataProvider<Dependency> {
         return Promise.resolve(data);
     }
 
-    refresh(): void {
+    refresh(data?: string[]): void {
+        if(data) {
+            this.list = data;
+        }
         this._onDidChangeTreeData.fire();
     }
 
@@ -37,6 +40,8 @@ export class ClipboardProvider implements vscode.TreeDataProvider<Dependency> {
 
 class Dependency extends vscode.TreeItem {
 
+    text: string;
+
     constructor(
         public readonly label: string,
         public readonly index: number,
@@ -44,6 +49,7 @@ class Dependency extends vscode.TreeItem {
     ) {
         super(label, collapsibleState);
         this.label = `${index + 1}.  ${label}`;
+        this.text = label;
         this.tooltip = label;
     }
 }

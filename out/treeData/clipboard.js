@@ -21,7 +21,10 @@ class ClipboardProvider {
         });
         return Promise.resolve(data);
     }
-    refresh() {
+    refresh(data) {
+        if (data) {
+            this.list = data;
+        }
         this._onDidChangeTreeData.fire();
     }
     static init(data) {
@@ -38,6 +41,7 @@ class Dependency extends vscode.TreeItem {
         this.index = index;
         this.collapsibleState = collapsibleState;
         this.label = `${index + 1}.  ${label}`;
+        this.text = label;
         this.tooltip = label;
     }
 }

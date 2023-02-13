@@ -34,7 +34,10 @@
     "activationEvents": [
         "onView:clipboard",
         "onCommand:shear-plate.add",
-        "onCommand:shear-delete.add"
+        "onCommand:shear-delete.add",
+        "onCommand:clipboard.deleteAll",
+        "onCommand:clipboard.delete",
+        "onCommand:clipboard.copytext"
     ],
     "contributes": {
         "menus": {
@@ -49,6 +52,23 @@
                     "group": "navigation",
                     "when": "editorHasSelection"
                 }
+            ],
+            "view/title": [
+                {
+                    "command": "clipboard.deleteAll",
+                    "when": "view == clipboard",
+                    "group": "navigation"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "clipboard.delete",
+                    "group": "inline"
+                },
+                {
+                    "command": "clipboard.copytext",
+                    "group": "inline"
+                }
             ]
         },
         "commands": [
@@ -59,6 +79,30 @@
             {
                 "command": "shear-plate.delete",
                 "title": "%view.ctx.delete%"
+            },
+            {
+                "command": "clipboard.deleteAll",
+                "title": "%menu.deleteAll%",
+                "icon": {
+                    "dark": "resources/dark/delete.svg",
+                    "light": "resources/light/delete.svg"
+                }
+            },
+            {
+                "command": "clipboard.delete",
+                "title": "%menu.delete%",
+                "icon": {
+                    "dark": "resources/dark/delete.svg",
+                    "light": "resources/light/delete.svg"
+                }
+            },
+            {
+                "command": "clipboard.copytext",
+                "title": "%menu.copy%",
+                "icon": {
+                    "dark": "resources/dark/copy.svg",
+                    "light": "resources/light/copy.svg"
+                }
             }
         ],
         "views": {

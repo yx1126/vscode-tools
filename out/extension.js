@@ -5,7 +5,8 @@ exports.deactivate = exports.activate = void 0;
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require("vscode");
 const clipboard_1 = require("./treeData/clipboard");
-const CLIPBOARD_STORE_KEY = "clipboardKeys";
+const globStorage_1 = require("./utils/globStorage");
+const config_1 = require("./config");
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 function activate(context) {
@@ -22,16 +23,20 @@ function activate(context) {
     // });
     // context.subscriptions.push(disposable);
     const editor = vscode.window.activeTextEditor;
-    const clipboardStore = new GlobStorage(CLIPBOARD_STORE_KEY, context);
+    const clipboardStore = new globStorage_1.default(config_1.CLIPBOARD_STORE_KEY, context);
     const clipboardKeys = clipboardStore.getItem() || [];
     const clipboard = clipboard_1.ClipboardProvider.init(clipboardKeys);
+    // update views data
+    function updateViews(data) {
+        clipboardStore.setItem(data);
+        clipboard.refresh(data);
+    }
     // add command
     const addDisposable = vscode.commands.registerCommand("shear-plate.add", () => {
         const selectText = editor.document.getText(editor.selection);
         const data = clipboardStore.getItem() || [];
         if (!data.includes(selectText)) {
-            clipboardStore.setItem([...data, selectText]);
-            clipboard.refresh();
+            updateViews([...data, selectText]);
         }
     });
     context.subscriptions.push(addDisposable);
@@ -42,26 +47,30 @@ function activate(context) {
         const data = clipboardStore.getItem() || [];
         const filterData = (clipboardStore.getItem() || []).filter(item => item !== selectText);
         if (data.length !== filterData.length) {
-            clipboardStore.setItem(filterData);
-            clipboard.refresh();
+            updateViews(filterData);
         }
     });
     context.subscriptions.push(deleteDisposable);
+    // delete all text command
+    const deleteAllDisposable = vscode.commands.registerCommand("clipboard.deleteAll", () => {
+        updateViews([]);
+    });
+    context.subscriptions.push(deleteAllDisposable);
+    // copy command
+    const copyDisposable = vscode.commands.registerCommand("clipboard.copytext", (item) => {
+        vscode.env.clipboard.writeText(item.text);
+    });
+    context.subscriptions.push(copyDisposable);
+    // delete command
+    const deleteTextDisposable = vscode.commands.registerCommand("clipboard.delete", (item) => {
+        const data = clipboardStore.getItem() || [];
+        data.splice(item.index, 1);
+        updateViews(data);
+    });
+    context.subscriptions.push(deleteTextDisposable);
 }
 exports.activate = activate;
 // This method is called when your extension is deactivated
 function deactivate() { }
 exports.deactivate = deactivate;
-class GlobStorage {
-    constructor(key, ctx) {
-        this.key = key;
-        this.ctx = ctx;
-    }
-    getItem() {
-        return this.ctx.globalState.get(this.key);
-    }
-    setItem(value) {
-        this.ctx.globalState.update(this.key, value);
-    }
-}
 //# sourceMappingURL=extension.js.map
