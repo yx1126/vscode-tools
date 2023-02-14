@@ -9,16 +9,24 @@
     "categories": [
         "Other"
     ],
-    "main": "./out/extension.js",
+    "type": "commonjs",
+    "main": "./dist/extension.js",
     "scripts": {
         "vscode:prepublish": "pnpm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
+        "build": "pnpm build:i18n && cross-env NODE_ENV=production rollup -c --bundleConfigAsCjs",
+        "build:i18n": "esno scripts/build-i18n.ts",
         "pretest": "pnpm run compile && pnpm run lint",
         "lint": "eslint src --ext ts",
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
+        "@rollup/plugin-commonjs": "^24.0.1",
+        "@rollup/plugin-json": "^6.0.0",
+        "@rollup/plugin-node-resolve": "^15.0.1",
+        "@rollup/plugin-terser": "^0.4.0",
+        "@types/fs-extra": "^11.0.1",
         "@types/glob": "^8.0.1",
         "@types/mocha": "^10.0.1",
         "@types/node": "16.x",
@@ -26,9 +34,15 @@
         "@typescript-eslint/eslint-plugin": "^5.49.0",
         "@typescript-eslint/parser": "^5.49.0",
         "@vscode/test-electron": "^2.2.2",
+        "cross-env": "^7.0.3",
         "eslint": "^8.33.0",
+        "esno": "^0.16.3",
+        "fast-glob": "^3.2.12",
+        "fs-extra": "^11.1.0",
         "glob": "^8.1.0",
         "mocha": "^10.1.0",
+        "rollup": "^3.15.0",
+        "rollup-plugin-typescript2": "^0.34.1",
         "typescript": "^4.9.4"
     },
     "activationEvents": [
