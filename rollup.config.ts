@@ -23,4 +23,15 @@ export default defineConfig({
         json(),
         commonjs(),
     ],
+    watch: {
+        buildDelay: 1500,
+        exclude: [
+            "node_modules/**",
+        ],
+        include: [
+            "src/**",
+            "scripts/**",
+            "locales/**",
+        ],
+    },
 });

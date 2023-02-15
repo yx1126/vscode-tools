@@ -1,6 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { window, env, commands, type ExtensionContext } from "vscode";
+import { window, env, commands, workspace, type ExtensionContext } from "vscode";
 import { ClipboardProvider } from "./tree/clipboard";
 import GlobStorage from "./utils/globStorage";
 import { CLIPBOARD_STORE_KEY } from "./config";
@@ -42,13 +42,17 @@ export function activate(context: ExtensionContext) {
 
 
     // add command
-    const addDisposable = commands.registerCommand("shear-plate.add", () => {
+    const addDisposable = commands.registerCommand("shear-plate.add", async () => {
         const selectText = editor.document.getText(editor.selection);
         const localData = clipboardStore.getItem() || [];
         const data = localData.find(item => item.content === selectText);
-        if(!data) {
-            updateViews([...localData, { label: selectText, content: selectText }]);
-            window.showInformationMessage(i18n.t("prompt.insert"));
+        if(selectText && !data) {
+            updateViews([...localData, {
+                label: selectText,
+                content: selectText,
+                filePath: editor.document.fileName,
+                line: editor.selection.start.line,
+            }]);
         }
     });
     context.subscriptions.push(addDisposable);
@@ -67,21 +71,21 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(deleteDisposable);
 
     // delete all text command
-    const deleteAllDisposable = commands.registerCommand("clipboard.clear", () => {
+    const deleteAllDisposable = commands.registerCommand("shear-plate.clipboard.clear", () => {
         updateViews([]);
         window.showInformationMessage(i18n.t("prompt.clear"));
     });
     context.subscriptions.push(deleteAllDisposable);
 
     // copy command
-    const copyDisposable = commands.registerCommand("clipboard.copytext", (item) => {
+    const copyDisposable = commands.registerCommand("shear-plate.clipboard.copytext", (item) => {
         env.clipboard.writeText(item.content);
         window.showInformationMessage(i18n.t("prompt.copy"));
     });
     context.subscriptions.push(copyDisposable);
 
     // edit label command
-    const editDisposable = commands.registerCommand("clipboard.edit", async (item) => {
+    const editDisposable = commands.registerCommand("shear-plate.clipboard.edit", async (item) => {
         const localData = clipboardStore.getItem() || [];
         const input = await window.showInputBox({
             title: i18n.t("prompt.treeinput.title"),
@@ -97,17 +101,30 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(editDisposable);
 
     // delete command
-    const deleteTextDisposable = commands.registerCommand("clipboard.delete", (item) => {
+    const deleteTextDisposable = commands.registerCommand("shear-plate.clipboard.delete", (item) => {
         const localData = clipboardStore.getItem() || [];
         localData.splice(item.index, 1);
         updateViews(localData);
         window.showInformationMessage(i18n.t("prompt.delete"));
     });
     context.subscriptions.push(deleteTextDisposable);
+
+    // goto file
+    const gotoDisposable = commands.registerCommand("shear-plate.clipboard.goto_file", async (item) => {
+        try {
+            const document = await workspace.openTextDocument(item.filePath);
+            await window.showTextDocument(document);
+        } catch (error) {
+            window.showErrorMessage(String(error));
+        }
+    });
+    context.subscriptions.push(gotoDisposable);
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+	console.log("Congratulations, your extension \"shear-plate\" is now deactivate!");
+}
 
 
 

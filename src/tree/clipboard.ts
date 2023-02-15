@@ -32,7 +32,7 @@ export class ClipboardProvider implements vscode.TreeDataProvider<Dependency> {
 
     public static init(data: ClipboardItem[]) {
         const clipboard = new ClipboardProvider(data);
-        vscode.window.registerTreeDataProvider("clipboard", clipboard);
+        vscode.window.registerTreeDataProvider("shear-plate.clipboard", clipboard);
         return clipboard;
     }
 }
@@ -40,6 +40,8 @@ export class ClipboardProvider implements vscode.TreeDataProvider<Dependency> {
 class Dependency extends vscode.TreeItem {
 
     content: string;
+    filePath: string;
+    line: number;
 
     constructor(
         public readonly data: ClipboardItem,
@@ -50,5 +52,7 @@ class Dependency extends vscode.TreeItem {
         this.label = `${index + 1}.  ${data.label.replace(/\s/g, "")}`;
         this.tooltip = data.content;
         this.content = data.content;
+        this.filePath = data.filePath;
+        this.line = data.line;
     }
 }

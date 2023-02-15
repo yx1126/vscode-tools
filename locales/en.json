@@ -7,6 +7,7 @@
     "menu.copy": "copy",
     "menu.edit": "edit",
     "menu.delete": "Remove All",
+    "menu.goto_file": "Go to definition",
     "prompt.insert": "Add successfully",
     "prompt.copy": " Copy successful",
     "prompt.delete": "Deleted successfully",
