@@ -1,11 +1,16 @@
 {
+    "title": "剪切板",
     "view.clipboard": "剪切板",
     "view.ctx.add": "添加到剪切板中",
     "view.ctx.delete": "从剪切板中移除",
-    "menu.deleteAll": "清空",
+    "menu.clear": "清空",
     "menu.copy": "复制",
+    "menu.edit": "修改",
     "menu.delete": "删除",
     "prompt.insert": "添加成功",
     "prompt.copy": "复制成功",
-    "prompt.delete": "删除成功"
+    "prompt.delete": "删除成功",
+    "prompt.clear": "清除成功",
+    "prompt.treeinput.title": "标题",
+    "prompt.treeinput.placeHolder": "请输入标题"
 }

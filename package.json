@@ -49,8 +49,9 @@
         "onView:clipboard",
         "onCommand:shear-plate.add",
         "onCommand:shear-delete.add",
-        "onCommand:clipboard.deleteAll",
+        "onCommand:clipboard.clear",
         "onCommand:clipboard.delete",
+        "onCommand:clipboard.edit",
         "onCommand:clipboard.copytext"
     ],
     "contributes": {
@@ -69,7 +70,7 @@
             ],
             "view/title": [
                 {
-                    "command": "clipboard.deleteAll",
+                    "command": "clipboard.clear",
                     "when": "view == clipboard",
                     "group": "navigation"
                 }
@@ -81,6 +82,10 @@
                 },
                 {
                     "command": "clipboard.copytext",
+                    "group": "inline"
+                },
+                {
+                    "command": "clipboard.edit",
                     "group": "inline"
                 }
             ]
@@ -95,8 +100,8 @@
                 "title": "%view.ctx.delete%"
             },
             {
-                "command": "clipboard.deleteAll",
-                "title": "%menu.deleteAll%",
+                "command": "clipboard.clear",
+                "title": "%menu.clear%",
                 "icon": {
                     "dark": "resources/dark/delete.svg",
                     "light": "resources/light/delete.svg"
@@ -117,6 +122,14 @@
                     "dark": "resources/dark/copy.svg",
                     "light": "resources/light/copy.svg"
                 }
+            },
+            {
+                "command": "clipboard.edit",
+                "title": "%menu.edit%",
+                "icon": {
+                    "dark": "resources/dark/edit.svg",
+                    "light": "resources/light/edit.svg"
+                }
             }
         ],
         "views": {
@@ -131,7 +144,7 @@
             "activitybar": [
                 {
                     "id": "shear-plate",
-                    "title": "shear-plate",
+                    "title": "%title%",
                     "icon": "resources/logo.svg"
                 }
             ]

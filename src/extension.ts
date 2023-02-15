@@ -1,9 +1,11 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import { window, env, commands, type ExtensionContext } from "vscode";
-import { ClipboardProvider } from "./treeData/clipboard";
+import { ClipboardProvider } from "./tree/clipboard";
 import GlobStorage from "./utils/globStorage";
 import { CLIPBOARD_STORE_KEY } from "./config";
+import i18n from "./utils/i18n";
+import type { ClipboardItem } from "./types";
 
 
 // This method is called when your extension is activated
@@ -25,14 +27,15 @@ export function activate(context: ExtensionContext) {
 	// 	vscode.window.showInformationMessage("Hello World from shear-plate!");
 	// });
 	// context.subscriptions.push(disposable);
+    i18n.init(context.extensionPath);
 
     const editor = window.activeTextEditor!;
-    const clipboardStore = new GlobStorage<string[]>(CLIPBOARD_STORE_KEY, context);
-    const clipboardKeys: string[] = clipboardStore.getItem() || [];
+    const clipboardStore = new GlobStorage<ClipboardItem[]>(CLIPBOARD_STORE_KEY, context);
+    const clipboardKeys: ClipboardItem[] = clipboardStore.getItem() || [];
     const clipboard = ClipboardProvider.init(clipboardKeys);
 
     // update views data
-    function updateViews(data: string[]) {
+    function updateViews(data: ClipboardItem[]) {
         clipboardStore.setItem(data);
         clipboard.refresh(data);
     }
@@ -41,10 +44,11 @@ export function activate(context: ExtensionContext) {
     // add command
     const addDisposable = commands.registerCommand("shear-plate.add", () => {
         const selectText = editor.document.getText(editor.selection);
-        const data = clipboardStore.getItem() || [];
-        if(!data.includes(selectText)) {
-            updateViews([...data, selectText]);
-            window.showInformationMessage("add Success");
+        const localData = clipboardStore.getItem() || [];
+        const data = localData.find(item => item.content === selectText);
+        if(!data) {
+            updateViews([...localData, { label: selectText, content: selectText }]);
+            window.showInformationMessage(i18n.t("prompt.insert"));
         }
     });
     context.subscriptions.push(addDisposable);
@@ -53,35 +57,51 @@ export function activate(context: ExtensionContext) {
     const deleteDisposable = commands.registerCommand("shear-plate.delete", () => {
         // const selectText = editor.document.getText(editor.selection);
         const selectText = editor.document.getText(editor.selection);
-        const data = clipboardStore.getItem() || [];
-        const filterData = (clipboardStore.getItem() || []).filter(item => item !== selectText);
-        if(data.length !== filterData.length) {
+        const localData = clipboardStore.getItem() || [];
+        const filterData = localData.filter(item => item.content !== selectText);
+        if(localData.length !== filterData.length) {
             updateViews(filterData);
-            // vscode.window.showInformationMessage(vscode.l10n.t("prompt.delete"));
+            window.showInformationMessage(i18n.t("prompt.delete"));
         }
     });
     context.subscriptions.push(deleteDisposable);
 
     // delete all text command
-    const deleteAllDisposable = commands.registerCommand("clipboard.deleteAll", () => {
+    const deleteAllDisposable = commands.registerCommand("clipboard.clear", () => {
         updateViews([]);
-        // vscode.window.showInformationMessage(vscode.l10n.t("prompt.delete"));
+        window.showInformationMessage(i18n.t("prompt.clear"));
     });
     context.subscriptions.push(deleteAllDisposable);
 
     // copy command
     const copyDisposable = commands.registerCommand("clipboard.copytext", (item) => {
-        env.clipboard.writeText(item.text);
-        // vscode.window.showInformationMessage(vscode.l10n.t("prompt.copy"));
+        env.clipboard.writeText(item.content);
+        window.showInformationMessage(i18n.t("prompt.copy"));
     });
     context.subscriptions.push(copyDisposable);
 
+    // edit label command
+    const editDisposable = commands.registerCommand("clipboard.edit", async (item) => {
+        const localData = clipboardStore.getItem() || [];
+        const input = await window.showInputBox({
+            title: i18n.t("prompt.treeinput.title"),
+            placeHolder: i18n.t("prompt.treeinput.placeHolder"),
+            value: localData[item.index].label.replace(/\s/g, ""),
+        });
+        const isIn = localData.find(item => item.label === input);
+        if(input && !isIn) {
+            localData[item.index].label = input;
+            updateViews(localData);
+        }
+    });
+    context.subscriptions.push(editDisposable);
+
     // delete command
     const deleteTextDisposable = commands.registerCommand("clipboard.delete", (item) => {
-        const data = clipboardStore.getItem() || [];
-        data.splice(item.index, 1);
-        updateViews(data);
-        // vscode.window.showInformationMessage(vscode.l10n.t("prompt.delete"));
+        const localData = clipboardStore.getItem() || [];
+        localData.splice(item.index, 1);
+        updateViews(localData);
+        window.showInformationMessage(i18n.t("prompt.delete"));
     });
     context.subscriptions.push(deleteTextDisposable);
 }

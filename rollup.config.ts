@@ -14,8 +14,6 @@ export default defineConfig({
     },
     treeshake: true,
     external: [
-        "/node_modules/",
-        "/scripts/",
         "vscode",
     ],
     plugins: [

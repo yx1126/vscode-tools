@@ -1,11 +1,16 @@
 {
+    "title": "shear-plate",
     "view.clipboard": "clipboard",
     "view.ctx.add": "Add to the clipboard",
     "view.ctx.delete": "Remove from the clipboard",
-    "menu.deleteAll": "Remove All",
+    "menu.clear": "Remove All",
     "menu.copy": "copy",
+    "menu.edit": "edit",
     "menu.delete": "Remove All",
     "prompt.insert": "Add successfully",
     "prompt.copy": " Copy successful",
-    "prompt.delete": "Deleted successfully"
+    "prompt.delete": "Deleted successfully",
+    "prompt.clear": "Clear successfully",
+    "prompt.treeinput.title": "title",
+    "prompt.treeinput.placeHolder": "Please enter the title"
 }

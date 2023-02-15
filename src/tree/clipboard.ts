@@ -1,15 +1,14 @@
 import * as vscode from "vscode";
-// import * as fs from "fs";
-// import * as path from "path";
+import { ClipboardItem } from "../types";
 
 export class ClipboardProvider implements vscode.TreeDataProvider<Dependency> {
 
-    list: string[] = [];
+    list: ClipboardItem[] = [];
 
     private _onDidChangeTreeData: vscode.EventEmitter<Dependency | undefined | null | void> = new vscode.EventEmitter<Dependency | undefined | null | void>();
     readonly onDidChangeTreeData: vscode.Event<Dependency | undefined | null | void> = this._onDidChangeTreeData.event;
 
-    constructor(private data: string[]) {
+    constructor(private data: ClipboardItem[]) {
         this.list = data;
     }
 
@@ -24,14 +23,14 @@ export class ClipboardProvider implements vscode.TreeDataProvider<Dependency> {
         return Promise.resolve(data);
     }
 
-    refresh(data?: string[]): void {
+    refresh(data?: ClipboardItem[]): void {
         if(data) {
             this.list = data;
         }
         this._onDidChangeTreeData.fire();
     }
 
-    public static init(data: string[]) {
+    public static init(data: ClipboardItem[]) {
         const clipboard = new ClipboardProvider(data);
         vscode.window.registerTreeDataProvider("clipboard", clipboard);
         return clipboard;
@@ -40,16 +39,16 @@ export class ClipboardProvider implements vscode.TreeDataProvider<Dependency> {
 
 class Dependency extends vscode.TreeItem {
 
-    text: string;
+    content: string;
 
     constructor(
-        public readonly label: string,
+        public readonly data: ClipboardItem,
         public readonly index: number,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState
     ) {
-        super(label, collapsibleState);
-        this.label = `${index + 1}.  ${label.replace(/\s/g, "")}`;
-        this.text = label;
-        this.tooltip = label;
+        super(data.label, collapsibleState);
+        this.label = `${index + 1}.  ${data.label.replace(/\s/g, "")}`;
+        this.tooltip = data.content;
+        this.content = data.content;
     }
 }
