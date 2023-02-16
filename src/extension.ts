@@ -27,84 +27,58 @@ export function activate(context: ExtensionContext) {
 	// 	vscode.window.showInformationMessage("Hello World from shear-plate!");
 	// });
 	// context.subscriptions.push(disposable);
+
+    // init i18n
     i18n.init(context.extensionPath);
 
-    const editor = window.activeTextEditor!;
     const clipboardStore = new GlobStorage<ClipboardItem[]>(CLIPBOARD_STORE_KEY, context);
-    const clipboardKeys: ClipboardItem[] = clipboardStore.getItem() || [];
-    const clipboard = ClipboardProvider.init(clipboardKeys);
-
-    // update views data
-    function updateViews(data: ClipboardItem[]) {
-        clipboardStore.setItem(data);
-        clipboard.refresh(data);
-    }
-
+    const clipboard = ClipboardProvider.init(clipboardStore);
 
     // add command
     const addDisposable = commands.registerCommand("shear-plate.add", async () => {
+        const editor = window.activeTextEditor!;
         const selectText = editor.document.getText(editor.selection);
-        const localData = clipboardStore.getItem() || [];
-        const data = localData.find(item => item.content === selectText);
-        if(selectText && !data) {
-            updateViews([...localData, {
-                label: selectText,
-                content: selectText,
-                filePath: editor.document.fileName,
-                line: editor.selection.start.line,
-            }]);
-        }
+        clipboard.insert({
+            label: selectText,
+            content: selectText,
+            filePath: editor.document.fileName,
+            line: editor.selection.start.line,
+        });
     });
     context.subscriptions.push(addDisposable);
 
-    // delete command
-    const deleteDisposable = commands.registerCommand("shear-plate.delete", () => {
-        // const selectText = editor.document.getText(editor.selection);
-        const selectText = editor.document.getText(editor.selection);
-        const localData = clipboardStore.getItem() || [];
-        const filterData = localData.filter(item => item.content !== selectText);
-        if(localData.length !== filterData.length) {
-            updateViews(filterData);
-            window.showInformationMessage(i18n.t("prompt.delete"));
-        }
-    });
-    context.subscriptions.push(deleteDisposable);
-
     // delete all text command
     const deleteAllDisposable = commands.registerCommand("shear-plate.clipboard.clear", () => {
-        updateViews([]);
+        clipboard.clear();
         window.showInformationMessage(i18n.t("prompt.clear"));
     });
     context.subscriptions.push(deleteAllDisposable);
 
     // copy command
     const copyDisposable = commands.registerCommand("shear-plate.clipboard.copytext", (item) => {
-        env.clipboard.writeText(item.content);
+        env.clipboard.writeText(item.data.content);
         window.showInformationMessage(i18n.t("prompt.copy"));
     });
     context.subscriptions.push(copyDisposable);
 
     // edit label command
     const editDisposable = commands.registerCommand("shear-plate.clipboard.edit", async (item) => {
-        const localData = clipboardStore.getItem() || [];
         const input = await window.showInputBox({
             title: i18n.t("prompt.treeinput.title"),
             placeHolder: i18n.t("prompt.treeinput.placeHolder"),
-            value: localData[item.index].label.replace(/\s/g, ""),
+            value: item.data.label.replace(/\s/g, ""),
         });
-        const isIn = localData.find(item => item.label === input);
-        if(input && !isIn) {
-            localData[item.index].label = input;
-            updateViews(localData);
-        }
+        if(!input) return;
+        clipboard.update({
+            ...item.data,
+            label: input,
+        });
     });
     context.subscriptions.push(editDisposable);
 
     // delete command
     const deleteTextDisposable = commands.registerCommand("shear-plate.clipboard.delete", (item) => {
-        const localData = clipboardStore.getItem() || [];
-        localData.splice(item.index, 1);
-        updateViews(localData);
+        clipboard.remove(item.data);
         window.showInformationMessage(i18n.t("prompt.delete"));
     });
     context.subscriptions.push(deleteTextDisposable);
@@ -112,7 +86,7 @@ export function activate(context: ExtensionContext) {
     // goto file
     const gotoDisposable = commands.registerCommand("shear-plate.clipboard.goto_file", async (item) => {
         try {
-            const document = await workspace.openTextDocument(item.filePath);
+            const document = await workspace.openTextDocument(item.data.filePath);
             await window.showTextDocument(document);
         } catch (error) {
             window.showErrorMessage(String(error));

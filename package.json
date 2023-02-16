@@ -63,11 +63,6 @@
                     "command": "shear-plate.add",
                     "group": "navigation",
                     "when": "editorHasSelection"
-                },
-                {
-                    "command": "shear-plate.delete",
-                    "group": "navigation",
-                    "when": "editorHasSelection"
                 }
             ],
             "view/title": [
@@ -100,10 +95,6 @@
             {
                 "command": "shear-plate.add",
                 "title": "%view.ctx.add%"
-            },
-            {
-                "command": "shear-plate.delete",
-                "title": "%view.ctx.delete%"
             },
             {
                 "command": "shear-plate.clipboard.clear",
