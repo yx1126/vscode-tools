@@ -1,28 +1,28 @@
-import * as vscode from "vscode";
+import {  window, EventEmitter, TreeItem, TreeItemCollapsibleState, type TreeDataProvider, type Event } from "vscode";
 import { ClipboardItem } from "../types";
 import type GlobStorage from "../utils/globStorage";
 
-export class ClipboardProvider implements vscode.TreeDataProvider<Dependency> {
+export class ClipboardProvider implements TreeDataProvider<Dependency> {
 
     list: ClipboardItem[] = [];
     stroage: GlobStorage<ClipboardItem[]>;
 
 
-    private _onDidChangeTreeData: vscode.EventEmitter<Dependency | undefined | null | void> = new vscode.EventEmitter<Dependency | undefined | null | void>();
-    readonly onDidChangeTreeData: vscode.Event<Dependency | undefined | null | void> = this._onDidChangeTreeData.event;
+    private _onDidChangeTreeData: EventEmitter<Dependency | undefined | null | void> = new EventEmitter<Dependency | undefined | null | void>();
+    readonly onDidChangeTreeData: Event<Dependency | undefined | null | void> = this._onDidChangeTreeData.event;
 
     constructor(stroage: GlobStorage<ClipboardItem[]>) {
         this.stroage = stroage;
         this.list = this.stroage.getItem() || [];
     }
 
-    getTreeItem(element: Dependency): vscode.TreeItem {
+    getTreeItem(element: Dependency): TreeItem {
         return element;
     }
 
     getChildren(): Thenable<Dependency[]> {
         const data = this.list.map((item, i) => {
-            return new Dependency(item, i, vscode.TreeItemCollapsibleState.None);
+            return new Dependency(item, i, TreeItemCollapsibleState.None);
         });
         return Promise.resolve(data);
     }
@@ -67,21 +67,21 @@ export class ClipboardProvider implements vscode.TreeDataProvider<Dependency> {
 
     public static init(storage: GlobStorage<ClipboardItem[]>) {
         const clipboard = new ClipboardProvider(storage);
-        vscode.window.registerTreeDataProvider("shear-plate.clipboard", clipboard);
+        window.registerTreeDataProvider("shear-plate.clipboard", clipboard);
         return clipboard;
     }
 }
 
-class Dependency extends vscode.TreeItem {
+class Dependency extends TreeItem {
 
     constructor(
         public readonly data: ClipboardItem,
         public readonly index: number,
-        public readonly collapsibleState: vscode.TreeItemCollapsibleState
+        public readonly collapsibleState: TreeItemCollapsibleState
     ) {
         super(data.label, collapsibleState);
         this.data = data;
-        this.label = `${index + 1}.  ${data.label.replace(/\s/g, "")}`;
+        this.label = `${index + 1}.  ${data.label}`;
         this.tooltip = data.content;
     }
 }

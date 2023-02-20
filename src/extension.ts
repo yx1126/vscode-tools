@@ -1,6 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { window, env, commands, workspace, type ExtensionContext } from "vscode";
+import { window, env, commands, workspace, type ExtensionContext, TextEditorRevealType, Selection } from "vscode";
 import { ClipboardProvider } from "./tree/clipboard";
 import GlobStorage from "./utils/globStorage";
 import { CLIPBOARD_STORE_KEY } from "./config";
@@ -39,10 +39,10 @@ export function activate(context: ExtensionContext) {
         const editor = window.activeTextEditor!;
         const selectText = editor.document.getText(editor.selection);
         clipboard.insert({
-            label: selectText,
+            label: selectText.replace(/\s/g, ""),
             content: selectText,
             filePath: editor.document.fileName,
-            line: editor.selection.start.line,
+            selection: editor.selection,
         });
     });
     context.subscriptions.push(addDisposable);
@@ -66,7 +66,7 @@ export function activate(context: ExtensionContext) {
         const input = await window.showInputBox({
             title: i18n.t("prompt.treeinput.title"),
             placeHolder: i18n.t("prompt.treeinput.placeHolder"),
-            value: item.data.label.replace(/\s/g, ""),
+            value: item.data.label,
         });
         if(!input) return;
         clipboard.update({
@@ -87,7 +87,13 @@ export function activate(context: ExtensionContext) {
     const gotoDisposable = commands.registerCommand("shear-plate.clipboard.goto_file", async (item) => {
         try {
             const document = await workspace.openTextDocument(item.data.filePath);
-            await window.showTextDocument(document);
+           const textEdit = await window.showTextDocument(document);
+           const data = item.data as ClipboardItem;
+           textEdit.selection = new Selection(
+                data.selection.anchor,
+                data.selection.active,
+           );
+           textEdit.revealRange(textEdit.selection, TextEditorRevealType.InCenter);
         } catch (error) {
             window.showErrorMessage(String(error));
         }
