@@ -4,6 +4,7 @@ import terser from "@rollup/plugin-terser";
 import resolve from "@rollup/plugin-node-resolve";
 import json from "@rollup/plugin-json";
 import commonjs from "@rollup/plugin-commonjs";
+import eslint from "@rollup/plugin-eslint";
 
 export default defineConfig({
     input: "./src/extension.ts",
@@ -22,6 +23,19 @@ export default defineConfig({
         resolve(),
         json(),
         commonjs(),
+        eslint({
+            fix: true,
+            throwOnError: true,
+            throwOnWarning: true,
+            exclude: [
+                "node_modules/**",
+            ],
+            include: [
+                "src/**",
+                "*.json",
+                "rollup.config.ts",
+            ],
+        }),
     ],
     watch: {
         buildDelay: 1500,

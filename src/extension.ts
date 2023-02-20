@@ -1,11 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { window, env, commands, workspace, type ExtensionContext, TextEditorRevealType, Selection } from "vscode";
-import { ClipboardProvider } from "./tree/clipboard";
-import GlobStorage from "./utils/globStorage";
-import { CLIPBOARD_STORE_KEY } from "./config";
-import i18n from "./utils/i18n";
-import type { ClipboardItem } from "./types";
+import type { ExtensionContext, Disposable } from "vscode";
+import i18n from "@/utils/i18n";
+import flatten from "@/utils/flatten";
+import CommandsModules from "@/commands";
 
 
 // This method is called when your extension is activated
@@ -31,74 +29,16 @@ export function activate(context: ExtensionContext) {
     // init i18n
     i18n.init(context.extensionPath);
 
-    const clipboardStore = new GlobStorage<ClipboardItem[]>(CLIPBOARD_STORE_KEY, context);
-    const clipboard = ClipboardProvider.init(clipboardStore);
+    const modules = [
+        CommandsModules,
+    ];
 
-    // add command
-    const addDisposable = commands.registerCommand("shear-plate.add", async () => {
-        const editor = window.activeTextEditor!;
-        const selectText = editor.document.getText(editor.selection);
-        clipboard.insert({
-            label: selectText.replace(/\s/g, ""),
-            content: selectText,
-            filePath: editor.document.fileName,
-            selection: editor.selection,
-        });
-    });
-    context.subscriptions.push(addDisposable);
+    const disposables = flatten(modules.map(m => m(context))) as Disposable[];
 
-    // delete all text command
-    const deleteAllDisposable = commands.registerCommand("shear-plate.clipboard.clear", () => {
-        clipboard.clear();
-        window.showInformationMessage(i18n.t("prompt.clear"));
+    disposables.forEach(item => {
+        context.subscriptions.push(item);
     });
-    context.subscriptions.push(deleteAllDisposable);
 
-    // copy command
-    const copyDisposable = commands.registerCommand("shear-plate.clipboard.copytext", (item) => {
-        env.clipboard.writeText(item.data.content);
-        window.showInformationMessage(i18n.t("prompt.copy"));
-    });
-    context.subscriptions.push(copyDisposable);
-
-    // edit label command
-    const editDisposable = commands.registerCommand("shear-plate.clipboard.edit", async (item) => {
-        const input = await window.showInputBox({
-            title: i18n.t("prompt.treeinput.title"),
-            placeHolder: i18n.t("prompt.treeinput.placeHolder"),
-            value: item.data.label,
-        });
-        if(!input) return;
-        clipboard.update({
-            ...item.data,
-            label: input,
-        });
-    });
-    context.subscriptions.push(editDisposable);
-
-    // delete command
-    const deleteTextDisposable = commands.registerCommand("shear-plate.clipboard.delete", (item) => {
-        clipboard.remove(item.data);
-        window.showInformationMessage(i18n.t("prompt.delete"));
-    });
-    context.subscriptions.push(deleteTextDisposable);
-
-    // goto file
-    const gotoDisposable = commands.registerCommand("shear-plate.clipboard.goto_file", async (item) => {
-        try {
-            const document = await workspace.openTextDocument(item.data.filePath);
-           const textEdit = await window.showTextDocument(document);
-           const data = item.data as ClipboardItem;
-           textEdit.selection = new Selection(
-                data.selection.anchor,
-                data.selection.active,
-           );
-           textEdit.revealRange(textEdit.selection, TextEditorRevealType.InCenter);
-        } catch (error) {
-            window.showErrorMessage(String(error));
-        }
-    });
-    context.subscriptions.push(gotoDisposable);
 }
 
 // This method is called when your extension is deactivated
