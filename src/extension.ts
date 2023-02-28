@@ -29,6 +29,7 @@ export function activate(context: ExtensionContext) {
     // init i18n
     i18n.init(context.extensionPath);
 
+    // modules
     const modules = [
         CommandsModules,
     ];

@@ -44,8 +44,6 @@ export default defineConfig({
         ],
         include: [
             "src/**",
-            "scripts/**",
-            "locales/**",
         ],
     },
 });

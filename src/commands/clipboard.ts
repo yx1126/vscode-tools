@@ -2,9 +2,9 @@ import { window, commands, env, workspace, Selection, TextEditorRevealType } fro
 import { Commands } from "./commands";
 import { CLIPBOARD_STORE_KEY } from "@/config";
 import GlobStorage from "@/utils/globStorage";
-import { ClipboardProvider } from "@/tree/clipboard";
+import { ClipboardProvider, type ClipboardItem } from "@/tree/clipboard";
 import i18n from "@/utils/i18n";
-import type { ClipboardItem, ExtensionModule } from "@/types";
+import type { ExtensionModule } from "@/types";
 
 export function add(clipboard: ClipboardProvider) {
     const editor = window.activeTextEditor!;
@@ -19,8 +19,8 @@ export function add(clipboard: ClipboardProvider) {
 
 export async function edit(item: any, clipboard: ClipboardProvider) {
     const input = await window.showInputBox({
-        title: i18n.t("prompt.treeinput.title"),
-        placeHolder: i18n.t("prompt.treeinput.placeHolder"),
+        title: i18n.t("prompt.clipboard.treeinput.title"),
+        placeHolder: i18n.t("prompt.clipboard.treeinput.placeHolder"),
         value: item.data.label,
     });
     if(!input) return;
@@ -32,17 +32,17 @@ export async function edit(item: any, clipboard: ClipboardProvider) {
 
 export function copytext(item: any) {
     env.clipboard.writeText(item.data.content);
-    window.showInformationMessage(i18n.t("prompt.copy"));
+    window.showInformationMessage(i18n.t("prompt.clipboard.copy"));
 }
 
 export function deleteFn(item: any, clipboard: ClipboardProvider) {
     clipboard.remove(item.data);
-    window.showInformationMessage(i18n.t("prompt.delete"));
+    window.showInformationMessage(i18n.t("prompt.clipboard.delete"));
 }
 
 export function clear(clipboard: ClipboardProvider) {
     clipboard.clear();
-    window.showInformationMessage(i18n.t("prompt.clear"));
+    window.showInformationMessage(i18n.t("prompt.clipboard.clear"));
 }
 
 export async function goto_file(item: any) {

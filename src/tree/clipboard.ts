@@ -1,28 +1,34 @@
-import {  window, EventEmitter, TreeItem, TreeItemCollapsibleState, type TreeDataProvider, type Event } from "vscode";
-import { ClipboardItem } from "../types";
+import { window, EventEmitter, TreeItem, TreeItemCollapsibleState, type TreeDataProvider, type Event, type Selection } from "vscode";
 import type GlobStorage from "../utils/globStorage";
 
-export class ClipboardProvider implements TreeDataProvider<Dependency> {
+export interface ClipboardItem {
+    label: string;
+    content: string;
+    filePath: string;
+    selection: Selection;
+};
+
+export class ClipboardProvider implements TreeDataProvider<ClipboardTreeItem> {
 
     list: ClipboardItem[] = [];
     stroage: GlobStorage<ClipboardItem[]>;
 
 
-    private _onDidChangeTreeData: EventEmitter<Dependency | undefined | null | void> = new EventEmitter<Dependency | undefined | null | void>();
-    readonly onDidChangeTreeData: Event<Dependency | undefined | null | void> = this._onDidChangeTreeData.event;
+    private _onDidChangeTreeData: EventEmitter<ClipboardTreeItem | undefined | null | void> = new EventEmitter<ClipboardTreeItem | undefined | null | void>();
+    readonly onDidChangeTreeData: Event<ClipboardTreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
     constructor(stroage: GlobStorage<ClipboardItem[]>) {
         this.stroage = stroage;
         this.list = this.stroage.getItem() || [];
     }
 
-    getTreeItem(element: Dependency): TreeItem {
+    getTreeItem(element: ClipboardTreeItem): TreeItem {
         return element;
     }
 
-    getChildren(): Thenable<Dependency[]> {
+    getChildren(): Thenable<ClipboardTreeItem[]> {
         const data = this.list.map((item, i) => {
-            return new Dependency(item, i, TreeItemCollapsibleState.None);
+            return new ClipboardTreeItem(item, i, TreeItemCollapsibleState.None);
         });
         return Promise.resolve(data);
     }
@@ -72,7 +78,7 @@ export class ClipboardProvider implements TreeDataProvider<Dependency> {
     }
 }
 
-class Dependency extends TreeItem {
+class ClipboardTreeItem extends TreeItem {
 
     constructor(
         public readonly data: ClipboardItem,

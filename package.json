@@ -1,8 +1,12 @@
 {
     "name": "shear-plate",
     "displayName": "shear-plate",
-    "description": "shear plate copy",
+    "description": "Some Tools for VS Code",
     "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yx1126/shear-plate"
+    },
     "engines": {
         "vscode": "^1.7.0"
     },
@@ -49,19 +53,19 @@
     },
     "activationEvents": [
         "onView:shear-plate.clipboard",
-        "onCommand:shear-plate.add",
-        "onCommand:shear-delete.add",
-        "onCommand:shear-plate.clipboard.clear",
-        "onCommand:shear-plate.clipboard.delete",
+        "onCommand:shear-plate.clipboard.add",
         "onCommand:shear-plate.clipboard.edit",
+        "onCommand:shear-plate.clipboard.delete",
+        "onCommand:shear-plate.clipboard.clear",
         "onCommand:shear-plate.clipboard.copytext",
-        "onCommand:shear-plate.clipboard.goto_file"
+        "onCommand:shear-plate.clipboard.goto_file",
+        "onCommand:shear-plate.help.open_url"
     ],
     "contributes": {
         "menus": {
             "editor/context": [
                 {
-                    "command": "shear-plate.add",
+                    "command": "shear-plate.clipboard.add",
                     "group": "navigation",
                     "when": "editorHasSelection"
                 }
@@ -75,64 +79,72 @@
             ],
             "view/item/context": [
                 {
+                    "command": "shear-plate.clipboard.edit",
+                    "group": "inline",
+                    "when": "view == shear-plate.clipboard"
+                },
+                {
                     "command": "shear-plate.clipboard.delete",
-                    "group": "inline"
+                    "group": "inline",
+                    "when": "view == shear-plate.clipboard"
                 },
                 {
                     "command": "shear-plate.clipboard.copytext",
-                    "group": "inline"
-                },
-                {
-                    "command": "shear-plate.clipboard.edit",
-                    "group": "inline"
+                    "group": "inline",
+                    "when": "view == shear-plate.clipboard"
                 },
                 {
                     "command": "shear-plate.clipboard.goto_file",
-                    "group": "inline"
+                    "group": "inline",
+                    "when": "view == shear-plate.clipboard"
                 }
             ]
         },
         "commands": [
             {
-                "command": "shear-plate.add",
-                "title": "%view.ctx.add%"
-            },
-            {
-                "command": "shear-plate.clipboard.clear",
-                "title": "%menu.clear%",
-                "icon": {
-                    "dark": "resources/dark/delete.svg",
-                    "light": "resources/light/delete.svg"
-                }
-            },
-            {
-                "command": "shear-plate.clipboard.delete",
-                "title": "%menu.delete%",
-                "icon": {
-                    "dark": "resources/dark/close.svg",
-                    "light": "resources/light/close.svg"
-                }
-            },
-            {
-                "command": "shear-plate.clipboard.copytext",
-                "title": "%menu.copy%",
-                "icon": {
-                    "dark": "resources/dark/copy.svg",
-                    "light": "resources/light/copy.svg"
-                }
+                "command": "shear-plate.clipboard.add",
+                "title": "%menu.clipboard.add%"
             },
             {
                 "command": "shear-plate.clipboard.edit",
-                "title": "%menu.edit%",
+                "title": "%menu.clipboard.edit%",
                 "icon": {
                     "dark": "resources/dark/edit.svg",
                     "light": "resources/light/edit.svg"
                 }
             },
             {
+                "command": "shear-plate.clipboard.delete",
+                "title": "%menu.clipboard.delete%",
+                "icon": {
+                    "dark": "resources/dark/close.svg",
+                    "light": "resources/light/close.svg"
+                }
+            },
+            {
+                "command": "shear-plate.clipboard.clear",
+                "title": "%menu.clipboard.clear%",
+                "icon": {
+                    "dark": "resources/dark/delete.svg",
+                    "light": "resources/light/delete.svg"
+                }
+            },
+            {
+                "command": "shear-plate.clipboard.copytext",
+                "title": "%menu.clipboard.copy%",
+                "icon": {
+                    "dark": "resources/dark/copy.svg",
+                    "light": "resources/light/copy.svg"
+                }
+            },
+            {
                 "command": "shear-plate.clipboard.goto_file",
-                "title": "%menu.goto_file%",
+                "title": "%menu.clipboard.goto_file%",
                 "icon": "$(go-to-file)"
+            },
+            {
+                "command": "shear-plate.help.open_url",
+                "title": "%menu.help.open_url%"
             }
         ],
         "views": {
@@ -140,6 +152,10 @@
                 {
                     "id": "shear-plate.clipboard",
                     "name": "%view.clipboard%"
+                },
+                {
+                    "id": "shear-plate.helpAndFeedback",
+                    "name": "%view.help%"
                 }
             ]
         },
@@ -148,7 +164,7 @@
                 {
                     "id": "shear-plate",
                     "title": "%title%",
-                    "icon": "resources/logo.svg"
+                    "icon": "resources/tool.svg"
                 }
             ]
         }
