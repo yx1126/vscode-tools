@@ -25,7 +25,7 @@ export class HelpProvider implements TreeDataProvider<HelpItem> {
     getChildren(): Thenable<HelpItem[]> {
 
         const data = [
-            { label: i18n.t("menu.help.star"), icon: "help-star", url: "https://github.com/yx1126/shear-plate" },
+            { label: i18n.t("menu.help.star"), icon: "help-star", url: "https://github.com/yx1126/tools" },
         ].map(item => {
             return new HelpItem(item, this.ctx);
         });
@@ -35,7 +35,7 @@ export class HelpProvider implements TreeDataProvider<HelpItem> {
 
     public static init(ctx: ExtensionContext) {
         const help = new HelpProvider(ctx);
-        window.registerTreeDataProvider("shear-plate.helpAndFeedback", help);
+        window.registerTreeDataProvider("tools.helpAndFeedback", help);
         return help;
     }
 }

@@ -1,11 +1,11 @@
 {
-    "name": "shear-plate",
-    "displayName": "shear-plate",
-    "description": "Some Tools for VS Code",
+    "name": "vsocde-tools",
+    "displayName": "Simple Tools",
+    "description": "Some small tools for VS Code",
     "version": "0.0.1",
     "repository": {
         "type": "git",
-        "url": "https://github.com/yx1126/shear-plate"
+        "url": "https://github.com/yx1126/vscode-tools"
     },
     "engines": {
         "vscode": "^1.7.0"
@@ -13,6 +13,7 @@
     "categories": [
         "Other"
     ],
+    "icon": "resources/tool.png",
     "type": "commonjs",
     "main": "./dist/extension.js",
     "scripts": {
@@ -53,68 +54,68 @@
         "typescript": "^4.9.4"
     },
     "activationEvents": [
-        "onView:shear-plate.clipboard",
-        "onCommand:shear-plate.clipboard.add",
-        "onCommand:shear-plate.clipboard.edit",
-        "onCommand:shear-plate.clipboard.delete",
-        "onCommand:shear-plate.clipboard.clear",
-        "onCommand:shear-plate.clipboard.copytext",
-        "onCommand:shear-plate.clipboard.goto_file",
-        "onCommand:shear-plate.help.open_url",
-        "onCommand:shear-plate.explorer.position"
+        "onView:tools.clipboard",
+        "onCommand:tools.clipboard.add",
+        "onCommand:tools.clipboard.edit",
+        "onCommand:tools.clipboard.delete",
+        "onCommand:tools.clipboard.clear",
+        "onCommand:tools.clipboard.copytext",
+        "onCommand:tools.clipboard.goto_file",
+        "onCommand:tools.help.open_url",
+        "onCommand:tools.explorer.position"
     ],
     "contributes": {
         "menus": {
             "editor/context": [
                 {
-                    "command": "shear-plate.clipboard.add",
+                    "command": "tools.clipboard.add",
                     "group": "navigation",
                     "when": "editorHasSelection"
                 }
             ],
             "view/title": [
                 {
-                    "command": "shear-plate.clipboard.clear",
-                    "when": "view == shear-plate.clipboard",
+                    "command": "tools.clipboard.clear",
+                    "when": "view == tools.clipboard",
                     "group": "navigation"
                 },
                 {
-                    "command": "shear-plate.explorer.position",
+                    "command": "tools.explorer.position",
                     "when": "view == workbench.explorer.fileView",
                     "group": "navigation"
                 }
             ],
             "view/item/context": [
                 {
-                    "command": "shear-plate.clipboard.edit",
+                    "command": "tools.clipboard.edit",
                     "group": "inline",
-                    "when": "view == shear-plate.clipboard"
+                    "when": "view == tools.clipboard"
                 },
                 {
-                    "command": "shear-plate.clipboard.delete",
+                    "command": "tools.clipboard.delete",
                     "group": "inline",
-                    "when": "view == shear-plate.clipboard"
+                    "when": "view == tools.clipboard"
                 },
                 {
-                    "command": "shear-plate.clipboard.copytext",
+                    "command": "tools.clipboard.copytext",
                     "group": "inline",
-                    "when": "view == shear-plate.clipboard"
+                    "when": "view == tools.clipboard"
                 },
                 {
-                    "command": "shear-plate.clipboard.goto_file",
+                    "command": "tools.clipboard.goto_file",
                     "group": "inline",
-                    "when": "view == shear-plate.clipboard"
+                    "when": "view == tools.clipboard"
                 }
             ]
         },
         "commands": [
             {
-                "command": "shear-plate.clipboard.add",
+                "command": "tools.clipboard.add",
                 "title": "%menu.clipboard.add%",
                 "category": "%category%"
             },
             {
-                "command": "shear-plate.clipboard.edit",
+                "command": "tools.clipboard.edit",
                 "title": "%menu.clipboard.edit%",
                 "category": "%category%",
                 "icon": {
@@ -123,7 +124,7 @@
                 }
             },
             {
-                "command": "shear-plate.clipboard.delete",
+                "command": "tools.clipboard.delete",
                 "title": "%menu.clipboard.delete%",
                 "category": "%category%",
                 "icon": {
@@ -132,7 +133,7 @@
                 }
             },
             {
-                "command": "shear-plate.clipboard.clear",
+                "command": "tools.clipboard.clear",
                 "title": "%menu.clipboard.clear%",
                 "category": "%category%",
                 "icon": {
@@ -141,7 +142,7 @@
                 }
             },
             {
-                "command": "shear-plate.clipboard.copytext",
+                "command": "tools.clipboard.copytext",
                 "title": "%menu.clipboard.copy%",
                 "category": "%category%",
                 "icon": {
@@ -150,18 +151,18 @@
                 }
             },
             {
-                "command": "shear-plate.clipboard.goto_file",
+                "command": "tools.clipboard.goto_file",
                 "title": "%menu.clipboard.goto_file%",
                 "category": "%category%",
                 "icon": "$(go-to-file)"
             },
             {
-                "command": "shear-plate.help.open_url",
+                "command": "tools.help.open_url",
                 "title": "%menu.help.open_url%",
                 "category": "%category%"
             },
             {
-                "command": "shear-plate.explorer.position",
+                "command": "tools.explorer.position",
                 "title": "%menu.explorer.position%",
                 "category": "%category%",
                 "icon": {
@@ -171,13 +172,13 @@
             }
         ],
         "views": {
-            "shear-plate": [
+            "tools": [
                 {
-                    "id": "shear-plate.clipboard",
+                    "id": "tools.clipboard",
                     "name": "%view.clipboard%"
                 },
                 {
-                    "id": "shear-plate.helpAndFeedback",
+                    "id": "tools.helpAndFeedback",
                     "name": "%view.help%"
                 }
             ]
@@ -185,7 +186,7 @@
         "viewsContainers": {
             "activitybar": [
                 {
-                    "id": "shear-plate",
+                    "id": "tools",
                     "title": "%title%",
                     "icon": "resources/tool.svg"
                 }

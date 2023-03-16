@@ -1,6 +1,6 @@
-# shear-plate README
+# tools README
 
-This is the README for your extension "shear-plate". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "tools". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

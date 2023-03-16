@@ -73,7 +73,7 @@ export class ClipboardProvider implements TreeDataProvider<ClipboardTreeItem> {
 
     public static init(storage: GlobStorage<ClipboardItem[]>) {
         const clipboard = new ClipboardProvider(storage);
-        window.registerTreeDataProvider("shear-plate.clipboard", clipboard);
+        window.registerTreeDataProvider("tools.clipboard", clipboard);
         return clipboard;
     }
 }
