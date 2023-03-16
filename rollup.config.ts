@@ -13,7 +13,7 @@ export default defineConfig({
     output: {
         file: "./dist/extension.js",
         sourcemap: true,
-        format: "commonjs",
+        format: "cjs",
     },
     treeshake: true,
     external: [

@@ -3,6 +3,7 @@
     "category": "Tools",
     "view.clipboard": "Clipboard",
     "view.help": "Help and feedback",
+    "menu.explorer.position": "Navigate to the currently open file in the editor",
     "menu.clipboard.add": "Add to the clipboard",
     "menu.clipboard.clear": "clear",
     "menu.clipboard.copy": "copy",

@@ -7,4 +7,5 @@ export const enum Commands {
     clipboard_goto_file = "shear-plate.clipboard.goto_file",
     help_star = "shear-plate.help.star",
     open_url = "shear-plate.help.open_url",
+    explorer_position = "shear-plate.explorer.position",
 }

@@ -60,7 +60,8 @@
         "onCommand:shear-plate.clipboard.clear",
         "onCommand:shear-plate.clipboard.copytext",
         "onCommand:shear-plate.clipboard.goto_file",
-        "onCommand:shear-plate.help.open_url"
+        "onCommand:shear-plate.help.open_url",
+        "onCommand:shear-plate.explorer.position"
     ],
     "contributes": {
         "menus": {
@@ -75,6 +76,11 @@
                 {
                     "command": "shear-plate.clipboard.clear",
                     "when": "view == shear-plate.clipboard",
+                    "group": "navigation"
+                },
+                {
+                    "command": "shear-plate.explorer.position",
+                    "when": "view == workbench.explorer.fileView",
                     "group": "navigation"
                 }
             ],
@@ -153,6 +159,15 @@
                 "command": "shear-plate.help.open_url",
                 "title": "%menu.help.open_url%",
                 "category": "%category%"
+            },
+            {
+                "command": "shear-plate.explorer.position",
+                "title": "%menu.explorer.position%",
+                "category": "%category%",
+                "icon": {
+                    "dark": "resources/dark/position.svg",
+                    "light": "resources/light/position.svg"
+                }
             }
         ],
         "views": {
