@@ -1,5 +1,6 @@
 {
     "title": "工具箱",
+    "category": "Tools",
     "view.clipboard": "剪切板",
     "view.help": "帮助和反馈",
     "menu.clipboard.add": "添加到剪切板中",

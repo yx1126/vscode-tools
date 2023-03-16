@@ -5,6 +5,8 @@ import resolve from "@rollup/plugin-node-resolve";
 import json from "@rollup/plugin-json";
 import commonjs from "@rollup/plugin-commonjs";
 import eslint from "@rollup/plugin-eslint";
+import alias from "@rollup/plugin-alias";
+import path from "path";
 
 export default defineConfig({
     input: "./src/extension.ts",
@@ -23,6 +25,11 @@ export default defineConfig({
         resolve(),
         json(),
         commonjs(),
+        alias({
+            entries: [
+                { find: "@", replacement: path.resolve(__dirname, "./src") },
+            ],
+        }),
         eslint({
             fix: true,
             throwOnError: true,

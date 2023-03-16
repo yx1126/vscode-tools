@@ -1,5 +1,6 @@
 {
     "title": "Tools",
+    "category": "Tools",
     "view.clipboard": "Clipboard",
     "view.help": "Help and feedback",
     "menu.clipboard.add": "Add to the clipboard",

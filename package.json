@@ -27,6 +27,7 @@
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
+        "@rollup/plugin-alias": "^4.0.3",
         "@rollup/plugin-commonjs": "^24.0.1",
         "@rollup/plugin-eslint": "^9.0.3",
         "@rollup/plugin-json": "^6.0.0",
@@ -103,11 +104,13 @@
         "commands": [
             {
                 "command": "shear-plate.clipboard.add",
-                "title": "%menu.clipboard.add%"
+                "title": "%menu.clipboard.add%",
+                "category": "%category%"
             },
             {
                 "command": "shear-plate.clipboard.edit",
                 "title": "%menu.clipboard.edit%",
+                "category": "%category%",
                 "icon": {
                     "dark": "resources/dark/edit.svg",
                     "light": "resources/light/edit.svg"
@@ -116,6 +119,7 @@
             {
                 "command": "shear-plate.clipboard.delete",
                 "title": "%menu.clipboard.delete%",
+                "category": "%category%",
                 "icon": {
                     "dark": "resources/dark/close.svg",
                     "light": "resources/light/close.svg"
@@ -124,6 +128,7 @@
             {
                 "command": "shear-plate.clipboard.clear",
                 "title": "%menu.clipboard.clear%",
+                "category": "%category%",
                 "icon": {
                     "dark": "resources/dark/delete.svg",
                     "light": "resources/light/delete.svg"
@@ -132,6 +137,7 @@
             {
                 "command": "shear-plate.clipboard.copytext",
                 "title": "%menu.clipboard.copy%",
+                "category": "%category%",
                 "icon": {
                     "dark": "resources/dark/copy.svg",
                     "light": "resources/light/copy.svg"
@@ -140,11 +146,13 @@
             {
                 "command": "shear-plate.clipboard.goto_file",
                 "title": "%menu.clipboard.goto_file%",
+                "category": "%category%",
                 "icon": "$(go-to-file)"
             },
             {
                 "command": "shear-plate.help.open_url",
-                "title": "%menu.help.open_url%"
+                "title": "%menu.help.open_url%",
+                "category": "%category%"
             }
         ],
         "views": {
