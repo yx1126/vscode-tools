@@ -2,23 +2,22 @@
     "name": "vsocde-tools",
     "displayName": "Simple Tools",
     "description": "Some small tools for VS Code",
-    "version": "0.0.1",
+    "version": "1.0.0",
+    "publisher": "yx1126",
     "repository": {
         "type": "git",
         "url": "https://github.com/yx1126/vscode-tools"
     },
     "engines": {
-        "vscode": "^1.7.0"
+        "vscode": "^1.76.0"
     },
     "categories": [
         "Other"
     ],
     "icon": "resources/tool.png",
-    "type": "commonjs",
     "main": "./dist/extension.js",
     "scripts": {
-        "vscode:prepublish": "pnpm run compile",
-        "compile": "tsc -p ./",
+        "compile": "pnpm run build",
         "watch": "tsc -watch -p ./",
         "dev": "pnpm build:i18n && cross-env NODE_ENV=development rollup -c --watch --bundleConfigAsCjs",
         "build": "pnpm build:i18n && cross-env NODE_ENV=production rollup -c --bundleConfigAsCjs",
@@ -35,23 +34,23 @@
         "@rollup/plugin-node-resolve": "^15.0.1",
         "@rollup/plugin-terser": "^0.4.0",
         "@types/fs-extra": "^11.0.1",
-        "@types/glob": "^8.0.1",
+        "@types/glob": "^8.1.0",
         "@types/mocha": "^10.0.1",
-        "@types/node": "16.x",
-        "@types/vscode": "^1.75.0",
-        "@typescript-eslint/eslint-plugin": "^5.49.0",
-        "@typescript-eslint/parser": "^5.49.0",
-        "@vscode/test-electron": "^2.2.2",
+        "@types/node": "~16.18.16",
+        "@types/vscode": "^1.76.0",
+        "@typescript-eslint/eslint-plugin": "^5.55.0",
+        "@typescript-eslint/parser": "^5.55.0",
+        "@vscode/test-electron": "^2.3.0",
         "cross-env": "^7.0.3",
-        "eslint": "^8.33.0",
+        "eslint": "^8.36.0",
         "esno": "^0.16.3",
         "fast-glob": "^3.2.12",
         "fs-extra": "^11.1.0",
         "glob": "^8.1.0",
-        "mocha": "^10.1.0",
-        "rollup": "^3.15.0",
+        "mocha": "^10.2.0",
+        "rollup": "^3.19.1",
         "rollup-plugin-typescript2": "^0.34.1",
-        "typescript": "^4.9.4"
+        "typescript": "^4.9.5"
     },
     "activationEvents": [
         "onView:tools.clipboard",

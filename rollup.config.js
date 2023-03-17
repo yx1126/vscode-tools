@@ -18,9 +18,14 @@ export default defineConfig({
     treeshake: true,
     external: [
         "vscode",
+        "commonjs",
+        "path",
+        "fs",
     ],
     plugins: [
-        ts(),
+        ts({
+            tsconfigOverride: { compilerOptions: { module: "esnext" }  },
+        }),
         terser(),
         resolve(),
         json(),
@@ -40,7 +45,6 @@ export default defineConfig({
             include: [
                 "src/**",
                 "*.json",
-                "rollup.config.ts",
             ],
         }),
     ],
