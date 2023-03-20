@@ -10,3 +10,4 @@ vsc-extension-quickstart.md
 **/*.ts
 scripts/**
 locales/**
+rollup.config.js

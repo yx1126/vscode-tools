@@ -25,7 +25,7 @@ export class HelpProvider implements TreeDataProvider<HelpItem> {
     getChildren(): Thenable<HelpItem[]> {
 
         const data = [
-            { label: i18n.t("menu.help.star"), icon: "help-star", url: "https://github.com/yx1126/tools" },
+            { label: i18n.t("menu.help.star"), icon: "help-star", url: "https://github.com/yx1126/vscode-tools" },
         ].map(item => {
             return new HelpItem(item, this.ctx);
         });
