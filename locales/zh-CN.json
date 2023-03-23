@@ -17,5 +17,6 @@
     "prompt.clipboard.delete": "删除成功",
     "prompt.clipboard.clear": "清除成功",
     "prompt.clipboard.treeinput.title": "标题",
-    "prompt.clipboard.treeinput.placeHolder": "请输入标题"
+    "prompt.clipboard.treeinput.placeHolder": "请输入标题",
+    "tools.description": "默认启用的功能列表"
 }

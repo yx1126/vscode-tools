@@ -80,7 +80,7 @@
                 },
                 {
                     "command": "tools.explorer.position",
-                    "when": "view == workbench.explorer.fileView",
+                    "when": "view == workbench.explorer.fileView && simple-tools.plugin.location",
                     "group": "navigation"
                 }
             ],
@@ -174,7 +174,8 @@
             "tools": [
                 {
                     "id": "tools.clipboard",
-                    "name": "%view.clipboard%"
+                    "name": "%view.clipboard%",
+                    "when": "simple-tools.plugin.clipboard"
                 },
                 {
                     "id": "tools.helpAndFeedback",
@@ -190,6 +191,24 @@
                     "icon": "resources/tool.svg"
                 }
             ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Simple tools",
+            "properties": {
+                "simple-tools.tools": {
+                    "type": "array",
+                    "default": null,
+                    "description": "%tools.description%",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "clipboard",
+                            "location"
+                        ]
+                    }
+                }
+            }
         }
     }
 }

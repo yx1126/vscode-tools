@@ -17,5 +17,6 @@
     "prompt.clipboard.delete": "Deleted successfully",
     "prompt.clipboard.clear": "Clear successfully",
     "prompt.clipboard.treeinput.title": "title",
-    "prompt.clipboard.treeinput.placeHolder": "Please enter the title"
+    "prompt.clipboard.treeinput.placeHolder": "Please enter the title",
+    "tools.description": "List of functions enabled by default"
 }
