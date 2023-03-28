@@ -24,7 +24,7 @@ export default defineConfig({
     ],
     plugins: [
         ts({
-            tsconfigOverride: { compilerOptions: { module: "esnext" }  },
+            tsconfigOverride: { compilerOptions: { module: "esnext" } },
         }),
         terser(),
         resolve(),
@@ -54,6 +54,7 @@ export default defineConfig({
             "node_modules/**",
         ],
         include: [
+            "locales/**",
             "src/**",
         ],
     },

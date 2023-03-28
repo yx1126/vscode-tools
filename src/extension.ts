@@ -4,10 +4,20 @@ import { type ExtensionContext, type Disposable, workspace, commands } from "vsc
 import i18n from "@/utils/i18n";
 import flatten from "@/utils/flatten";
 import CommandsModules from "@/commands";
+import Config from "@/utils/config";
 
 // plugins simple-tools.plugin.${SIMPLE_TOOLS_PLUGINS}
 const SIMPLE_TOOLS_PLUGINS = ["clipboard", "location"];
 
+function setPlugins() {
+    // default use tools
+    const tools = Config.getTools();
+
+    SIMPLE_TOOLS_PLUGINS.forEach(plugin => {
+        const flag = !tools || (tools && tools.includes(plugin));
+        commands.executeCommand("setContext", `simple-tools.plugin.${plugin}`, flag);
+    });
+}
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -17,24 +27,15 @@ export function activate(context: ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log("Congratulations, your extension \"tools\" is now active!");
 
-
     // init i18n
     i18n.init(context.extensionPath);
 
-    // config
-    const config = workspace.getConfiguration("simple-tools");
-
-    // default use tools
-    const tools = config.get("tools") as string[] | undefined;
-
     // init plugins
-    SIMPLE_TOOLS_PLUGINS.forEach(plugin => {
-        const flag = !tools || (tools && tools.includes(plugin));
-        commands.executeCommand("setContext", `simple-tools.plugin.${plugin}`, flag);
-    });
+    setPlugins();
 
-    const onDocumentChange = workspace.onDidChangeTextDocument((...args) => {
-        console.log("------------------document change----------------", args);
+
+    const onDocumentChange = workspace.onDidChangeConfiguration(() => {
+        setPlugins();
     });
 
     // modules
@@ -42,13 +43,11 @@ export function activate(context: ExtensionContext) {
         CommandsModules,
     ];
 
-    const disposables = flatten(modules.map(m => m(context, tools))) as Disposable[];
+    const disposables = flatten(modules.map(m => m(context))) as Disposable[];
+    const EventSunscriptions = [onDocumentChange];
 
-    disposables.forEach(item => {
-        context.subscriptions.push(item);
-    });
-
-    context.subscriptions.push(onDocumentChange);
+    context.subscriptions.push(...disposables);
+    context.subscriptions.push(...EventSunscriptions);
 
 }
 
