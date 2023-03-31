@@ -1,16 +1,14 @@
-import type { ExtensionContext } from "vscode";
+import Config from "./config";
 
 export default class GlobStorage<T> {
     key: string;
-    ctx: ExtensionContext;
-    constructor(key: string, ctx: ExtensionContext) {
+    constructor(key: string) {
         this.key = key;
-        this.ctx = ctx;
     }
     getItem(): T | undefined {
-        return this.ctx.globalState.get(this.key) as T;
+        return Config.context.globalState.get(this.key) as T;
     }
     setItem(value: T) {
-        this.ctx.globalState.update(this.key, value);
+        Config.context.globalState.update(this.key, value);
     }
 }

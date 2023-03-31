@@ -18,5 +18,6 @@
     "prompt.clipboard.clear": "Clear successfully",
     "prompt.clipboard.treeinput.title": "title",
     "prompt.clipboard.treeinput.placeHolder": "Please enter the title",
-    "tools.description": "List of functions enabled by default"
+    "tools.description": "List of functions enabled by default",
+    "bar.description": "The auxiliary sidebar opens by default"
 }

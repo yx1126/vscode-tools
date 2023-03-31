@@ -1,6 +1,6 @@
 import { window, commands, env, workspace, Selection, TextEditorRevealType } from "vscode";
 import { Commands } from "./commands";
-import { CLIPBOARD_STORE_KEY } from "@/config";
+import { CLIPBOARD_STORE_KEY } from "@/utils/config";
 import GlobStorage from "@/utils/globStorage";
 import { ClipboardProvider, type ClipboardItem } from "@/tree/clipboard";
 import i18n from "@/utils/i18n";
@@ -61,8 +61,8 @@ export async function goto_file(item: any) {
 }
 
 
-export default <ExtensionModule> function(ctx) {
-    const clipboardStore = new GlobStorage<ClipboardItem[]>(CLIPBOARD_STORE_KEY, ctx);
+export default <ExtensionModule> function() {
+    const clipboardStore = new GlobStorage<ClipboardItem[]>(CLIPBOARD_STORE_KEY);
     const clipboard = ClipboardProvider.init(clipboardStore);
     return [
         commands.registerCommand(Commands.clipboard_add, () => add.call(null, clipboard)),

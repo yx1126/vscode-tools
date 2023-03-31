@@ -53,18 +53,17 @@
         "typescript": "^4.9.5"
     },
     "activationEvents": [
-        "onView:tools.clipboard",
-        "onCommand:tools.clipboard.add",
-        "onCommand:tools.clipboard.edit",
-        "onCommand:tools.clipboard.delete",
-        "onCommand:tools.clipboard.clear",
-        "onCommand:tools.clipboard.copytext",
-        "onCommand:tools.clipboard.goto_file",
-        "onCommand:tools.help.open_url",
-        "onCommand:tools.explorer.position"
+        "onStartupFinished"
     ],
     "contributes": {
         "menus": {
+            "editor/title": [
+                {
+                    "command": "tools.explorer.position",
+                    "group": "navigation",
+                    "when": "simple-tools.plugin.location"
+                }
+            ],
             "editor/context": [
                 {
                     "command": "tools.clipboard.add",
@@ -207,6 +206,11 @@
                             "location"
                         ]
                     }
+                },
+                "simple-tools.openAuxiliaryBar": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "%bar.description%"
                 }
             }
         }
