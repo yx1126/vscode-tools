@@ -13,15 +13,17 @@ export default class Config {
 
     static context: ExtensionContext;
 
+    static fileId: string[] = ["vue", "html"];
+
     static init(context: ExtensionContext) {
         this.context = context;
         this.onSettingChange();
+        this.initAuxiliaryBar();
         this.context.subscriptions.push(workspace.onDidChangeConfiguration(() => this.onSettingChange()));
     }
 
     static onSettingChange() {
         this.initPlugins();
-        this.initAuxiliaryBar();
     }
 
     static initPlugins() {
