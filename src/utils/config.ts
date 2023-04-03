@@ -13,7 +13,8 @@ export default class Config {
 
     static context: ExtensionContext;
 
-    static init() {
+    static init(context: ExtensionContext) {
+        this.context = context;
         this.onSettingChange();
         this.context.subscriptions.push(workspace.onDidChangeConfiguration(() => this.onSettingChange()));
     }
@@ -47,15 +48,12 @@ export default class Config {
         const isShow = !!this.getConfig().get("openAuxiliaryBar");
         if(isShow) {
             this.openAuxiliaryBar();
-        } else {
-            this.closeAuxiliaryBar();
         }
     }
 
     // 打开辅助侧栏
     static async openAuxiliaryBar() {
         await commands.executeCommand("workbench.action.focusAuxiliaryBar");
-
     }
 
     // 关闭辅助侧栏

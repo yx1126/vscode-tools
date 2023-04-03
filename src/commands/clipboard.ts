@@ -51,8 +51,8 @@ export async function goto_file(item: any) {
         const textEdit = await window.showTextDocument(document);
         const data = item.data as ClipboardItem;
         textEdit.selection = new Selection(
-                data.selection.anchor,
-                data.selection.active,
+            data.selection.anchor,
+            data.selection.active,
         );
         textEdit.revealRange(textEdit.selection, TextEditorRevealType.InCenter);
     } catch (error) {
