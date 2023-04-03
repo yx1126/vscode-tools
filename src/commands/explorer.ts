@@ -1,10 +1,15 @@
-import { commands } from "vscode";
+import { commands, window, workspace } from "vscode";
 import { Commands } from "./commands";
 import type { ExtensionModule } from "@/types";
 
 export async function openPosition() {
-    await commands.executeCommand("workbench.files.action.collapseExplorerFolders");
-    await commands.executeCommand("workbench.files.action.showActiveFileInExplorer");
+    const editor = window.activeTextEditor;
+    if(!editor) return;
+    const wsFolder = workspace.getWorkspaceFolder(editor.document.uri);
+    if(wsFolder) {
+        await commands.executeCommand("workbench.files.action.collapseExplorerFolders");
+        await commands.executeCommand("workbench.files.action.showActiveFileInExplorer");
+    }
 }
 
 export default <ExtensionModule> function() {
