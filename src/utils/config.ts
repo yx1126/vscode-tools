@@ -13,8 +13,6 @@ export default class Config {
 
     static context: ExtensionContext;
 
-    static fileId: string[] = ["vue", "html"];
-
     static init(context: ExtensionContext) {
         this.context = context;
         this.onSettingChange();

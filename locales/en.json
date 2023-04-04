@@ -9,7 +9,6 @@
     "menu.clipboard.copy": "copy",
     "menu.clipboard.edit": "edit",
     "menu.clipboard.delete": "remove",
-    "menu.clipboard.goto_file": "go to definition",
     "menu.help.star": "Star on Github",
     "menu.help.open_url": "Open url",
     "prompt.clipboard.insert": "Add successfully",

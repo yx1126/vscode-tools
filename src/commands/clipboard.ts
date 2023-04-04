@@ -1,4 +1,4 @@
-import { window, commands, env, workspace, Selection, TextEditorRevealType } from "vscode";
+import { window, commands, env } from "vscode";
 import { Commands } from "./commands";
 import { CLIPBOARD_STORE_KEY } from "@/utils/config";
 import GlobStorage from "@/utils/globStorage";
@@ -45,22 +45,6 @@ export function clear(clipboard: ClipboardProvider) {
     window.showInformationMessage(i18n.t("prompt.clipboard.clear"));
 }
 
-export async function goto_file(item: any) {
-    try {
-        const document = await workspace.openTextDocument(item.data.filePath);
-        const textEdit = await window.showTextDocument(document);
-        const data = item.data as ClipboardItem;
-        textEdit.selection = new Selection(
-            data.selection.anchor,
-            data.selection.active,
-        );
-        textEdit.revealRange(textEdit.selection, TextEditorRevealType.InCenter);
-    } catch (error) {
-        window.showErrorMessage(String(error));
-    }
-}
-
-
 export default <ExtensionModule> function() {
     const clipboardStore = new GlobStorage<ClipboardItem[]>(CLIPBOARD_STORE_KEY);
     const clipboard = ClipboardProvider.init(clipboardStore);
@@ -70,6 +54,5 @@ export default <ExtensionModule> function() {
         commands.registerCommand(Commands.clipboard_copytext, (item) => copytext.call(null, item)),
         commands.registerCommand(Commands.clipboard_delete, (item) => deleteFn.call(null, item, clipboard)),
         commands.registerCommand(Commands.clipboard_clear, () => clear.call(null, clipboard)),
-        commands.registerCommand(Commands.clipboard_goto_file, (item) => goto_file.call(null, item)),
     ];
 };

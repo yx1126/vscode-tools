@@ -2,7 +2,7 @@
     "name": "vsocde-tools",
     "displayName": "Simple Tools",
     "description": "Some small tools for VS Code",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "publisher": "yx1126",
     "repository": {
         "type": "git",
@@ -98,11 +98,6 @@
                     "command": "tools.clipboard.copytext",
                     "group": "inline",
                     "when": "view == tools.clipboard"
-                },
-                {
-                    "command": "tools.clipboard.goto_file",
-                    "group": "inline",
-                    "when": "view == tools.clipboard"
                 }
             ]
         },
@@ -147,12 +142,6 @@
                     "dark": "resources/dark/copy.svg",
                     "light": "resources/light/copy.svg"
                 }
-            },
-            {
-                "command": "tools.clipboard.goto_file",
-                "title": "%menu.clipboard.goto_file%",
-                "category": "%category%",
-                "icon": "$(go-to-file)"
             },
             {
                 "command": "tools.help.open_url",

@@ -9,7 +9,6 @@
     "menu.clipboard.copy": "复制",
     "menu.clipboard.edit": "修改",
     "menu.clipboard.delete": "删除",
-    "menu.clipboard.goto_file": "转到定义",
     "menu.help.star": "Star on Github",
     "menu.help.open_url": "打开网址",
     "prompt.clipboard.insert": "添加成功",
