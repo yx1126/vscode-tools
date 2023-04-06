@@ -1,3 +1,4 @@
+import { Commands } from "@/commands/commands";
 import { window, EventEmitter, TreeItem, TreeItemCollapsibleState, type TreeDataProvider, type Event, type Selection } from "vscode";
 import type GlobStorage from "../utils/globStorage";
 
@@ -89,5 +90,10 @@ class ClipboardTreeItem extends TreeItem {
         this.data = data;
         this.label = `${index + 1}.  ${data.label}`;
         this.tooltip = data.content;
+        this.command = {
+            title: this.label,
+            command: Commands.clipboard_copytext,
+            arguments: [{ data }],
+        };
     }
 }

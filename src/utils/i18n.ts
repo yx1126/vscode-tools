@@ -25,7 +25,7 @@ class i18n {
             ? args[number].toString()
             : match;
         });
-      }
+    }
 
     static t(key: string, ...args: any[]) {
         let text = this.messages[key] || "";
