@@ -98,6 +98,11 @@
                     "command": "tools.clipboard.copytext",
                     "group": "inline",
                     "when": "view == tools.clipboard"
+                },
+                {
+                    "command": "tools.clipboard.goto_file",
+                    "group": "inline",
+                    "when": "view == tools.clipboard"
                 }
             ]
         },
@@ -144,6 +149,12 @@
                 }
             },
             {
+                "command": "tools.clipboard.goto_file",
+                "title": "%menu.clipboard.goto_file%",
+                "category": "%category%",
+                "icon": "$(go-to-file)"
+            },
+            {
                 "command": "tools.help.open_url",
                 "title": "%menu.help.open_url%",
                 "category": "%category%"
@@ -164,6 +175,11 @@
                     "id": "tools.clipboard",
                     "name": "%view.clipboard%",
                     "when": "simple-tools.plugin.clipboard"
+                },
+                {
+                    "id": "tools.script",
+                    "name": "%view.script%",
+                    "when": "simple-tools.plugin.script"
                 },
                 {
                     "id": "tools.helpAndFeedback",
@@ -192,7 +208,8 @@
                         "type": "string",
                         "enum": [
                             "clipboard",
-                            "location"
+                            "location",
+                            "script"
                         ]
                     }
                 },

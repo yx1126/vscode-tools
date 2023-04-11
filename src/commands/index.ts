@@ -1,6 +1,7 @@
 import cliboard from "./clipboard";
 import helper from "./helper";
 import explorer from "./explorer";
+import script from "./script";
 import type { ExtensionModule } from "@/types";
 
 export default <ExtensionModule> function(ctx) {
@@ -8,5 +9,6 @@ export default <ExtensionModule> function(ctx) {
         cliboard(ctx),
         helper(ctx),
         explorer(ctx),
+        script(ctx),
     ];
 };

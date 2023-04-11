@@ -1,7 +1,7 @@
 import { workspace, commands, ExtensionContext } from "vscode";
 
 // plugins simple-tools.plugin.${SIMPLE_TOOLS_PLUGINS}
-const SIMPLE_TOOLS_PLUGINS = ["clipboard", "location"];
+const SIMPLE_TOOLS_PLUGINS = ["clipboard", "location", "script"];
 
 // simpie-tools config key
 const CONFIG_KEY = "simple-tools";
