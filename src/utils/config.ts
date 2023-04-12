@@ -1,7 +1,9 @@
-import { workspace, commands, ExtensionContext } from "vscode";
+import { workspace, commands, ExtensionContext, type ConfigurationChangeEvent } from "vscode";
+import debounce from "./debounce";
+import { Commands } from "@/commands/commands";
 
 // plugins simple-tools.plugin.${SIMPLE_TOOLS_PLUGINS}
-const SIMPLE_TOOLS_PLUGINS = ["clipboard", "location", "script"];
+const SIMPLE_TOOLS_PLUGINS = ["clipboard", "location", "outline"];
 
 // simpie-tools config key
 const CONFIG_KEY = "simple-tools";
@@ -11,13 +13,24 @@ export const CLIPBOARD_STORE_KEY = "clipboardKeys";
 
 export default class Config {
 
-    static context: ExtensionContext;
+    static ctx: ExtensionContext;
 
     static init(context: ExtensionContext) {
-        this.context = context;
+        this.ctx = context;
         this.onSettingChange();
         this.initAuxiliaryBar();
-        this.context.subscriptions.push(workspace.onDidChangeConfiguration(() => this.onSettingChange()));
+        this.ctx.subscriptions.push(
+            workspace.onDidChangeConfiguration(debounce((e: ConfigurationChangeEvent) => {
+                if(e.affectsConfiguration("simple-tools.tools")) {
+                    this.onSettingChange();
+                }
+            }, 300))
+        );
+    }
+
+    static async execute(delay: number) {
+        await new Promise(resolve => setTimeout(resolve, delay));
+        commands.executeCommand(Commands.outline_refresh);
     }
 
     static onSettingChange() {
@@ -38,9 +51,13 @@ export default class Config {
         return workspace.getConfiguration(CONFIG_KEY);
     }
 
+    static getOutline() {
+        return this.getConfig().get<string [] | null>("outline");
+    }
+
     // 获取默认功能配合着
-    static getTools(): string [] | undefined {
-        return this.getConfig().get("tools");
+    static getTools() {
+        return this.getConfig().get<string [] | null>("tools");
     }
 
     // 切换辅助侧栏

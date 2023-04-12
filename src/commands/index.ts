@@ -1,7 +1,8 @@
 import cliboard from "./clipboard";
 import helper from "./helper";
 import explorer from "./explorer";
-import script from "./script";
+import outline from "./outline";
+import utils from "./utils";
 import type { ExtensionModule } from "@/types";
 
 export default <ExtensionModule> function(ctx) {
@@ -9,6 +10,7 @@ export default <ExtensionModule> function(ctx) {
         cliboard(ctx),
         helper(ctx),
         explorer(ctx),
-        script(ctx),
+        outline(ctx),
+        utils(ctx),
     ];
 };

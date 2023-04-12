@@ -6,9 +6,9 @@ export default class GlobStorage<T> {
         this.key = key;
     }
     getItem(): T | undefined {
-        return Config.context.globalState.get(this.key) as T;
+        return Config.ctx.globalState.get(this.key) as T;
     }
     setItem(value: T) {
-        Config.context.globalState.update(this.key, value);
+        Config.ctx.globalState.update(this.key, value);
     }
 }

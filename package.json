@@ -2,7 +2,7 @@
     "name": "vsocde-tools",
     "displayName": "Simple Tools",
     "description": "Some small tools for VS Code",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "publisher": "yx1126",
     "repository": {
         "type": "git",
@@ -81,6 +81,11 @@
                     "command": "tools.explorer.position",
                     "when": "view == workbench.explorer.fileView && simple-tools.plugin.location",
                     "group": "navigation"
+                },
+                {
+                    "command": "tools.outline.refresh",
+                    "when": "view == tools.outline",
+                    "group": "navigation"
                 }
             ],
             "view/item/context": [
@@ -102,7 +107,7 @@
                 {
                     "command": "tools.clipboard.goto_file",
                     "group": "inline",
-                    "when": "view == tools.clipboard"
+                    "when": "view == tools.clipboard && viewItem == goto_file"
                 }
             ]
         },
@@ -167,6 +172,17 @@
                     "dark": "resources/dark/position.svg",
                     "light": "resources/light/position.svg"
                 }
+            },
+            {
+                "command": "tools.outline.refresh",
+                "title": "%menu.outline.refresh%",
+                "category": "%category%",
+                "icon": "$(timeline-refresh)"
+            },
+            {
+                "command": "tools.utils.scroll_to",
+                "title": "%utils.scroll_to%",
+                "category": "%category%"
             }
         ],
         "views": {
@@ -177,9 +193,9 @@
                     "when": "simple-tools.plugin.clipboard"
                 },
                 {
-                    "id": "tools.script",
-                    "name": "%view.script%",
-                    "when": "simple-tools.plugin.script"
+                    "id": "tools.outline",
+                    "name": "%view.outline%",
+                    "when": "simple-tools.plugin.outline"
                 },
                 {
                     "id": "tools.helpAndFeedback",
@@ -209,7 +225,7 @@
                         "enum": [
                             "clipboard",
                             "location",
-                            "script"
+                            "outline"
                         ]
                     }
                 },
@@ -217,6 +233,14 @@
                     "type": "boolean",
                     "default": true,
                     "description": "%bar.description%"
+                },
+                "simple-tools.outline": {
+                    "type": "array",
+                    "default": null,
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "%outline.description%"
                 }
             }
         }

@@ -2,7 +2,7 @@
     "title": "Tools",
     "category": "Tools",
     "view.clipboard": "Clipboard",
-    "view.script": "Vue outline",
+    "view.outline": "Vue outline",
     "view.help": "Help and feedback",
     "menu.explorer.position": "Navigate to the currently open file in the editor",
     "menu.clipboard.add": "Add to the clipboard",
@@ -13,6 +13,7 @@
     "menu.clipboard.goto_file": "go to definition",
     "menu.help.star": "Star on Github",
     "menu.help.open_url": "Open url",
+    "menu.outline.refresh": "Refresh",
     "prompt.clipboard.insert": "Add successfully",
     "prompt.clipboard.copy": " Copy successful",
     "prompt.clipboard.delete": "Deleted successfully",
@@ -20,5 +21,7 @@
     "prompt.clipboard.treeinput.title": "title",
     "prompt.clipboard.treeinput.placeHolder": "Please enter the title",
     "tools.description": "List of functions enabled by default",
-    "bar.description": "The auxiliary sidebar opens by default"
+    "bar.description": "The auxiliary sidebar opens by default",
+    "outline.description": "Displays a list of all node names",
+    "utils.scroll_to": "Scroll to the current row"
 }

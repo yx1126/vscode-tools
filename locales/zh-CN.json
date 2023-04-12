@@ -2,7 +2,7 @@
     "title": "工具箱",
     "category": "Tools",
     "view.clipboard": "剪切板",
-    "view.script": "vue 大纲",
+    "view.outline": "vue 大纲",
     "view.help": "帮助和反馈",
     "menu.explorer.position": "定位到编辑器中当前打开的文件",
     "menu.clipboard.add": "添加到剪切板中",
@@ -13,6 +13,7 @@
     "menu.clipboard.goto_file": "转到定义",
     "menu.help.star": "Star on Github",
     "menu.help.open_url": "打开网址",
+    "menu.outline.refresh": "刷新",
     "prompt.clipboard.insert": "添加成功",
     "prompt.clipboard.copy": "复制成功",
     "prompt.clipboard.delete": "删除成功",
@@ -20,5 +21,7 @@
     "prompt.clipboard.treeinput.title": "标题",
     "prompt.clipboard.treeinput.placeHolder": "请输入标题",
     "tools.description": "默认启用的功能列表",
-    "bar.description": "默认打开辅助侧栏"
+    "bar.description": "默认打开辅助侧栏",
+    "outline.description": "显示全部节点的名称列表",
+    "utils.scroll_to": "滚动到当前行"
 }

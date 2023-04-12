@@ -1,5 +1,5 @@
 import { Commands } from "@/commands/commands";
-import { window, EventEmitter, TreeItem, TreeItemCollapsibleState, type TreeDataProvider, type Event, type Selection } from "vscode";
+import { window, EventEmitter, TreeItem, TreeItemCollapsibleState, type TreeDataProvider, type Event, type Selection, workspace, Uri } from "vscode";
 import type GlobStorage from "../utils/globStorage";
 
 export interface ClipboardItem {
@@ -29,7 +29,8 @@ export class ClipboardProvider implements TreeDataProvider<ClipboardTreeItem> {
 
     getChildren(): Thenable<ClipboardTreeItem[]> {
         const data = this.list.map((item, i) => {
-            return new ClipboardTreeItem(item, i, TreeItemCollapsibleState.None);
+            const wsFolder = workspace.getWorkspaceFolder(Uri.file(item.filePath));
+            return new ClipboardTreeItem(item, i, wsFolder ? "goto_file" : "", TreeItemCollapsibleState.None);
         });
         return Promise.resolve(data);
     }
@@ -74,7 +75,9 @@ export class ClipboardProvider implements TreeDataProvider<ClipboardTreeItem> {
 
     public static init(storage: GlobStorage<ClipboardItem[]>) {
         const clipboard = new ClipboardProvider(storage);
-        window.registerTreeDataProvider("tools.clipboard", clipboard);
+        window.createTreeView("tools.clipboard", {
+            treeDataProvider: clipboard,
+        });
         return clipboard;
     }
 }
@@ -84,12 +87,14 @@ class ClipboardTreeItem extends TreeItem {
     constructor(
         public readonly data: ClipboardItem,
         public readonly index: number,
+        public readonly viewItem: string,
         public readonly collapsibleState: TreeItemCollapsibleState
     ) {
         super(data.label, collapsibleState);
         this.data = data;
         this.label = `${index + 1}.  ${data.label}`;
         this.tooltip = data.content;
+        this.contextValue = viewItem;
         this.command = {
             title: this.label,
             command: Commands.clipboard_copytext,

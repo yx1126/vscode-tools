@@ -8,4 +8,7 @@ export const enum Commands {
     help_star = "tools.help.star",
     open_url = "tools.help.open_url",
     explorer_position = "tools.explorer.position",
+    outline_refresh = "tools.outline.refresh",
+    outline_collapsed = "tools.outline.collapsed",
+    utils_scrollto = "tools.utils.scroll_to",
 }

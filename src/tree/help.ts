@@ -35,7 +35,9 @@ export class HelpProvider implements TreeDataProvider<HelpItem> {
 
     public static init(ctx: ExtensionContext) {
         const help = new HelpProvider(ctx);
-        window.registerTreeDataProvider("tools.helpAndFeedback", help);
+        window.createTreeView("tools.helpAndFeedback", {
+            treeDataProvider: help,
+        });
         return help;
     }
 }
