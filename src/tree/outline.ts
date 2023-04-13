@@ -1,5 +1,5 @@
 import { EventEmitter, TreeItem, window, TreeItemCollapsibleState, TextDocument, commands, workspace, SymbolKind, Disposable, ThemeIcon, MarkdownString } from "vscode";
-import type { Event, TreeDataProvider, DocumentSymbol, TextDocumentChangeEvent, Range, TextEditor } from "vscode";
+import type { Event, TreeDataProvider, DocumentSymbol, TextDocumentChangeEvent, Range } from "vscode";
 import Config from "@/utils/config";
 import debounce from "@/utils/debounce";
 import { Commands } from "@/commands/commands";
@@ -90,78 +90,82 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
     }
 
     async getDocSymbols(document?: TextDocument) {
-        if(!document || document.languageId !== "vue") return [];
-        const docSymbols = await commands.executeCommand<Outline[]>("vscode.executeDocumentSymbolProvider", document.uri);
-        if(!docSymbols) return [];
-        const outlineList = Config.getOutline() || [];
-        const isShowOther = Config.getScriptDefault();
+        try {
+            if(!document || document.languageId !== "vue") return [];
+            const docSymbols = await commands.executeCommand<Outline[]>("vscode.executeDocumentSymbolProvider", document.uri);
+            if(!docSymbols) return [];
+            const outlineList = Config.getOutline() || [];
+            const isShowOther = Config.getScriptDefault();
 
-        function isShowAllChild(name: string) {
-            if(!outlineList || outlineList.length <= 0) return;
-            return outlineList.find(s => name.startsWith(s));
-        };
+            function isShowAllChild(name: string) {
+                if(!outlineList || outlineList.length <= 0) return;
+                return outlineList.find(s => name.startsWith(s));
+            };
 
-        const scriptModules = docSymbols.filter(v => SCRIUPT_MAP.includes(v.name) && v.kind === SymbolKind.Module).map(sms => {
-            if(isShowAllChild(sms.name)) return sms;
-            // show all nodes
-            if(!isShowOther) {
-                sms.children = sms.children.map(smsc => {
-                    if(smsc.name === "default" && smsc.kind === SymbolKind.Variable) {
-                        smsc.children = smsc.children.map(dm => {
-                            dm.children = SCRIPU_PROPS.includes(dm.name) ? dm.children.map(mc => ({ ...mc, children: [] })) : [];
-                            return dm;
-                        });
-                    } else {
-                        smsc.children = smsc.children.map(dm => ({ ...dm, children: [] }));
-                    }
-                    return smsc;
+            const scriptModules = docSymbols.filter(v => SCRIUPT_MAP.includes(v.name) && v.kind === SymbolKind.Module).map(sms => {
+                if(isShowAllChild(sms.name)) return sms;
+                // show all nodes
+                if(!isShowOther) {
+                    sms.children = sms.children.map(smsc => {
+                        if(smsc.name === "default" && smsc.kind === SymbolKind.Variable) {
+                            smsc.children = smsc.children.map(dm => {
+                                dm.children = SCRIPU_PROPS.includes(dm.name) ? dm.children.map(mc => ({ ...mc, children: [] })) : [];
+                                return dm;
+                            });
+                        } else {
+                            smsc.children = smsc.children.map(dm => ({ ...dm, children: [] }));
+                        }
+                        return smsc;
+                    });
+                    return sms;
+                }
+                const defaultModules = sms.children.filter(vc => vc.name === "default" && vc.kind === SymbolKind.Variable);
+                // when no default modules return
+                if(defaultModules.length <= 0) {
+                    sms.children = sms.children.map(smsc => ({ ...smsc, children: [] }));
+                    return sms;
+                }
+                // get default module
+                const defaultModule = (defaultModules.length > 0 ? defaultModules[0].children : []).map(dm => {
+                    dm.children = SCRIPU_PROPS.includes(dm.name) ? dm.children.map(mc => ({ ...mc, children: [] })) : [];
+                    return dm;
                 });
-                return sms;
-            }
-            const defaultModules = sms.children.filter(vc => vc.name === "default" && vc.kind === SymbolKind.Variable);
-            // when no default modules return
-            if(defaultModules.length <= 0) {
-                sms.children = sms.children.map(smsc => ({ ...smsc, children: [] }));
-                return sms;
-            }
-            // get default module
-            const defaultModule = (defaultModules.length > 0 ? defaultModules[0].children : []).map(dm => {
-                dm.children = SCRIPU_PROPS.includes(dm.name) ? dm.children.map(mc => ({ ...mc, children: [] })) : [];
-                return dm;
+                return {
+                    ...sms,
+                    children: defaultModule,
+                };
             });
-            return {
-                ...sms,
-                children: defaultModule,
-            };
-        });
-        // template
-        const templateModules = docSymbols.filter(v => TEMPLATE_MAP.includes(v.name) && v.kind === SymbolKind.Module);
-        // style
-        const styleModules = docSymbols.filter(v => STYLE_MAP.includes(v.name) && v.kind === SymbolKind.Module);
-        // template、style、script
-        const modules = [...TEMPLATE_MAP, ...STYLE_MAP, ...SCRIUPT_MAP];
-        // other
-        const otherModules = docSymbols.filter(v => !modules.includes(v.name) && v.kind === SymbolKind.Module);
+            // template
+            const templateModules = docSymbols.filter(v => TEMPLATE_MAP.includes(v.name) && v.kind === SymbolKind.Module);
+            // style
+            const styleModules = docSymbols.filter(v => STYLE_MAP.includes(v.name) && v.kind === SymbolKind.Module);
+            // template、style、script
+            const modules = [...TEMPLATE_MAP, ...STYLE_MAP, ...SCRIUPT_MAP];
+            // other
+            const otherModules = docSymbols.filter(v => !modules.includes(v.name) && v.kind === SymbolKind.Module);
 
-        const tsoModule = [...templateModules, ...styleModules, ...otherModules].map(v => {
-            return {
-                ...v,
-                children: isShowAllChild(v.name) ? v.children : [],
-            };
-        });
+            const tsoModule = [...templateModules, ...styleModules, ...otherModules].map(v => {
+                return {
+                    ...v,
+                    children: isShowAllChild(v.name) ? v.children : [],
+                };
+            });
 
-        return this.deep([
-            ...tsoModule,
-            ...scriptModules,
-        ]);
+            return this.deep([
+                ...tsoModule,
+                ...scriptModules,
+            ]);
+        } catch (error) {
+            return [];
+        }
     }
 
     watch(): Disposable[] {
         return [
-            window.onDidChangeActiveTextEditor(debounce((textEditor: TextEditor) => {
+            window.onDidChangeActiveTextEditor((textEditor) => {
                 this.clearTimer();
                 this.update(textEditor?.document);
-            }, 300)),
+            }),
             workspace.onDidOpenTextDocument((document) => {
                 this.clearTimer();
                 this.update(document);
@@ -189,13 +193,13 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
         const document = window.activeTextEditor?.document;
         if(!document || document.languageId !== "vue") return;
         let index = 0;
-        this.timer = setInterval(async () => {
+        this.timer = setInterval(() => {
             index = index + 1;
             if(index >= 10 || this.list.length > 0) {
                 this.clearTimer();
                 return;
             }
-            await this.update(document);
+            this.update(document);
         }, 500);
     }
 
