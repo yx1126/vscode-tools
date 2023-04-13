@@ -2,7 +2,7 @@
     "name": "vsocde-tools",
     "displayName": "Simple Tools",
     "description": "Some small tools for VS Code",
-    "version": "1.3.4",
+    "version": "1.3.5",
     "publisher": "yx1126",
     "repository": {
         "type": "git",
