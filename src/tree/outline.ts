@@ -166,10 +166,6 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
                 this.clearTimer();
                 this.update(textEditor?.document);
             }),
-            workspace.onDidOpenTextDocument((document) => {
-                this.clearTimer();
-                this.update(document);
-            }),
             workspace.onDidChangeTextDocument(debounce((event: TextDocumentChangeEvent) => {
                 this.clearTimer();
                 this.update(event.document);
