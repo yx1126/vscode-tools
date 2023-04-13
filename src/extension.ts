@@ -33,9 +33,6 @@ export async function activate(context: ExtensionContext) {
 
     context.subscriptions.push(...disposables);
 
-    // The command is executed one second later
-    Config.execute(1000);
-
 }
 
 // This method is called when your extension is deactivated

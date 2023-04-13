@@ -23,5 +23,6 @@
     "tools.description": "默认启用的功能列表",
     "bar.description": "默认打开辅助侧栏",
     "outline.description": "显示全部节点的名称列表",
+    "outline.script.default": "当存在默认导出的时候是否显示其他节点",
     "utils.scroll_to": "滚动到当前行"
 }

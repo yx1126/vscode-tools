@@ -52,7 +52,11 @@ export default class Config {
     }
 
     static getOutline() {
-        return this.getConfig().get<string [] | null>("outline");
+        return this.getConfig().get<string [] | null>("outline.modules");
+    }
+
+    static getScriptDefault() {
+        return this.getConfig().get<boolean>("outline.script.default");
     }
 
     // 获取默认功能配合着

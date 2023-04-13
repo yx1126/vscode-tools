@@ -1,19 +1,5 @@
-import {
-    EventEmitter,
-    TreeItem,
-    window,
-    TreeItemCollapsibleState,
-    TextDocument,
-    commands,
-    workspace,
-    SymbolKind,
-    Disposable,
-    ThemeIcon,
-    type Event,
-    type TreeDataProvider,
-    type DocumentSymbol,
-    type TextDocumentChangeEvent,
-} from "vscode";
+import { EventEmitter, TreeItem, window, TreeItemCollapsibleState, TextDocument, commands, workspace, SymbolKind, Disposable, ThemeIcon, MarkdownString } from "vscode";
+import type { Event, TreeDataProvider, DocumentSymbol, TextDocumentChangeEvent, Range, TextEditor } from "vscode";
 import Config from "@/utils/config";
 import debounce from "@/utils/debounce";
 import { Commands } from "@/commands/commands";
@@ -21,15 +7,25 @@ import { Commands } from "@/commands/commands";
 export const templateRe = new RegExp(/<template[^>]*?>(?:.|\n)*?<\/template>/g);
 export const scriptRe = new RegExp(/<script[^>]*?>(?:.|\n)*?<\/script>/g);
 export const styleRe = new RegExp(/<style[^>]*?>(?:.|\n)*?<\/style>/g);
+export const langRe = new RegExp(/lang=(\"|\')(.*?)(\"|\')/);
 
 const TEMPLATE_MAP = ["template"];
-const SCRUPT_MAP = ["script", "script setup"];
+const SCRIUPT_MAP = ["script", "script setup"];
 const STYLE_MAP = ["style", "style scoped"];
+const SCRIPU_PROPS = ["props", "data", "methods", "computed", "watch", "provide", "inject"];
+
+export interface Outline extends DocumentSymbol {
+    deep: number;
+    lang?: string;
+    language: string;
+}
 
 export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem> {
 
-    list: DocumentSymbol[] = [];
+    list: Outline[] = [];
     document?: TextDocument;
+
+    timer: any = null;
 
     private _onDidChangeTreeData: EventEmitter<OutlineTreeItem | undefined | null | void> = new EventEmitter<OutlineTreeItem | undefined | null | void>();
     readonly onDidChangeTreeData: Event<OutlineTreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
@@ -47,7 +43,7 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
         return Promise.resolve(data);
     }
 
-    refresh(data?: DocumentSymbol[], document?: TextDocument): void {
+    refresh(data?: Outline[], document?: TextDocument): void {
         if(data) {
             this.document = document;
             this.list = data;
@@ -65,48 +61,73 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
         this.refresh();
     }
 
-    deep(data: DocumentSymbol[], deep = 1) {
-        const result: DocumentSymbol[] = [];
+    deep(data: Outline[], deep = 1, language?: string) {
+        const result: Outline[] = [];
         for(let i = 0; i < data.length; i++) {
             const docSymbol = data[i];
+            docSymbol.deep = deep;
+            if(deep === 1) {
+                const langList = this.document?.lineAt(docSymbol.range.start.line).text.match(langRe);
+                docSymbol.lang = langList ? langList[2] : undefined;
+                docSymbol.language = language ? language : langList
+                    ? langList[2]
+                    : TEMPLATE_MAP.includes(docSymbol.name)
+                        ? "html"
+                        : STYLE_MAP.includes(docSymbol.name)
+                            ? "css"
+                            : "javascript";
+            } else {
+                docSymbol.language = language!;
+            }
             result.push({
                 ...docSymbol,
-                children: this.deep(docSymbol.children, deep + 1).sort((a, b) => {
-                    return a.range.start.line - b.range.start.line;
-                }),
+                children: this.deep(docSymbol.children as Outline[], deep + 1, docSymbol.language),
             });
         }
-        return result;
+        return result.sort((a, b) => {
+            return a.range.start.line - b.range.start.line;
+        });
     }
 
     async getDocSymbols(document?: TextDocument) {
         if(!document || document.languageId !== "vue") return [];
-        const docSymbols = await commands.executeCommand<DocumentSymbol[]>("vscode.executeDocumentSymbolProvider", document.uri);
+        const docSymbols = await commands.executeCommand<Outline[]>("vscode.executeDocumentSymbolProvider", document.uri);
         if(!docSymbols) return [];
         const outlineList = Config.getOutline() || [];
+        const isShowOther = Config.getScriptDefault();
 
         function isShowAllChild(name: string) {
             if(!outlineList || outlineList.length <= 0) return;
             return outlineList.find(s => name.startsWith(s));
         };
 
-        const scriptModules = docSymbols.filter(v => SCRUPT_MAP.includes(v.name) && v.kind === SymbolKind.Module).map(sms => {
+        const scriptModules = docSymbols.filter(v => SCRIUPT_MAP.includes(v.name) && v.kind === SymbolKind.Module).map(sms => {
             if(isShowAllChild(sms.name)) return sms;
+            // show all nodes
+            if(!isShowOther) {
+                sms.children = sms.children.map(smsc => {
+                    if(smsc.name === "default" && smsc.kind === SymbolKind.Variable) {
+                        smsc.children = smsc.children.map(dm => {
+                            dm.children = SCRIPU_PROPS.includes(dm.name) ? dm.children.map(mc => ({ ...mc, children: [] })) : [];
+                            return dm;
+                        });
+                    } else {
+                        smsc.children = smsc.children.map(dm => ({ ...dm, children: [] }));
+                    }
+                    return smsc;
+                });
+                return sms;
+            }
             const defaultModules = sms.children.filter(vc => vc.name === "default" && vc.kind === SymbolKind.Variable);
             // when no default modules return
             if(defaultModules.length <= 0) {
-                return {
-                    ...sms,
-                    children: sms.children.map(smsc => ({ ...smsc, children: [] })),
-                };
+                sms.children = sms.children.map(smsc => ({ ...smsc, children: [] }));
+                return sms;
             }
             // get default module
             const defaultModule = (defaultModules.length > 0 ? defaultModules[0].children : []).map(dm => {
-                const isGetFirstLayer = ["props", "data", "methods", "computed", "watch", "provide", "inject"].includes(dm.name);
-                return {
-                    ...dm,
-                    children: isGetFirstLayer ? dm.children.map(mc => ({ ...mc, children: [] })) : [],
-                };
+                dm.children = SCRIPU_PROPS.includes(dm.name) ? dm.children.map(mc => ({ ...mc, children: [] })) : [];
+                return dm;
             });
             return {
                 ...sms,
@@ -118,7 +139,7 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
         // style
         const styleModules = docSymbols.filter(v => STYLE_MAP.includes(v.name) && v.kind === SymbolKind.Module);
         // template、style、script
-        const modules = [...TEMPLATE_MAP, ...STYLE_MAP, ...SCRUPT_MAP];
+        const modules = [...TEMPLATE_MAP, ...STYLE_MAP, ...SCRIUPT_MAP];
         // other
         const otherModules = docSymbols.filter(v => !modules.includes(v.name) && v.kind === SymbolKind.Module);
 
@@ -137,21 +158,50 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
 
     watch(): Disposable[] {
         return [
-            window.onDidChangeActiveTextEditor((textEditor) => {
+            window.onDidChangeActiveTextEditor(debounce((textEditor: TextEditor) => {
+                this.clearTimer();
                 this.update(textEditor?.document);
+            }, 300)),
+            workspace.onDidOpenTextDocument((document) => {
+                this.clearTimer();
+                this.update(document);
             }),
             workspace.onDidChangeTextDocument(debounce((event: TextDocumentChangeEvent) => {
+                this.clearTimer();
                 this.update(event.document);
             }, 300)),
             workspace.onDidChangeWorkspaceFolders(() => {
+                this.clearTimer();
                 this.update(window.activeTextEditor?.document);
             }),
         ];
     }
 
+    clearTimer() {
+        if(this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+    }
+
+    // vscode.executeDocumentSymbolProvider can not get data when vscode first open
+    load() {
+        const document = window.activeTextEditor?.document;
+        if(!document || document.languageId !== "vue") return;
+        let index = 0;
+        this.timer = setInterval(async () => {
+            index = index + 1;
+            if(index >= 10 || this.list.length > 0) {
+                this.clearTimer();
+                return;
+            }
+            await this.update(document);
+        }, 500);
+    }
+
     static init() {
         const script = new OutlineProvider();
-        script.update(window.activeTextEditor?.document);
+        script.load();
         window.createTreeView("tools.outline", {
             treeDataProvider: script,
             showCollapseAll: true,
@@ -162,23 +212,46 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
 
 
 export class OutlineTreeItem extends TreeItem {
-    children: DocumentSymbol[];
+
+    children: Outline[];
+    document: TextDocument;
+
     constructor(
-        public readonly data: DocumentSymbol,
+        public readonly data: Outline,
         public readonly collapsibleState: TreeItemCollapsibleState,
-        public readonly document?: TextDocument,
+        public readonly doc?: TextDocument,
     ) {
         super(data.name, collapsibleState);
-        this.children = data.children;
+        this.document = doc!;
+        this.children = data.children as Outline[];
         this.data = data;
-        this.label = data.name;
+
+        this.label = this.getLabel();
         // get current line text
-        this.tooltip = document ? document.lineAt(data.range.start).text : data.name;
+        const range = data.range;
+        const value = range.end.line - range.start.line >= 2 ? this.getOverRow(range) : this.document.getText(range);
+        this.tooltip = new MarkdownString(this.markDown(value));
+
         this.iconPath = new ThemeIcon(`symbol-${SymbolKind[data.kind].toLowerCase()}`);
         this.command = {
             title: data.name,
             command: Commands.utils_scrollto,
             arguments: [data.range.start.line],
         };
+    }
+
+    getLabel() {
+        const { kind, name, lang } = this.data;
+        return name + (kind === SymbolKind.Module && lang ? `  ${lang}` : "");
+    }
+
+    getOverRow(range: Range) {
+        const textList = [range.start.line, range.end.line].map(v => this.document.lineAt(v).text.trimStart().trimEnd());
+        textList.splice(1, 0, "...");
+        return textList.join(" ");
+    }
+
+    markDown(value: string) {
+        return `\`\`\`${this.data.language}\n${value}\n\`\`\``;
     }
 }

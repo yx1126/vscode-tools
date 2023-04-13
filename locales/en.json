@@ -23,5 +23,6 @@
     "tools.description": "List of functions enabled by default",
     "bar.description": "The auxiliary sidebar opens by default",
     "outline.description": "Displays a list of all node names",
+    "outline.script.default": "Whether to display other nodes when the default export exists",
     "utils.scroll_to": "Scroll to the current row"
 }
