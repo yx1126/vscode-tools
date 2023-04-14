@@ -246,6 +246,14 @@
                     "type": "boolean",
                     "default": true,
                     "description": "%outline.script.default%"
+                },
+                "simple-tools.outline.expand": {
+                    "type": [
+                        "number",
+                        "object"
+                    ],
+                    "default": 0,
+                    "description": "%outline.expand.deep%"
                 }
             }
         }

@@ -18,6 +18,7 @@ export interface Outline extends DocumentSymbol {
     deep: number;
     lang?: string;
     language: string;
+    expand: TreeItemCollapsibleState;
 }
 
 export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem> {
@@ -37,8 +38,7 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
     getChildren(element?: OutlineTreeItem): Thenable<OutlineTreeItem[]> {
         const list = element ? element.children : this.list;
         const data = list.map((item) => {
-            const collapsibleState = item.children.length > 0 ? TreeItemCollapsibleState.Collapsed : TreeItemCollapsibleState.None;
-            return new OutlineTreeItem(item, collapsibleState, this.document);
+            return new OutlineTreeItem(item, item.expand, this.document);
         });
         return Promise.resolve(data);
     }
@@ -65,15 +65,19 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
             if(!document || document.languageId !== "vue") return [];
             const docSymbols = await commands.executeCommand<Outline[]>("vscode.executeDocumentSymbolProvider", document.uri);
             if(!docSymbols) return [];
-            const outlineModules = Config.getOutlineModules() || [];
+            const outlineModules = Config.getOutlineModules();
             const isOnlyShowDefaultModule = Config.getScriptDefault();
-            function recursion(data: Outline[], deep = 1, language?: string) {
+            const expandDeep = Config.getExpandDeep();
+
+            function recursion(data: Outline[], deep = 1, language?: string, rootName?: string) {
                 const result: Outline[] = [];
                 for(let i = 0; i < data.length; i++) {
                     const docSymbol = data[i];
                     docSymbol.deep = deep;
                     if(deep === 1) {
-                        const isShowAllChild = !outlineModules || outlineModules.length <= 0 ? false : outlineModules.find(s => s === docSymbol.name);
+                        // mudule name
+                        rootName = docSymbol.name;
+                        const isShowAllChild = outlineModules.length <= 0 ? false : outlineModules.find(s => s === docSymbol.name);
                         const langList = document!.lineAt(docSymbol.range.start.line).text.match(langRe);
                         docSymbol.lang = langList ? langList[2] : undefined;
                         docSymbol.language = language ? language : langList
@@ -120,9 +124,16 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
                     } else {
                         docSymbol.language = language!;
                     }
+                    // expand
+                    const deepValue = typeof expandDeep === "number" ? expandDeep : (expandDeep[rootName!] || 0);
+                    docSymbol.expand = docSymbol.children.length <= 0
+                        ? TreeItemCollapsibleState.None
+                        : deep <= deepValue
+                            ? TreeItemCollapsibleState.Expanded
+                            : TreeItemCollapsibleState.Collapsed;
                     result.push({
                         ...docSymbol,
-                        children: recursion(docSymbol.children as Outline[], deep + 1, docSymbol.language),
+                        children: recursion(docSymbol.children as Outline[], deep + 1, docSymbol.language, rootName),
                     });
                 }
                 return result.sort((a, b) => {

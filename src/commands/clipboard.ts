@@ -20,7 +20,7 @@ export function add(clipboard: ClipboardProvider) {
 export async function edit(item: any, clipboard: ClipboardProvider) {
     const input = await window.showInputBox({
         title: i18n.t("prompt.clipboard.treeinput.title"),
-        placeHolder: i18n.t("prompt.clipboard.treeinput.placeHolder"),
+        placeHolder: i18n.t("prompt.clipboard.treeinput.placeholder"),
         value: item.data.label,
     });
     if(!input) return;

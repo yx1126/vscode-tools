@@ -52,16 +52,20 @@ export default class Config {
     }
 
     static getOutlineModules() {
-        return this.getConfig().get<string [] | null>("outline.modules");
+        return this.getConfig().get<string[]>("outline.modules") || [];
     }
 
     static getScriptDefault() {
         return this.getConfig().get<boolean>("outline.script.default");
     }
 
+    static getExpandDeep() {
+        return this.getConfig().get<number | Record<string, number>>("outline.expand") || 0;
+    }
+
     // 获取默认功能配合着
     static getTools() {
-        return this.getConfig().get<string [] | null>("tools");
+        return this.getConfig().get<string[] | null>("tools");
     }
 
     // 切换辅助侧栏
