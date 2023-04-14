@@ -44,15 +44,14 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
     }
 
     refresh(data?: Outline[], document?: TextDocument): void {
-        if(data) {
-            this.document = document;
-            this.list = data;
-        }
+        this.document = document;
+        this.list = data || [];
         this._onDidChangeTreeData.fire();
     }
 
     async update(document?: TextDocument) {
-        const data = await this.getDocSymbols(document);
+        this.document = document;
+        const data = await this.getDocSymbols(this.document);
         this.refresh(data, document);
     }
 
