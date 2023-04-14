@@ -38,13 +38,12 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
     getChildren(element?: OutlineTreeItem): Thenable<OutlineTreeItem[]> {
         const list = element ? element.children : this.list;
         const data = list.map((item) => {
-            return new OutlineTreeItem(item, item.expand, this.document);
+            return new OutlineTreeItem(item, item.expand, this.document!);
         });
         return Promise.resolve(data);
     }
 
-    refresh(data?: Outline[], document?: TextDocument): void {
-        this.document = document;
+    refresh(data?: Outline[]): void {
         this.list = data || [];
         this._onDidChangeTreeData.fire();
     }
@@ -52,7 +51,7 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
     async update(document?: TextDocument) {
         this.document = document;
         const data = await this.getDocSymbols(this.document);
-        this.refresh(data, document);
+        this.refresh(data);
     }
 
     clear() {
@@ -150,7 +149,8 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
         return [
             window.onDidChangeActiveTextEditor((textEditor) => {
                 this.clearTimer();
-                this.update(textEditor?.document);
+                this.clear();
+                this.load(textEditor?.document);
             }),
             workspace.onDidChangeTextDocument(debounce((event: TextDocumentChangeEvent) => {
                 this.clearTimer();
@@ -170,9 +170,8 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
         }
     }
 
-    // vscode.executeDocumentSymbolProvider can not get data when vscode first open
-    load() {
-        const document = window.activeTextEditor?.document;
+    // Sometimes vscode. ExecuteDocumentSymbolProvider unable to get to the data
+    load(document = window.activeTextEditor?.document) {
         if(!document || document.languageId !== "vue") return;
         let index = 0;
         this.timer = setInterval(() => {
@@ -182,7 +181,7 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
                 return;
             }
             this.update(document);
-        }, 500);
+        }, 300);
     }
 
     static init() {
@@ -205,7 +204,7 @@ export class OutlineTreeItem extends TreeItem {
     constructor(
         public readonly data: Outline,
         public readonly collapsibleState: TreeItemCollapsibleState,
-        public readonly doc?: TextDocument,
+        public readonly doc: TextDocument,
     ) {
         super(data.name, collapsibleState);
         this.document = doc!;
@@ -213,17 +212,17 @@ export class OutlineTreeItem extends TreeItem {
         this.data = data;
 
         this.label = this.getLabel();
-        // get current line text
-        const range = data.range;
-        const value = range.end.line - range.start.line >= 2 ? this.getOverRow(range) : this.document.getText(range);
-        this.tooltip = new MarkdownString(this.markDown(value));
-
-        this.iconPath = new ThemeIcon(`symbol-${SymbolKind[data.kind].toLowerCase()}`);
+        this.tooltip = this.markDown();
+        this.iconPath = this.getIcon();
         this.command = {
             title: data.name,
             command: Commands.utils_scrollto,
             arguments: [data.range.start.line],
         };
+    }
+
+    getIcon() {
+        return new ThemeIcon(`symbol-${SymbolKind[this.data.kind].toLowerCase()}`);
     }
 
     getLabel() {
@@ -237,7 +236,10 @@ export class OutlineTreeItem extends TreeItem {
         return textList.join(" ");
     }
 
-    markDown(value: string) {
-        return `\`\`\`${this.data.language}\n${value}\n\`\`\``;
+    markDown() {
+        const { range, language } = this.data;
+        // get current line text
+        const value = range.end.line - range.start.line >= 2 ? this.getOverRow(range) : this.document.getText(range);
+        return new MarkdownString(`\`\`\`${language}\n${value}\n\`\`\``) ;
     }
 }
