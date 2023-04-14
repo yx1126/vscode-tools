@@ -7,10 +7,8 @@ export async function scrollTo(lineNumber: number, at: TextEditorRevealType = Te
     if(document) {
         const textEditor = await window.showTextDocument(document);
         const character = document.lineAt(lineNumber).text.trimEnd().length;
-        const selection = new Selection(
-            new Position(lineNumber, character),
-            new Position(lineNumber, character)
-        );
+        const lineEnd = new Position(lineNumber, character);
+        const selection = new Selection(lineEnd, lineEnd);
         textEditor.selection = selection;
         textEditor.revealRange(selection, at);
     }

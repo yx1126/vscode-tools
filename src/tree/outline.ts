@@ -19,12 +19,14 @@ export interface Outline extends DocumentSymbol {
     lang?: string;
     language: string;
     expand: TreeItemCollapsibleState;
+    children: Outline[];
 }
 
 export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem> {
 
     list: Outline[] = [];
     document?: TextDocument;
+    disposable: Disposable[] = [];
 
     timer: any = null;
 
@@ -145,8 +147,20 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
         }
     }
 
+    unWatch() {
+        this.disposable.forEach(fn => {
+            const index = Config.ctx.subscriptions.findIndex(v => v === fn);
+            if(index !== -1) {
+                Config.ctx.subscriptions.splice(index, 1);
+            }
+            fn.dispose();
+        });
+        this.disposable = [];
+    }
+
     watch(): Disposable[] {
-        return [
+        if(this.disposable.length > 0 || !Config.getTools()?.includes("outline")) return [];
+        this.disposable = [
             window.onDidChangeActiveTextEditor((textEditor) => {
                 this.clearTimer();
                 this.clear();
@@ -161,6 +175,7 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
                 this.update(window.activeTextEditor?.document);
             }),
         ];
+        return this.disposable;
     }
 
     clearTimer() {
