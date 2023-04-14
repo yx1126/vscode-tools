@@ -51,7 +51,7 @@ export default class Config {
         return workspace.getConfiguration(CONFIG_KEY);
     }
 
-    static getOutline() {
+    static getOutlineModules() {
         return this.getConfig().get<string [] | null>("outline.modules");
     }
 

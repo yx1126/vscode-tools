@@ -60,100 +60,76 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
         this.refresh();
     }
 
-    deep(data: Outline[], deep = 1, language?: string) {
-        const result: Outline[] = [];
-        for(let i = 0; i < data.length; i++) {
-            const docSymbol = data[i];
-            docSymbol.deep = deep;
-            if(deep === 1) {
-                const langList = this.document?.lineAt(docSymbol.range.start.line).text.match(langRe);
-                docSymbol.lang = langList ? langList[2] : undefined;
-                docSymbol.language = language ? language : langList
-                    ? langList[2]
-                    : TEMPLATE_MAP.includes(docSymbol.name)
-                        ? "html"
-                        : STYLE_MAP.includes(docSymbol.name)
-                            ? "css"
-                            : "javascript";
-            } else {
-                docSymbol.language = language!;
-            }
-            result.push({
-                ...docSymbol,
-                children: this.deep(docSymbol.children as Outline[], deep + 1, docSymbol.language),
-            });
-        }
-        return result.sort((a, b) => {
-            return a.range.start.line - b.range.start.line;
-        });
-    }
-
     async getDocSymbols(document?: TextDocument) {
         try {
             if(!document || document.languageId !== "vue") return [];
             const docSymbols = await commands.executeCommand<Outline[]>("vscode.executeDocumentSymbolProvider", document.uri);
             if(!docSymbols) return [];
-            const outlineList = Config.getOutline() || [];
-            const isShowOther = Config.getScriptDefault();
-
-            function isShowAllChild(name: string) {
-                if(!outlineList || outlineList.length <= 0) return;
-                return outlineList.find(s => name.startsWith(s));
-            };
-
-            const scriptModules = docSymbols.filter(v => SCRIUPT_MAP.includes(v.name) && v.kind === SymbolKind.Module).map(sms => {
-                if(isShowAllChild(sms.name)) return sms;
-                // show all nodes
-                if(!isShowOther) {
-                    sms.children = sms.children.map(smsc => {
-                        if(smsc.name === "default" && smsc.kind === SymbolKind.Variable) {
-                            smsc.children = smsc.children.map(dm => {
-                                dm.children = SCRIPU_PROPS.includes(dm.name) ? dm.children.map(mc => ({ ...mc, children: [] })) : [];
-                                return dm;
-                            });
-                        } else {
-                            smsc.children = smsc.children.map(dm => ({ ...dm, children: [] }));
+            const outlineModules = Config.getOutlineModules() || [];
+            const isOnlyShowDefaultModule = Config.getScriptDefault();
+            function recursion(data: Outline[], deep = 1, language?: string) {
+                const result: Outline[] = [];
+                for(let i = 0; i < data.length; i++) {
+                    const docSymbol = data[i];
+                    docSymbol.deep = deep;
+                    if(deep === 1) {
+                        const isShowAllChild = !outlineModules || outlineModules.length <= 0 ? false : outlineModules.find(s => s === docSymbol.name);
+                        const langList = document!.lineAt(docSymbol.range.start.line).text.match(langRe);
+                        docSymbol.lang = langList ? langList[2] : undefined;
+                        docSymbol.language = language ? language : langList
+                            ? langList[2]
+                            : TEMPLATE_MAP.includes(docSymbol.name)
+                                ? "html"
+                                : STYLE_MAP.includes(docSymbol.name)
+                                    ? "css"
+                                    : "javascript";
+                        const defaultModule = docSymbol.children.find(v => v.name === "default" && v.kind === SymbolKind.Variable);
+                        // show default export
+                        if(isOnlyShowDefaultModule && defaultModule) {
+                            docSymbol.children = defaultModule.children;
                         }
-                        return smsc;
+                        // not show all children nodes
+                        if(!isShowAllChild) {
+                            // script module
+                            if(SCRIUPT_MAP.includes(docSymbol.name)) {
+                                // show default export
+                                if(isOnlyShowDefaultModule && defaultModule) {
+                                    docSymbol.children = docSymbol.children.map(v => {
+                                        v.children = SCRIPU_PROPS.includes(v.name) ? v.children.map(vc => ({ ...vc, children: [] })) : [];
+                                        return v;
+                                    });
+                                } else {
+                                    // not show default export
+                                    docSymbol.children = docSymbol.children.map((v) => {
+                                        if(v.name === "default" && v.kind === SymbolKind.Variable) {
+                                            v.children = v.children.map(v => {
+                                                v.children = SCRIPU_PROPS.includes(v.name) ? v.children.map(vc => ({ ...vc, children: [] })) : [];
+                                                return v;
+                                            });
+                                        } else {
+                                            v.children = [];
+                                        }
+                                        return v;
+                                    });
+                                }
+                            } else {
+                                // other modules
+                                docSymbol.children = [];
+                            }
+                        }
+                    } else {
+                        docSymbol.language = language!;
+                    }
+                    result.push({
+                        ...docSymbol,
+                        children: recursion(docSymbol.children as Outline[], deep + 1, docSymbol.language),
                     });
-                    return sms;
                 }
-                const defaultModules = sms.children.filter(vc => vc.name === "default" && vc.kind === SymbolKind.Variable);
-                // when no default modules return
-                if(defaultModules.length <= 0) {
-                    sms.children = sms.children.map(smsc => ({ ...smsc, children: [] }));
-                    return sms;
-                }
-                // get default module
-                const defaultModule = (defaultModules.length > 0 ? defaultModules[0].children : []).map(dm => {
-                    dm.children = SCRIPU_PROPS.includes(dm.name) ? dm.children.map(mc => ({ ...mc, children: [] })) : [];
-                    return dm;
+                return result.sort((a, b) => {
+                    return a.range.start.line - b.range.start.line;
                 });
-                return {
-                    ...sms,
-                    children: defaultModule,
-                };
-            });
-            // template
-            const templateModules = docSymbols.filter(v => TEMPLATE_MAP.includes(v.name) && v.kind === SymbolKind.Module);
-            // style
-            const styleModules = docSymbols.filter(v => STYLE_MAP.includes(v.name) && v.kind === SymbolKind.Module);
-            // template、style、script
-            const modules = [...TEMPLATE_MAP, ...STYLE_MAP, ...SCRIUPT_MAP];
-            // other
-            const otherModules = docSymbols.filter(v => !modules.includes(v.name) && v.kind === SymbolKind.Module);
-
-            const tsoModule = [...templateModules, ...styleModules, ...otherModules].map(v => {
-                return {
-                    ...v,
-                    children: isShowAllChild(v.name) ? v.children : [],
-                };
-            });
-
-            return this.deep([
-                ...tsoModule,
-                ...scriptModules,
-            ]);
+            }
+            return recursion(docSymbols);
         } catch (error) {
             return [];
         }
