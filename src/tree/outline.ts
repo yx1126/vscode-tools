@@ -1,5 +1,5 @@
 import { EventEmitter, TreeItem, window, TreeItemCollapsibleState, TextDocument, commands, workspace, SymbolKind, Disposable, ThemeIcon, MarkdownString } from "vscode";
-import type { Event, TreeDataProvider, DocumentSymbol, TextDocumentChangeEvent, Range } from "vscode";
+import type { Event, TreeDataProvider, DocumentSymbol, TextDocumentChangeEvent, Range, ConfigurationChangeEvent } from "vscode";
 import Config from "@/utils/config";
 import debounce from "@/utils/debounce";
 import { Commands } from "@/commands/commands";
@@ -51,6 +51,7 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
     }
 
     async update(document?: TextDocument) {
+        if(!this.isStartPlugin()) return;
         this.document = document;
         const data = await this.getDocSymbols(this.document);
         this.refresh(data);
@@ -60,6 +61,8 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
         this.list = [];
         this.refresh();
     }
+
+
 
     async getDocSymbols(document?: TextDocument) {
         try {
@@ -158,8 +161,12 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
         this.disposable = [];
     }
 
+    isStartPlugin() {
+        return Config.getTools()?.includes("outline");
+    }
+
     watch(): Disposable[] {
-        if(this.disposable.length > 0 || !Config.getTools()?.includes("outline")) return [];
+        if(this.disposable.length > 0 || !this.isStartPlugin()) return [];
         this.disposable = [
             window.onDidChangeActiveTextEditor((textEditor) => {
                 this.clearTimer();
@@ -176,6 +183,15 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
             }),
         ];
         return this.disposable;
+    }
+
+    onDidChangeConfiguration(e: ConfigurationChangeEvent) {
+        if(!e.affectsConfiguration("simple-tools.tools")) return;
+        if(Config.getTools()?.includes("outline")) {
+            Config.ctx.subscriptions.push(...this.watch());
+        } else {
+            this.unWatch();
+        }
     }
 
     clearTimer() {
@@ -201,7 +217,10 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
 
     static init() {
         const script = new OutlineProvider();
-        script.load();
+        Config.onSettingChangeFn.push(script.onDidChangeConfiguration);
+        if(script.isStartPlugin()) {
+            script.load();
+        }
         window.createTreeView("tools.outline", {
             treeDataProvider: script,
             showCollapseAll: true,

@@ -30,9 +30,9 @@ export async function activate(context: ExtensionContext) {
     const disposables = flatten(modules.map(m => m(context))) as Disposable[];
 
 
+    const watcher = Config.watch();
 
-    context.subscriptions.push(...disposables);
-
+    context.subscriptions.push(...disposables, ...watcher);
 }
 
 // This method is called when your extension is deactivated

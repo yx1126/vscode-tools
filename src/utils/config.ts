@@ -1,4 +1,4 @@
-import { workspace, commands, ExtensionContext, type ConfigurationChangeEvent } from "vscode";
+import { workspace, commands, ExtensionContext, type ConfigurationChangeEvent, type Disposable } from "vscode";
 import debounce from "./debounce";
 import { Commands } from "@/commands/commands";
 
@@ -15,26 +15,41 @@ export default class Config {
 
     static ctx: ExtensionContext;
 
+    static onSettingChangeFn: Array<(e: ConfigurationChangeEvent) => void> = [];
+
     static init(context: ExtensionContext) {
         this.ctx = context;
-        this.onSettingChange();
+        this.initPlugins();
         this.initAuxiliaryBar();
+        this.onSettingChangeFn.push((e) => {
+            if(e.affectsConfiguration("simple-tools.tools")) {
+                this.initPlugins();
+            }
+        });
         this.ctx.subscriptions.push(
             workspace.onDidChangeConfiguration(debounce((e: ConfigurationChangeEvent) => {
                 if(e.affectsConfiguration("simple-tools.tools")) {
-                    this.onSettingChange();
+                    this.initPlugins();
                 }
             }, 300))
         );
     }
 
+    static watch() {
+        const result: Disposable[] = [];
+        if(this.onSettingChangeFn.length > 0) {
+            result.push(
+                workspace.onDidChangeConfiguration(debounce((e: ConfigurationChangeEvent) => {
+                    this.onSettingChangeFn.forEach(fn => fn(e));
+                }, 300))
+            );
+        }
+        return result;
+    }
+
     static async execute(delay: number) {
         await new Promise(resolve => setTimeout(resolve, delay));
         commands.executeCommand(Commands.outline_refresh);
-    }
-
-    static onSettingChange() {
-        this.initPlugins();
     }
 
     static initPlugins() {
