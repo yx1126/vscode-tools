@@ -2,7 +2,7 @@ import { EventEmitter, TreeItem, window, TreeItemCollapsibleState, TextDocument,
 import type { Event, TreeDataProvider, DocumentSymbol, TextDocumentChangeEvent, Range, ConfigurationChangeEvent } from "vscode";
 import Config from "@/utils/config";
 import debounce from "@/utils/debounce";
-import { Commands } from "@/commands/commands";
+import { Commands } from "@/commands";
 
 export const templateRe = new RegExp(/<template[^>]*?>(?:.|\n)*?<\/template>/g);
 export const scriptRe = new RegExp(/<script[^>]*?>(?:.|\n)*?<\/script>/g);

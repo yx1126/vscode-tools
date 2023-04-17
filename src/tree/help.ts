@@ -1,6 +1,6 @@
 import {  window, EventEmitter, TreeItem, type TreeDataProvider, type Event, type ExtensionContext } from "vscode";
 import i18n from "@/utils/i18n";
-import { Commands } from "@/commands/commands";
+import { Commands } from "@/commands";
 
 export interface HelpItemDefine {
     label: string;

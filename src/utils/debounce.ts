@@ -4,6 +4,7 @@ export default function debounce(func: Function, delay: number) {
 	return function(this: any, ...args: any[]) {
 		if(timer) {
 			clearTimeout(timer);
+            this.timer = null;
 		}
 		timer = setTimeout(() => {
 			func.apply(this, args);

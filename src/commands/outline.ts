@@ -1,7 +1,7 @@
 import { ExtensionModule } from "@/types";
 import OutlineProvider from "@/tree/outline";
 import { commands, window } from "vscode";
-import { Commands } from "./commands";
+import { Commands } from "./";
 
 export function refresh(outline: OutlineProvider) {
     outline.update(window.activeTextEditor?.document);

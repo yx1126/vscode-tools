@@ -1,5 +1,5 @@
 import { window, commands, env, workspace, Uri, Selection, TextEditorRevealType } from "vscode";
-import { Commands } from "./commands";
+import { Commands } from "./";
 import { CLIPBOARD_STORE_KEY } from "@/utils/config";
 import GlobStorage from "@/utils/globStorage";
 import { ClipboardProvider, type ClipboardItem } from "@/tree/clipboard";

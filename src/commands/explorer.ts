@@ -1,5 +1,5 @@
 import { commands, window, workspace } from "vscode";
-import { Commands } from "./commands";
+import { Commands } from "./";
 import type { ExtensionModule } from "@/types";
 
 export async function openPosition() {

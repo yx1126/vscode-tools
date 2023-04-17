@@ -1,4 +1,4 @@
-import { Commands } from "@/commands/commands";
+import { Commands } from "@/commands";
 import { window, EventEmitter, TreeItem, TreeItemCollapsibleState, type TreeDataProvider, type Event, type Selection, workspace, Uri } from "vscode";
 import type GlobStorage from "../utils/globStorage";
 

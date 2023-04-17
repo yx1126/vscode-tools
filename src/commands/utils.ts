@@ -1,6 +1,6 @@
 import { ExtensionModule } from "@/types";
 import { Selection, TextEditorRevealType, commands, window, Position } from "vscode";
-import { Commands } from "./commands";
+import { Commands } from "./";
 
 export async function scrollTo(lineNumber: number, at: TextEditorRevealType = TextEditorRevealType.InCenter) {
     const document = window.activeTextEditor?.document;
