@@ -1,34 +1,14 @@
-import { EventEmitter, TreeItem, window, TreeItemCollapsibleState, TextDocument, commands, workspace, SymbolKind, Disposable, ThemeIcon, MarkdownString } from "vscode";
-import type { Event, TreeDataProvider, DocumentSymbol, TextDocumentChangeEvent, Range, ConfigurationChangeEvent } from "vscode";
-import Config from "@/utils/config";
-import debounce from "@/utils/debounce";
+import { EventEmitter, TreeItem, window, TreeItemCollapsibleState, TextDocument, SymbolKind, ThemeIcon, MarkdownString } from "vscode";
+import type { Event, TreeDataProvider, Range } from "vscode";
 import { Commands } from "@/commands";
+import Nodes, { type FileNode } from "@/utils/node";
 
-export const templateRe = new RegExp(/<template[^>]*?>(?:.|\n)*?<\/template>/g);
-export const scriptRe = new RegExp(/<script[^>]*?>(?:.|\n)*?<\/script>/g);
-export const styleRe = new RegExp(/<style[^>]*?>(?:.|\n)*?<\/style>/g);
-export const langRe = new RegExp(/lang=(\"|\')(.*?)(\"|\')/);
 
-const TEMPLATE_MAP = ["template"];
-const SCRIUPT_MAP = ["script", "script setup"];
-const STYLE_MAP = ["style", "style scoped"];
-const SCRIPU_PROPS = ["props", "data", "methods", "computed", "watch", "provide", "inject"];
+export class OutlineProvider implements TreeDataProvider<OutlineTreeItem> {
 
-export interface Outline extends DocumentSymbol {
-    deep: number;
-    lang?: string;
-    language: string;
-    expand: TreeItemCollapsibleState;
-    children: Outline[];
-}
+    list: FileNode[] = [];
 
-export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem> {
-
-    list: Outline[] = [];
-    document?: TextDocument;
-    disposable: Disposable[] = [];
-
-    timer: any = null;
+    constructor() {}
 
     private _onDidChangeTreeData: EventEmitter<OutlineTreeItem | undefined | null | void> = new EventEmitter<OutlineTreeItem | undefined | null | void>();
     readonly onDidChangeTreeData: Event<OutlineTreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
@@ -40,21 +20,14 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
     getChildren(element?: OutlineTreeItem): Thenable<OutlineTreeItem[]> {
         const list = element ? element.children : this.list;
         const data = list.map((item) => {
-            return new OutlineTreeItem(item, item.expand, this.document!);
+            return new OutlineTreeItem(item, item.collapsibleState, Nodes.document!);
         });
         return Promise.resolve(data);
     }
 
-    refresh(data?: Outline[]): void {
+    refresh(data?: FileNode[]): void {
         this.list = data || [];
         this._onDidChangeTreeData.fire();
-    }
-
-    async update(document?: TextDocument) {
-        if(!this.isStartPlugin()) return;
-        this.document = document;
-        const data = await this.getDocSymbols(this.document);
-        this.refresh(data);
     }
 
     clear() {
@@ -62,187 +35,30 @@ export default class OutlineProvider implements TreeDataProvider<OutlineTreeItem
         this.refresh();
     }
 
-
-
-    async getDocSymbols(document?: TextDocument) {
-        try {
-            if(!document || document.languageId !== "vue") return [];
-            const docSymbols = await commands.executeCommand<Outline[]>("vscode.executeDocumentSymbolProvider", document.uri);
-            if(!docSymbols) return [];
-            const outlineModules = Config.getOutlineModules();
-            const isOnlyShowDefaultModule = Config.getScriptDefault();
-            const expandDeep = Config.getExpandDeep();
-
-            function recursion(data: Outline[], deep = 1, language?: string, rootName?: string) {
-                const result: Outline[] = [];
-                for(let i = 0; i < data.length; i++) {
-                    const docSymbol = data[i];
-                    docSymbol.deep = deep;
-                    if(deep === 1) {
-                        // mudule name
-                        rootName = docSymbol.name;
-                        const isShowAllChild = outlineModules.length <= 0 ? false : outlineModules.find(s => s === docSymbol.name);
-                        const langList = document!.lineAt(docSymbol.range.start.line).text.match(langRe);
-                        docSymbol.lang = langList ? langList[2] : undefined;
-                        docSymbol.language = language ? language : langList
-                            ? langList[2]
-                            : TEMPLATE_MAP.includes(docSymbol.name)
-                                ? "html"
-                                : STYLE_MAP.includes(docSymbol.name)
-                                    ? "css"
-                                    : "javascript";
-                        const defaultModule = docSymbol.children.find(v => v.name === "default" && v.kind === SymbolKind.Variable);
-                        // show default export
-                        if(isOnlyShowDefaultModule && defaultModule) {
-                            docSymbol.children = defaultModule.children;
-                        }
-                        // not show all children nodes
-                        if(!isShowAllChild) {
-                            // script module
-                            if(SCRIUPT_MAP.includes(docSymbol.name)) {
-                                // show default export
-                                if(isOnlyShowDefaultModule && defaultModule) {
-                                    docSymbol.children = docSymbol.children.map(v => {
-                                        v.children = SCRIPU_PROPS.includes(v.name) ? v.children.map(vc => ({ ...vc, children: [] })) : [];
-                                        return v;
-                                    });
-                                } else {
-                                    // not show default export
-                                    docSymbol.children = docSymbol.children.map((v) => {
-                                        if(v.name === "default" && v.kind === SymbolKind.Variable) {
-                                            v.children = v.children.map(v => {
-                                                v.children = SCRIPU_PROPS.includes(v.name) ? v.children.map(vc => ({ ...vc, children: [] })) : [];
-                                                return v;
-                                            });
-                                        } else {
-                                            v.children = [];
-                                        }
-                                        return v;
-                                    });
-                                }
-                            } else {
-                                // other modules
-                                docSymbol.children = [];
-                            }
-                        }
-                    } else {
-                        docSymbol.language = language!;
-                    }
-                    // expand
-                    const deepValue = typeof expandDeep === "number" ? expandDeep : (expandDeep[rootName!] || 0);
-                    docSymbol.expand = docSymbol.children.length <= 0
-                        ? TreeItemCollapsibleState.None
-                        : deep <= deepValue
-                            ? TreeItemCollapsibleState.Expanded
-                            : TreeItemCollapsibleState.Collapsed;
-                    result.push({
-                        ...docSymbol,
-                        children: recursion(docSymbol.children as Outline[], deep + 1, docSymbol.language, rootName),
-                    });
-                }
-                return result.sort((a, b) => {
-                    return a.range.start.line - b.range.start.line;
-                });
-            }
-            return recursion(docSymbols);
-        } catch (error) {
-            return [];
-        }
-    }
-
-    unWatch() {
-        this.disposable.forEach(fn => {
-            const index = Config.ctx.subscriptions.findIndex(v => v === fn);
-            if(index !== -1) {
-                Config.ctx.subscriptions.splice(index, 1);
-            }
-            fn.dispose();
-        });
-        this.disposable = [];
-    }
-
-    isStartPlugin() {
-        return Config.getTools()?.includes("outline");
-    }
-
-    watch(): Disposable[] {
-        if(this.disposable.length > 0 || !this.isStartPlugin()) return [];
-        this.disposable = [
-            window.onDidChangeActiveTextEditor((textEditor) => {
-                this.clearTimer();
-                this.clear();
-                this.load(textEditor?.document);
-            }),
-            workspace.onDidChangeTextDocument(debounce((event: TextDocumentChangeEvent) => {
-                this.clearTimer();
-                this.update(event.document);
-            }, 300)),
-            workspace.onDidChangeWorkspaceFolders(() => {
-                this.clearTimer();
-                this.update(window.activeTextEditor?.document);
-            }),
-        ];
-        return this.disposable;
-    }
-
-    onDidChangeConfiguration(e: ConfigurationChangeEvent) {
-        if(!e.affectsConfiguration("simple-tools.tools")) return;
-        if(Config.getTools()?.includes("outline")) {
-            Config.ctx.subscriptions.push(...this.watch());
-        } else {
-            this.unWatch();
-        }
-    }
-
-    clearTimer() {
-        if(this.timer) {
-            clearInterval(this.timer);
-            this.timer = null;
-        }
-    }
-
-    // Sometimes vscode. ExecuteDocumentSymbolProvider unable to get to the data
-    load(document = window.activeTextEditor?.document) {
-        if(!document || document.languageId !== "vue") return;
-        let index = 0;
-        this.timer = setInterval(() => {
-            index = index + 1;
-            if(index >= 10 || this.list.length > 0) {
-                this.clearTimer();
-                return;
-            }
-            this.update(document);
-        }, 300);
-    }
-
     static init() {
-        const script = new OutlineProvider();
-        Config.onSettingChangeFn.push(script.onDidChangeConfiguration);
-        if(script.isStartPlugin()) {
-            script.load();
-        }
+        const outline = new OutlineProvider();
         window.createTreeView("tools.outline", {
-            treeDataProvider: script,
+            treeDataProvider: outline,
             showCollapseAll: true,
         });
-        return script;
+        return outline;
     }
 }
 
 
 export class OutlineTreeItem extends TreeItem {
 
-    children: Outline[];
+    children: FileNode[];
     document: TextDocument;
 
     constructor(
-        public readonly data: Outline,
+        public readonly data: FileNode,
         public readonly collapsibleState: TreeItemCollapsibleState,
         public readonly doc: TextDocument,
     ) {
         super(data.name, collapsibleState);
         this.document = doc!;
-        this.children = data.children as Outline[];
+        this.children = data.children as FileNode[];
         this.data = data;
 
         this.label = this.getLabel();

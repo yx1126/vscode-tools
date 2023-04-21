@@ -1,8 +1,10 @@
-import { workspace, commands, ExtensionContext, type ConfigurationChangeEvent, type Disposable, type DocumentSymbol, type TextDocument } from "vscode";
+import { workspace, commands, ExtensionContext } from "vscode";
+import type { ConfigurationChangeEvent, Disposable } from "vscode";
 import debounce from "./debounce";
+import Nodes from "./node";
 
 // plugins simple-tools.plugin.${SIMPLE_TOOLS_PLUGINS}
-export const SIMPLE_TOOLS_PLUGINS = ["clipboard", "location", "outline"];
+export const SIMPLE_TOOLS_PLUGINS = ["clipboard", "location", "outline", "ellipsis"];
 
 // simpie-tools config key
 const CONFIG_KEY = "simple-tools";
@@ -25,6 +27,7 @@ export default class Config {
                 this.initPlugins();
             }
         });
+        this.onSettingChangeFn.push(Nodes.onDidChangeConfiguration);
     }
 
     static watch() {
@@ -36,6 +39,7 @@ export default class Config {
                 }, 300))
             );
         }
+        result.push(...Nodes.watch());
         return result;
     }
 
@@ -54,7 +58,7 @@ export default class Config {
     }
 
     static getOutlineModules() {
-        return this.getConfig().get<string[]>("outline.modules") || [];
+        return this.getConfig().get<string[] | null>("outline.modules");
     }
 
     static getScriptDefault() {
@@ -90,46 +94,4 @@ export default class Config {
 }
 
 
-export interface NodeOptions {
-    root?: number;
-    parentPath?: [];
-    deep: number;
-    rootName: string;
-    lang: string;
-    language: string;
-    document?: TextDocument;
-}
-
-export type FileNodes = NodeOptions & DocumentSymbol;
-
-export const langRe = new RegExp(/lang=(\"|\')(.*?)(\"|\')/);
-export const TEMPLATE_MAP = ["template"];
-export const SCRIUPT_MAP = ["script", "script setup"];
-export const STYLE_MAP = ["style", "style scoped"];
-export const SCRIPU_PROPS = ["props", "data", "methods", "computed", "watch", "provide", "inject"];
-
-
-export function getFileNodes(nodes: FileNodes[], options?: NodeOptions) {
-    const { document, language } = options || { deep: 1, rootName: "", lang: "" };
-
-    if(!document) return [];
-    return nodes.map(node => {
-        node.deep = 1;
-        const langList = document.lineAt(node.range.start.line).text.match(langRe);
-        if(langList) {
-            node.lang = langList[2];
-        }
-        if(language) {
-            node.language = language || node.lang || TEMPLATE_MAP.includes(node.name)
-                ? "html"
-                : STYLE_MAP.includes(node.name)
-                    ? "css"
-                    : SCRIUPT_MAP.includes(node.name)
-                        ? "javascript"
-                        : "";
-        }
-
-        return node;
-    });
-}
 
