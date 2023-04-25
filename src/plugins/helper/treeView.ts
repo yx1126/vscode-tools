@@ -1,6 +1,6 @@
-import {  window, EventEmitter, TreeItem, type TreeDataProvider, type Event, type ExtensionContext } from "vscode";
+import {  EventEmitter, TreeItem, type TreeDataProvider, type Event, type ExtensionContext } from "vscode";
 import i18n from "@/utils/i18n";
-import { Commands } from "@/commands";
+import { Commands } from "@/core/commands";
 
 export interface HelpItemDefine {
     label: string;
@@ -8,7 +8,7 @@ export interface HelpItemDefine {
     url: string;
 }
 
-export class HelpProvider implements TreeDataProvider<HelpItem> {
+export class HelperProvider implements TreeDataProvider<HelpItem> {
 
     ctx: ExtensionContext;
     private _onDidChangeTreeData: EventEmitter<HelpItem | undefined | null | void> = new EventEmitter<HelpItem | undefined | null | void>();
@@ -32,14 +32,6 @@ export class HelpProvider implements TreeDataProvider<HelpItem> {
 
         return Promise.resolve(data);
     }
-
-    public static init(ctx: ExtensionContext) {
-        const help = new HelpProvider(ctx);
-        window.createTreeView("tools.helpAndFeedback", {
-            treeDataProvider: help,
-        });
-        return help;
-    }
 }
 
 class HelpItem extends TreeItem {
@@ -57,7 +49,7 @@ class HelpItem extends TreeItem {
         };
         this.command = {
             title: data.label,
-            command: Commands.open_url,
+            command: Commands.helper_open_url,
             arguments: [data.url],
         };
     }

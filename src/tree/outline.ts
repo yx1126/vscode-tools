@@ -1,6 +1,6 @@
 import { EventEmitter, TreeItem, window, TreeItemCollapsibleState, TextDocument, SymbolKind, ThemeIcon, MarkdownString } from "vscode";
+import { Commands } from "@/core/commands";
 import type { Event, TreeDataProvider, Range } from "vscode";
-import { Commands } from "@/commands";
 import Nodes, { type FileNode } from "@/utils/node";
 
 
@@ -66,7 +66,7 @@ export class OutlineTreeItem extends TreeItem {
         this.iconPath = this.getIcon();
         this.command = {
             title: data.name,
-            command: Commands.utils_scrollto,
+            command: Commands.helper_scrollTo,
             arguments: [data.range.start.line],
         };
     }

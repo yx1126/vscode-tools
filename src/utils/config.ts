@@ -9,8 +9,7 @@ export const SIMPLE_TOOLS_PLUGINS = ["clipboard", "location", "outline", "ellips
 // simpie-tools config key
 const CONFIG_KEY = "simple-tools";
 
-// clipboard store key
-export const CLIPBOARD_STORE_KEY = "clipboardKeys";
+
 
 export default class Config {
 

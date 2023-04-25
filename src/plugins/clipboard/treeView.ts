@@ -1,6 +1,7 @@
-import { Commands } from "@/commands";
-import { window, EventEmitter, TreeItem, TreeItemCollapsibleState, type TreeDataProvider, type Event, type Selection, workspace, Uri } from "vscode";
-import type GlobStorage from "../utils/globStorage";
+import { Commands } from "@/core/commands";
+import { EventEmitter, TreeItem, TreeItemCollapsibleState, workspace, Uri } from "vscode";
+import type { TreeDataProvider, Event, Selection } from "vscode";
+import type GlobStorage from "@/utils/globStorage";
 
 export interface ClipboardItem {
     label: string;
@@ -29,8 +30,7 @@ export class ClipboardProvider implements TreeDataProvider<ClipboardTreeItem> {
 
     getChildren(): Thenable<ClipboardTreeItem[]> {
         const data = this.list.map((item, i) => {
-            const wsFolder = workspace.getWorkspaceFolder(Uri.file(item.filePath));
-            return new ClipboardTreeItem(item, i, wsFolder ? "goto_file" : "", TreeItemCollapsibleState.None);
+            return new ClipboardTreeItem(item, i, TreeItemCollapsibleState.None);
         });
         return Promise.resolve(data);
     }
@@ -72,14 +72,6 @@ export class ClipboardProvider implements TreeDataProvider<ClipboardTreeItem> {
             this.refresh();
         }
     }
-
-    public static init(storage: GlobStorage<ClipboardItem[]>) {
-        const clipboard = new ClipboardProvider(storage);
-        window.createTreeView("tools.clipboard", {
-            treeDataProvider: clipboard,
-        });
-        return clipboard;
-    }
 }
 
 class ClipboardTreeItem extends TreeItem {
@@ -87,14 +79,13 @@ class ClipboardTreeItem extends TreeItem {
     constructor(
         public readonly data: ClipboardItem,
         public readonly index: number,
-        public readonly viewItem: string,
         public readonly collapsibleState: TreeItemCollapsibleState
     ) {
         super(data.label, collapsibleState);
         this.data = data;
         this.label = `${index + 1}.  ${data.label}`;
         this.tooltip = data.content;
-        this.contextValue = viewItem;
+        this.contextValue = workspace.getWorkspaceFolder(Uri.file(data.filePath)) ? "goto_file" : "";
         this.command = {
             title: this.label,
             command: Commands.clipboard_copytext,

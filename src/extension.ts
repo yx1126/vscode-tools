@@ -1,12 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { window, type ExtensionContext, type Disposable } from "vscode";
+import { type ExtensionContext } from "vscode";
 import i18n from "@/utils/i18n";
-import flatten from "@/utils/flatten";
-import CommandsModules from "@/commands";
-import Config from "@/utils/config";
-import Nodes from "@/utils/node";
-
+import { createTools } from "./core";
+import plugins from "@/plugins";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -15,29 +12,18 @@ export async function activate(context: ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log("Congratulations, your extension \"tools\" is now active!");
-
-
-
     // init i18n
     i18n.init(context.extensionPath);
-    // init plugins
-    Config.init(context);
 
-    // modules
-    const modules = [
-        CommandsModules,
-    ];
+    const tools = createTools(context, i18n.t);
 
-    const disposables = flatten(modules.map(m => m(context))) as Disposable[];
+    tools.use(plugins);
 
+    console.log("tools", tools);
 
+    tools.init();
 
-    Nodes.load(window.activeTextEditor?.document);
-
-    const watcher = Config.watch();
-
-    context.subscriptions.push(...disposables, ...watcher);
-
+    context.subscriptions.push(tools);
 
 }
 

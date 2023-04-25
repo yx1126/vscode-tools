@@ -20,6 +20,7 @@
         "compile": "pnpm run build",
         "watch": "tsc -watch -p ./",
         "dev": "pnpm build:i18n && cross-env NODE_ENV=development rollup -c --watch --bundleConfigAsCjs",
+        "build:dev": "pnpm build:i18n && cross-env NODE_ENV=development rollup -c --bundleConfigAsCjs",
         "build": "pnpm build:i18n && cross-env NODE_ENV=production rollup -c --bundleConfigAsCjs",
         "build:i18n": "esno scripts/build-i18n.ts",
         "pretest": "pnpm run compile && pnpm run lint",
@@ -160,7 +161,7 @@
                 "icon": "$(go-to-file)"
             },
             {
-                "command": "tools.help.open_url",
+                "command": "tools.helper.open_url",
                 "title": "%menu.help.open_url%",
                 "category": "%category%"
             },
@@ -180,7 +181,7 @@
                 "icon": "$(timeline-refresh)"
             },
             {
-                "command": "tools.utils.scroll_to",
+                "command": "tools.helper.scroll_to",
                 "title": "%utils.scroll_to%",
                 "category": "%category%"
             }
