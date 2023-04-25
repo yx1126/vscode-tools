@@ -1,12 +1,12 @@
-import { workspace, Disposable, commands } from "vscode";
+import { workspace, Disposable, commands, TextDocument, window } from "vscode";
 import type { ExtensionContext, ConfigurationChangeEvent } from "vscode";
-import type { FileNode } from "../utils/node";
+import Node, { type FileNode } from "../utils/node";
 import debounce from "../utils/debounce";
 
 interface ToolsPluginBase {
     name: string;
     onDidChangeConfiguration?: (e: ConfigurationChangeEvent) => void;
-    onFileNodeChange?: () => void;
+    onFileNodeChange?: (fileNodes: FileNode[]) => void;
 }
 
 export type ToolsPluginCallback = (app: Tools) => ToolsPluginBase & { install: () => Disposable[] | void };
@@ -22,11 +22,12 @@ export function createTools(...args: ConstructorParameters<typeof Tools>) {
     return new Tools(...args);
 }
 
-class Tools {
+export class Tools {
 
     ctx: ExtensionContext;
-    fileNodes: FileNode[] = [];
     disposable: Disposable[] = [];
+    document?: TextDocument;
+    node: Node;
 
     // plugins
     plugins: ToolsPluginOptions[] = [];
@@ -38,6 +39,7 @@ class Tools {
     constructor(ctx: ExtensionContext, t: (key: string, ...args: any[]) => void) {
         this.ctx = ctx;
         this.$t = t;
+        this.node = new Node(this);
     }
 
     get config() {
@@ -74,6 +76,7 @@ class Tools {
                 this.onDidChangeConfiguration.forEach(fn => fn(e));
                 if(e.affectsConfiguration("simple-tools.tools")) {
                     this.onSettingChange();
+                    this.node.load(window.activeTextEditor?.document);
                 }
             }, 300)),
         ];
@@ -83,13 +86,15 @@ class Tools {
     init() {
         this.onSettingChange();
         this.watch();
+        const nideDisposes = this.node.watch();
         const disposes = this.plugins.map(p => p.install(this)).reduce<Disposable[]>((result, list) => {
             if(list && list.length > 0) {
                 result.push(...list);
             }
             return result;
         }, []);
-        this.disposable.push(...disposes);
+        this.node.load(window.activeTextEditor?.document);
+        this.disposable.push(...disposes, ...nideDisposes);
     }
 
     dispose() {
