@@ -1,16 +1,12 @@
-import { TreeItemCollapsibleState, SymbolKind, commands, window, workspace } from "vscode";
+import { SymbolKind, TreeItemCollapsibleState, commands, window, workspace } from "vscode";
 import { type DocumentSymbol, TextDocument, Disposable, TextDocumentChangeEvent } from "vscode";
 import debounce from "./debounce";
 import { Tools } from "@/core";
 
-
-
 export interface NodeOptions {
-    path: number[];
     deep: number;
     rootName: string;
-    lang: string;
-    language: string;
+    lang?: string;
     collapsibleState?: TreeItemCollapsibleState;
 }
 
@@ -18,6 +14,14 @@ export interface FileNode extends Omit<NodeOptions, "collapsibleState">, Documen
     children: FileNode[];
     collapsibleState: TreeItemCollapsibleState;
 };
+
+export interface FormatOptions {
+    readonly modules: string[];
+    readonly onlyDefault: boolean;
+    readonly deepExpand: number | Record<string, number>;
+    readonly document: TextDocument;
+    readonly filter?: (node: FileNode) => FileNode;
+}
 
 export const langRe = new RegExp(/lang=(\"|\')(.*?)(\"|\')/);
 export const TEMPLATE_MAP = ["template"];
@@ -30,38 +34,58 @@ export default class Node {
 
     fileNodes: FileNode[] = [];
     templateNodes: FileNode[] = [];
-    timer: any = null;
-    tools: Tools;
+    private tools: Tools;
+    private timer: any = null;
 
     constructor(tools: Tools) {
         this.tools = tools;
     }
 
-    clearTimer() {
+    private clearTimer() {
         if(this.timer) {
             clearInterval(this.timer);
             this.timer = null;
         }
     }
 
-    get enable() {
+    private get enable() {
         const tools = this.tools.tools;
         if(!tools) return true;
         return tools.includes("outline") || tools.includes("ellipsis");
     };
 
+    private emit(data: FileNode[]) {
+        this.fileNodes = data;
+        this.tools.onFileNodeChange.forEach(fn => fn(data));
+    }
+
+    private async getFileNodes(document?: TextDocument) {
+        try {
+            if(!document || document.languageId !== "vue") return [];
+            const nodes = await commands.executeCommand<FileNode[]>("vscode.executeDocumentSymbolProvider", document.uri);
+            if(!nodes) return [];
+            return getFileNodes(nodes, this.tools, document);
+        } catch (error) {
+            return [];
+        }
+    }
+
     async update(document?: TextDocument) {
-        if(!document || !this.enable) return;
+        if(!this.enable || !document || document.languageId !== "vue") {
+            this.emit([]);
+            return;
+        }
         this.tools.document = document;
         const data = await this.getFileNodes(document);
-        this.fileNodes = data;
-        this.tools.onFileNodeChange.forEach(fn => {
-            fn(data);
-        });
+        console.log("update", data);
+        this.emit(data);
     }
 
     load(document?: TextDocument) {
-        if(!this.enable) return;
+        if(!this.enable || !document || document.languageId !== "vue") {
+            this.emit([]);
+            return;
+        }
         let index = 0;
         this.timer = setInterval(() => {
             index = index + 1;
@@ -71,17 +95,6 @@ export default class Node {
             }
             this.update(document);
         }, 300);
-    }
-
-    async getFileNodes(document?: TextDocument) {
-        try {
-            if(!document || document.languageId !== "vue") return [];
-            const nodes = await commands.executeCommand<FileNode[]>("vscode.executeDocumentSymbolProvider", document.uri);
-            if(!nodes) return [];
-            return getFileNodes(nodes, this.tools, document);
-        } catch (error) {
-            return [];
-        }
     }
 
     watch(): Disposable[] {
@@ -97,83 +110,113 @@ export default class Node {
             }, 300)),
             workspace.onDidChangeWorkspaceFolders(() => {
                 this.clearTimer();
-                this.update(window.activeTextEditor?.document);
+                this.load(window.activeTextEditor?.document);
             }),
         ];
     }
 }
 
+function getLang(node: FileNode, document: TextDocument) {
+    const langList = document.lineAt(node.range.start.line).text.match(langRe);
+    if(langList) return langList[2];
+}
 
+function getState(node: FileNode, { deepExpand }: FormatOptions) {
+    if(node.children.length <= 0) return TreeItemCollapsibleState.None;
+    const deepValue = typeof deepExpand === "number" ? deepExpand : (deepExpand[node.rootName] || 0);
+    return node.deep <= deepValue ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.Collapsed;
+}
 
-function getLanguage(name: string) {
-    return TEMPLATE_MAP.includes(name) ? "html" : STYLE_MAP.includes(name) ? "css" : SCRIUPT_MAP.includes(name) ? "" : "javascript";
+export function getBeginTag(str: string) {
+    const map = new Map();
+    const symbol = ["\'", "\"", "\`"];
+    for(let i = 0; i < str.length; i++) {
+        const t = str[i];
+        if(symbol.includes(t)) {
+            if(map.has(t)) {
+                map.delete(t);
+            } else {
+                map.set(t, true);
+            }
+            continue;
+        }
+        if(map.size === 0 && t === ">") {
+            return i;
+        }
+    }
+}
+
+function formatModules(nodes: FileNode[], options: FormatOptions): FileNode[] {
+    const { document, modules, filter = ((v) => v) } = options;
+    function recursion(nodes: FileNode[], opt: NodeOptions): FileNode[] {
+        return nodes.map(node => {
+            node.deep = opt.deep;
+            node.rootName = node.deep === 1 ? node.name : opt.rootName;
+            if(node.deep === 1) {
+                node.lang = getLang(node, document);
+            }
+            const result = filter(node);
+            result.collapsibleState = node.deep === 1 && !modules.includes(node.name) && !SCRIUPT_MAP.includes(node.name) ? TreeItemCollapsibleState.None : getState(node, options);
+            result.children = recursion(node.children, {
+                ...opt,
+                deep: node.deep + 1,
+                rootName: node.rootName,
+            });
+            return result;
+        }).sort((a, b) => a.range.start.line - b.range.start.line);
+    }
+    return recursion(nodes, { deep: 1, rootName: "" });
+}
+
+function formatTempModules(nodes: FileNode[], options: FormatOptions): FileNode[] {
+    const ellipsis: FileNode[] = [];
+    function filter(node: FileNode): FileNode {
+        return node;
+    }
+    return formatModules(nodes, {
+        ...options,
+        filter,
+    });
+}
+
+function formatScriptModules(nodes: FileNode[], options: FormatOptions): FileNode[] {
+    const { onlyDefault, modules } = options;
+    let hasDefault: boolean = false;
+    function filter(node: FileNode): FileNode {
+        const defaultModule = node.children.find(n => n.name === "default" && n.kind === SymbolKind.Variable);
+        if(defaultModule && onlyDefault) {
+            node.children = defaultModule.children;
+            hasDefault = true;
+        }
+        if(!modules.includes(node.rootName) && node.deep === (hasDefault ? 2 : 3)) {
+            node.children = SCRIPU_PROPS.includes(node.name) ? node.children.map(c => ({ ...c, children: [] })) : [];
+        }
+        return node;
+    };
+    return formatModules(nodes, {
+        ...options,
+        filter,
+    });
 }
 
 export function getFileNodes(nodes: FileNode[], tools: Tools, document?: TextDocument): FileNode[] {
     if(!document) return [];
-    const outlineModules = tools.config.get<string[]>("outline.modules") || [];
-    const isOnlyShowDefaultModule = tools.config.get<boolean>("outline.script.default");
-    const deepExpand = tools.config.get<number | Record<string, number>>("outline.expand") || 0;
+    const options: FormatOptions = {
+        modules: tools.config.get<string[]>("outline.modules") || [],
+        onlyDefault: tools.config.get<boolean>("outline.script.default") || false,
+        deepExpand: tools.config.get<number | Record<string, number>>("outline.expand") || 0,
+        document: document,
+    };
 
-    function getState(node: FileNode, root: boolean) {
-        if(root && !outlineModules.find(v => v === node.name) && !SCRIUPT_MAP.includes(node.name)) {
-            return TreeItemCollapsibleState.None;
-        }
-        const deepValue = typeof deepExpand === "number" ? deepExpand : (deepExpand[node.rootName || node.name] || 0);
-        return node.deep <= deepValue ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.Collapsed;
-    }
+    const { scriptModules, otherModules, templateModules } = nodes.reduce<Record<string, FileNode[]>>((result, item) => {
+        result[TEMPLATE_MAP.includes(item.name) ? "templateModules" : SCRIUPT_MAP.includes(item.name) ? "scriptModules" : "otherModules"].push(item);
+        return result;
+    }, { templateModules: [], scriptModules: [], otherModules: [] });
 
-    return nodes.map((node, i) => {
-        const langList = document.lineAt(node.range.start.line).text.match(langRe);
-        const lang = langList ? langList[2] : "";
-        const language = lang || getLanguage(node.name);
-        function recursion(nodes: FileNode[], options: NodeOptions): FileNode[] {
-            const { deep, language, rootName, path, collapsibleState } = options;
 
-            const isHasDefaultModule = nodes.find(n => node.name === "default" && n.kind === SymbolKind.Variable);
-
-            return nodes.map((node, ci) => {
-                const nodePath = [...path, ci];
-
-                const newChildNodeChildrens = recursion(node.children, {
-                    ...options,
-                    deep: deep + 1,
-                    path: nodePath,
-                    collapsibleState: SCRIUPT_MAP.includes(rootName) && SCRIPU_PROPS.includes(node.name) ? TreeItemCollapsibleState.None : undefined,
-                });
-
-                const newChildNode = {
-                    ...node,
-                    deep,
-                    language,
-                    rootName,
-                    path: nodePath,
-                    children: newChildNodeChildrens,
-                };
-                return {
-                    ...newChildNode,
-                    collapsibleState: collapsibleState !== undefined ? collapsibleState : getState(newChildNode, false),
-                };
-            });
-        };
-
-        const newNode = {
-            ...node,
-            lang,
-            language,
-            deep: 1,
-            path: [],
-            children: recursion(node.children, {
-                deep: 2,
-                rootName: node.name,
-                lang: lang,
-                language: language,
-                path: [i],
-            }),
-        };
-        return {
-            ...newNode,
-            collapsibleState: getState(newNode, true),
-        };
-    });
+    return [
+        ...formatTempModules(templateModules, options),
+        ...formatScriptModules(scriptModules, options),
+        ...formatModules(otherModules, options),
+    ].sort((a, b) => a.range.start.line - b.range.start.line);
 }

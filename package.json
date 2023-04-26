@@ -218,7 +218,10 @@
             "title": "Simple tools",
             "properties": {
                 "simple-tools.tools": {
-                    "type": "array",
+                    "type": [
+                        "array",
+                        "null"
+                    ],
                     "default": null,
                     "description": "%tools.description%",
                     "items": {

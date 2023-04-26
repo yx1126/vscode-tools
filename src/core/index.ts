@@ -4,14 +4,14 @@ import Node, { type FileNode } from "../utils/node";
 import debounce from "../utils/debounce";
 
 interface ToolsPluginBase {
-    name: string;
-    onDidChangeConfiguration?: (e: ConfigurationChangeEvent) => void;
-    onFileNodeChange?: (fileNodes: FileNode[]) => void;
+    readonly name: string;
+    readonly onDidChangeConfiguration?: (e: ConfigurationChangeEvent) => void;
+    readonly onFileNodeChange?: (fileNodes: FileNode[]) => void;
 }
 
-export type ToolsPluginCallback = (app: Tools) => ToolsPluginBase & { install: () => Disposable[] | void };
+export type ToolsPluginCallback = (app: Tools) => ToolsPluginBase & { readonly install: () => Disposable[] | void };
 
-export type ToolsPluginOptions = (ToolsPluginBase & { install: (app: Tools) => Disposable[] | void });
+export type ToolsPluginOptions = (ToolsPluginBase & { readonly install: (app: Tools) => Disposable[] | void });
 
 export type ToolsPlugin = ToolsPluginOptions | ToolsPluginCallback;
 
@@ -30,9 +30,9 @@ export class Tools {
     node: Node;
 
     // plugins
-    plugins: ToolsPluginOptions[] = [];
+    private plugins: ToolsPluginOptions[] = [];
     onFileNodeChange: Array<(fileNodes: FileNode[]) => void> = [];
-    onDidChangeConfiguration: Array<(e: ConfigurationChangeEvent) => void> = [];
+    private onDidChangeConfiguration: Array<(e: ConfigurationChangeEvent) => void> = [];
 
     $t: (key: string, ...args: any[]) => void;
 
@@ -50,6 +50,13 @@ export class Tools {
         return this.config.get<string[]>("tools");
     }
 
+    private onSettingChange() {
+        this.plugins.forEach(p => {
+            const enable = !this.tools || this.tools.includes(p.name);
+            commands.executeCommand("setContext", `simple-tools.plugin.${p.name}`, enable);
+        });
+    }
+
     use(plugin: ToolsPlugin | ToolsPlugin[]) {
         const plugins = Array.isArray(plugin) ? plugin : [plugin];
         plugins.forEach(p => {
@@ -60,13 +67,6 @@ export class Tools {
                 if(pluginOption.onDidChangeConfiguration) this.onDidChangeConfiguration.push(pluginOption.onDidChangeConfiguration);
                 if(pluginOption.onFileNodeChange) this.onFileNodeChange.push(pluginOption.onFileNodeChange);
             }
-        });
-    }
-
-    onSettingChange() {
-        this.plugins.forEach(p => {
-            const enable = !this.tools || this.tools.includes(p.name);
-            commands.executeCommand("setContext", `simple-tools.plugin.${p.name}`, enable);
         });
     }
 

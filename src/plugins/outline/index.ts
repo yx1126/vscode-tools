@@ -9,6 +9,7 @@ export default <ToolsPluginCallback> function(app) {
 
     window.createTreeView("tools.outline", {
         treeDataProvider: outline,
+        showCollapseAll: true,
     });
 
     return {
