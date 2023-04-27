@@ -57,6 +57,16 @@ export class Tools {
         });
     }
 
+    // 打开辅助侧栏
+    private openAuxiliaryBar() {
+        commands.executeCommand("workbench.action.focusAuxiliaryBar");
+    }
+
+    // 关闭辅助侧栏
+    private closeAuxiliaryBar() {
+        commands.executeCommand("workbench.action.closeAuxiliaryBar");
+    }
+
     use(plugin: ToolsPlugin | ToolsPlugin[]) {
         const plugins = Array.isArray(plugin) ? plugin : [plugin];
         plugins.forEach(p => {
@@ -95,6 +105,9 @@ export class Tools {
         }, []);
         this.node.load(window.activeTextEditor?.document);
         this.disposable.push(...disposes, ...nideDisposes);
+        if(this.config.get<boolean>("openAuxiliaryBar")) {
+            this.openAuxiliaryBar();
+        }
     }
 
     dispose() {

@@ -1,14 +1,14 @@
-import { Selection, TextEditorRevealType, commands, window, Position, Uri, env } from "vscode";
+import { Selection, TextEditorRevealType, commands, window, Position, Uri, env, type Range } from "vscode";
 import { type ToolsPluginCallback } from "@/core";
 import { Commands } from "@/core/commands";
 import { HelperProvider } from "./treeView";
 
-export async function scrollTo(lineNumber: number, at: TextEditorRevealType = TextEditorRevealType.InCenter) {
+export async function scrollTo(range: Range, at: TextEditorRevealType = TextEditorRevealType.InCenter) {
     const document = window.activeTextEditor?.document;
     if(document) {
         const textEditor = await window.showTextDocument(document);
-        const character = document.lineAt(lineNumber).text.trimEnd().length;
-        const lineEnd = new Position(lineNumber, character);
+        const character = range.isSingleLine ? range.end.character : document.lineAt(range.start.line).text.trimEnd().length;
+        const lineEnd = new Position(range.start.line, character);
         const selection = new Selection(lineEnd, lineEnd);
         textEditor.selection = selection;
         textEditor.revealRange(selection, at);
@@ -18,7 +18,6 @@ export async function scrollTo(lineNumber: number, at: TextEditorRevealType = Te
 export async function onOpenUrl(url: string) {
     await env.openExternal(Uri.parse(url));
 }
-
 
 export default <ToolsPluginCallback> function(app) {
 

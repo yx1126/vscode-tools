@@ -21,8 +21,8 @@ export default <ToolsPluginCallback> function(app) {
                 }),
             ];
         },
-        onFileNodeChange(nodes) {
-            outline.refresh(nodes, app.document);
+        onFileNodeChange(data) {
+            outline.refresh(data, app.document);
         },
     };
 };

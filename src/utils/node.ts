@@ -29,11 +29,9 @@ export const SCRIUPT_MAP = ["script", "script setup"];
 export const STYLE_MAP = ["style", "style scoped"];
 export const SCRIPU_PROPS = ["props", "data", "methods", "computed", "watch", "provide", "inject"];
 
-
 export default class Node {
 
     fileNodes: FileNode[] = [];
-    templateNodes: FileNode[] = [];
     private tools: Tools;
     private timer: any = null;
 
@@ -77,7 +75,6 @@ export default class Node {
         }
         this.tools.document = document;
         const data = await this.getFileNodes(document);
-        console.log("update", data);
         this.emit(data);
     }
 
@@ -130,6 +127,8 @@ function getState(node: FileNode, { deepExpand }: FormatOptions) {
 export function getBeginTag(str: string) {
     const map = new Map();
     const symbol = ["\'", "\"", "\`"];
+    let index: undefined | number;
+    end:
     for(let i = 0; i < str.length; i++) {
         const t = str[i];
         if(symbol.includes(t)) {
@@ -141,9 +140,11 @@ export function getBeginTag(str: string) {
             continue;
         }
         if(map.size === 0 && t === ">") {
-            return i;
+            index = i;
+            break end;
         }
     }
+    return str.substring(0, index! + 1);
 }
 
 function formatModules(nodes: FileNode[], options: FormatOptions): FileNode[] {
@@ -168,17 +169,6 @@ function formatModules(nodes: FileNode[], options: FormatOptions): FileNode[] {
     return recursion(nodes, { deep: 1, rootName: "" });
 }
 
-function formatTempModules(nodes: FileNode[], options: FormatOptions): FileNode[] {
-    const ellipsis: FileNode[] = [];
-    function filter(node: FileNode): FileNode {
-        return node;
-    }
-    return formatModules(nodes, {
-        ...options,
-        filter,
-    });
-}
-
 function formatScriptModules(nodes: FileNode[], options: FormatOptions): FileNode[] {
     const { onlyDefault, modules } = options;
     let hasDefault: boolean = false;
@@ -199,7 +189,7 @@ function formatScriptModules(nodes: FileNode[], options: FormatOptions): FileNod
     });
 }
 
-export function getFileNodes(nodes: FileNode[], tools: Tools, document?: TextDocument): FileNode[] {
+export function getFileNodes(nodes: FileNode[], tools: Tools, document?: TextDocument) {
     if(!document) return [];
     const options: FormatOptions = {
         modules: tools.config.get<string[]>("outline.modules") || [],
@@ -208,14 +198,12 @@ export function getFileNodes(nodes: FileNode[], tools: Tools, document?: TextDoc
         document: document,
     };
 
-    const { scriptModules, otherModules, templateModules } = nodes.reduce<Record<string, FileNode[]>>((result, item) => {
-        result[TEMPLATE_MAP.includes(item.name) ? "templateModules" : SCRIUPT_MAP.includes(item.name) ? "scriptModules" : "otherModules"].push(item);
+    const { scriptModules, otherModules } = nodes.reduce<Record<string, FileNode[]>>((result, item) => {
+        result[SCRIUPT_MAP.includes(item.name) ? "scriptModules" : "otherModules"].push(item);
         return result;
-    }, { templateModules: [], scriptModules: [], otherModules: [] });
-
+    }, { scriptModules: [], otherModules: [] });
 
     return [
-        ...formatTempModules(templateModules, options),
         ...formatScriptModules(scriptModules, options),
         ...formatModules(otherModules, options),
     ].sort((a, b) => a.range.start.line - b.range.start.line);

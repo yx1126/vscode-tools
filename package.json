@@ -2,7 +2,7 @@
     "name": "vsocde-tools",
     "displayName": "Simple Tools",
     "description": "Some small tools for VS Code",
-    "version": "1.3.6",
+    "version": "1.4.0",
     "publisher": "yx1126",
     "repository": {
         "type": "git",
@@ -236,7 +236,7 @@
                 },
                 "simple-tools.openAuxiliaryBar": {
                     "type": "boolean",
-                    "default": true,
+                    "default": false,
                     "description": "%bar.description%"
                 },
                 "simple-tools.outline.modules": {

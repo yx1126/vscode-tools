@@ -19,8 +19,6 @@ export async function activate(context: ExtensionContext) {
 
     tools.use(plugins);
 
-    console.log("tools", tools);
-
     tools.init();
 
     context.subscriptions.push(tools);

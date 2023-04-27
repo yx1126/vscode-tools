@@ -60,7 +60,7 @@ export class OutlineTreeItem extends TreeItem {
         this.command = {
             title: data.name,
             command: Commands.helper_scrollTo,
-            arguments: [data.range.start.line],
+            arguments: [data.range],
         };
     }
 
