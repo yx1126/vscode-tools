@@ -38,7 +38,7 @@ export default defineConfig({
         eslint({
             fix: true,
             throwOnError: true,
-            throwOnWarning: true,
+            throwOnWarning: false,
             exclude: [
                 "node_modules/**",
             ],

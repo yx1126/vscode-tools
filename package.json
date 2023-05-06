@@ -1,6 +1,6 @@
 {
     "name": "vsocde-tools",
-    "displayName": "Simple Tools",
+    "displayName": "Vue Tools",
     "description": "Some small tools for VS Code",
     "version": "1.4.0",
     "publisher": "yx1126",
@@ -60,66 +60,66 @@
         "menus": {
             "editor/title": [
                 {
-                    "command": "tools.explorer.position",
+                    "command": "vue-tools.explorer.position",
                     "group": "navigation",
-                    "when": "simple-tools.plugin.location"
+                    "when": "vue-tools.plugin.location"
                 }
             ],
             "editor/context": [
                 {
-                    "command": "tools.clipboard.add",
+                    "command": "vue-tools.clipboard.add",
                     "group": "navigation",
                     "when": "editorHasSelection"
                 }
             ],
             "view/title": [
                 {
-                    "command": "tools.clipboard.clear",
-                    "when": "view == tools.clipboard",
+                    "command": "vue-tools.clipboard.clear",
+                    "when": "view == vue-tools.clipboard",
                     "group": "navigation"
                 },
                 {
-                    "command": "tools.explorer.position",
-                    "when": "view == workbench.explorer.fileView && simple-tools.plugin.location",
+                    "command": "vue-tools.explorer.position",
+                    "when": "view == workbench.explorer.fileView && vue-tools.plugin.location",
                     "group": "navigation"
                 },
                 {
-                    "command": "tools.outline.refresh",
-                    "when": "view == tools.outline",
+                    "command": "vue-tools.outline.refresh",
+                    "when": "view == vue-tools.outline",
                     "group": "navigation"
                 }
             ],
             "view/item/context": [
                 {
-                    "command": "tools.clipboard.edit",
+                    "command": "vue-tools.clipboard.edit",
                     "group": "inline",
-                    "when": "view == tools.clipboard"
+                    "when": "view == vue-tools.clipboard"
                 },
                 {
-                    "command": "tools.clipboard.delete",
+                    "command": "vue-tools.clipboard.delete",
                     "group": "inline",
-                    "when": "view == tools.clipboard"
+                    "when": "view == vue-tools.clipboard"
                 },
                 {
-                    "command": "tools.clipboard.copytext",
+                    "command": "vue-tools.clipboard.copytext",
                     "group": "inline",
-                    "when": "view == tools.clipboard"
+                    "when": "view == vue-tools.clipboard"
                 },
                 {
-                    "command": "tools.clipboard.goto_file",
+                    "command": "vue-tools.clipboard.goto_file",
                     "group": "inline",
-                    "when": "view == tools.clipboard && viewItem == goto_file"
+                    "when": "view == vue-tools.clipboard && viewItem == goto_file"
                 }
             ]
         },
         "commands": [
             {
-                "command": "tools.clipboard.add",
+                "command": "vue-tools.clipboard.add",
                 "title": "%menu.clipboard.add%",
                 "category": "%category%"
             },
             {
-                "command": "tools.clipboard.edit",
+                "command": "vue-tools.clipboard.edit",
                 "title": "%menu.clipboard.edit%",
                 "category": "%category%",
                 "icon": {
@@ -128,7 +128,7 @@
                 }
             },
             {
-                "command": "tools.clipboard.delete",
+                "command": "vue-tools.clipboard.delete",
                 "title": "%menu.clipboard.delete%",
                 "category": "%category%",
                 "icon": {
@@ -137,7 +137,7 @@
                 }
             },
             {
-                "command": "tools.clipboard.clear",
+                "command": "vue-tools.clipboard.clear",
                 "title": "%menu.clipboard.clear%",
                 "category": "%category%",
                 "icon": {
@@ -146,7 +146,7 @@
                 }
             },
             {
-                "command": "tools.clipboard.copytext",
+                "command": "vue-tools.clipboard.copytext",
                 "title": "%menu.clipboard.copy%",
                 "category": "%category%",
                 "icon": {
@@ -155,18 +155,18 @@
                 }
             },
             {
-                "command": "tools.clipboard.goto_file",
+                "command": "vue-tools.clipboard.goto_file",
                 "title": "%menu.clipboard.goto_file%",
                 "category": "%category%",
                 "icon": "$(go-to-file)"
             },
             {
-                "command": "tools.helper.open_url",
+                "command": "vue-tools.helper.open_url",
                 "title": "%menu.help.open_url%",
                 "category": "%category%"
             },
             {
-                "command": "tools.explorer.position",
+                "command": "vue-tools.explorer.position",
                 "title": "%menu.explorer.position%",
                 "category": "%category%",
                 "icon": {
@@ -175,31 +175,31 @@
                 }
             },
             {
-                "command": "tools.outline.refresh",
+                "command": "vue-tools.outline.refresh",
                 "title": "%menu.outline.refresh%",
                 "category": "%category%",
                 "icon": "$(timeline-refresh)"
             },
             {
-                "command": "tools.helper.scroll_to",
+                "command": "vue-tools.helper.scroll_to",
                 "title": "%utils.scroll_to%",
                 "category": "%category%"
             }
         ],
         "views": {
-            "tools": [
+            "vue-tools": [
                 {
-                    "id": "tools.clipboard",
+                    "id": "vue-tools.clipboard",
                     "name": "%view.clipboard%",
-                    "when": "simple-tools.plugin.clipboard"
+                    "when": "vue-tools.plugin.clipboard"
                 },
                 {
-                    "id": "tools.outline",
+                    "id": "vue-tools.outline",
                     "name": "%view.outline%",
-                    "when": "simple-tools.plugin.outline"
+                    "when": "vue-tools.plugin.outline"
                 },
                 {
-                    "id": "tools.helpAndFeedback",
+                    "id": "vue-tools.helpAndFeedback",
                     "name": "%view.help%"
                 }
             ]
@@ -207,17 +207,17 @@
         "viewsContainers": {
             "activitybar": [
                 {
-                    "id": "tools",
-                    "title": "%title%",
+                    "id": "vue-tools",
+                    "title": "%activitybar.tools%",
                     "icon": "resources/tool.svg"
                 }
             ]
         },
         "configuration": {
             "type": "object",
-            "title": "Simple tools",
+            "title": "Vue tools",
             "properties": {
-                "simple-tools.tools": {
+                "vue-tools.tools": {
                     "type": [
                         "array",
                         "null"
@@ -234,12 +234,12 @@
                         ]
                     }
                 },
-                "simple-tools.openAuxiliaryBar": {
+                "vue-tools.openAuxiliaryBar": {
                     "type": "boolean",
                     "default": false,
                     "description": "%bar.description%"
                 },
-                "simple-tools.outline.modules": {
+                "vue-tools.outline.modules": {
                     "type": [
                         "array",
                         "null"
@@ -250,12 +250,12 @@
                     },
                     "description": "%outline.description%"
                 },
-                "simple-tools.outline.script.default": {
+                "vue-tools.outline.script.default": {
                     "type": "boolean",
                     "default": true,
                     "description": "%outline.script.default%"
                 },
-                "simple-tools.outline.expand": {
+                "vue-tools.outline.expand": {
                     "type": [
                         "number",
                         "object"

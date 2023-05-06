@@ -1,7 +1,7 @@
 import { workspace, Disposable, commands, TextDocument, window } from "vscode";
 import type { ExtensionContext, ConfigurationChangeEvent } from "vscode";
-import Node, { type FileNode } from "../utils/node";
-import debounce from "../utils/debounce";
+import Node, { type FileNode } from "./utils/node";
+import debounce from "./utils/debounce";
 
 interface ToolsPluginBase {
     readonly name: string;
@@ -16,7 +16,7 @@ export type ToolsPluginOptions = (ToolsPluginBase & { readonly install: (app: To
 export type ToolsPlugin = ToolsPluginOptions | ToolsPluginCallback;
 
 // simpie-tools config key
-const CONFIG_KEY = "simple-tools";
+const CONFIG_KEY = "vue-tools";
 
 export function createTools(...args: ConstructorParameters<typeof Tools>) {
     return new Tools(...args);
@@ -34,11 +34,8 @@ export class Tools {
     onFileNodeChange: Array<(fileNodes: FileNode[]) => void> = [];
     private onDidChangeConfiguration: Array<(e: ConfigurationChangeEvent) => void> = [];
 
-    $t: (key: string, ...args: any[]) => void;
-
-    constructor(ctx: ExtensionContext, t: (key: string, ...args: any[]) => void) {
+    constructor(ctx: ExtensionContext) {
         this.ctx = ctx;
-        this.$t = t;
         this.node = new Node(this);
     }
 
@@ -53,7 +50,7 @@ export class Tools {
     private onSettingChange() {
         this.plugins.forEach(p => {
             const enable = !this.tools || this.tools.includes(p.name);
-            commands.executeCommand("setContext", `simple-tools.plugin.${p.name}`, enable);
+            commands.executeCommand("setContext", `vue-tools.plugin.${p.name}`, enable);
         });
     }
 
@@ -84,7 +81,7 @@ export class Tools {
         const result = [
             workspace.onDidChangeConfiguration(debounce((e: ConfigurationChangeEvent) => {
                 this.onDidChangeConfiguration.forEach(fn => fn(e));
-                if(e.affectsConfiguration("simple-tools.tools")) {
+                if(e.affectsConfiguration("vue-tools.tools")) {
                     this.onSettingChange();
                     this.node.load(window.activeTextEditor?.document);
                 }

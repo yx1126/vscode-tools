@@ -1,5 +1,6 @@
 {
-    "title": "工具箱",
+    "activitybar.tools": "工具箱",
+    "activitybar.outline": "Vue 大纲",
     "category": "Tools",
     "view.clipboard": "剪切板",
     "view.outline": "vue 大纲",

@@ -1,6 +1,6 @@
 import { commands, window, workspace } from "vscode";
-import { Commands } from "@/core/commands";
-import type { ToolsPluginCallback } from "@/core";
+import { Commands } from "@/commands";
+import type { ToolsPluginCallback } from "@/tools";
 
 export async function openPosition() {
     const editor = window.activeTextEditor;

@@ -1,7 +1,7 @@
 import { SymbolKind, TreeItemCollapsibleState, commands, window, workspace } from "vscode";
 import { type DocumentSymbol, TextDocument, Disposable, TextDocumentChangeEvent } from "vscode";
 import debounce from "./debounce";
-import { Tools } from "@/core";
+import { Tools } from "@/tools";
 
 export interface NodeOptions {
     deep: number;
@@ -27,7 +27,7 @@ export const langRe = new RegExp(/lang=(\"|\')(.*?)(\"|\')/);
 export const TEMPLATE_MAP = ["template"];
 export const SCRIUPT_MAP = ["script", "script setup"];
 export const STYLE_MAP = ["style", "style scoped"];
-export const SCRIPU_PROPS = ["props", "data", "methods", "computed", "watch", "provide", "inject"];
+export const SCRIPU_PROPS = ["props", "data", "methods", "computed", "watch", "provide", "inject", "setup"];
 
 export default class Node {
 
@@ -75,6 +75,7 @@ export default class Node {
         }
         this.tools.document = document;
         const data = await this.getFileNodes(document);
+        console.log("update", data);
         this.emit(data);
     }
 
@@ -180,6 +181,9 @@ function formatScriptModules(nodes: FileNode[], options: FormatOptions): FileNod
         }
         if(!modules.includes(node.rootName) && node.deep === (hasDefault ? 2 : 3)) {
             node.children = SCRIPU_PROPS.includes(node.name) ? node.children.map(c => ({ ...c, children: [] })) : [];
+            if(node.name === "setup") {
+                node.children = node.children.filter(n => n.kind !== SymbolKind.Property);
+            }
         }
         return node;
     };

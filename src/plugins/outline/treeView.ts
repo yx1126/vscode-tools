@@ -1,5 +1,5 @@
-import { EventEmitter, TreeItem, TreeItemCollapsibleState, TextDocument, SymbolKind, ThemeIcon } from "vscode";
-import { Commands } from "@/core/commands";
+import { EventEmitter, TreeItem, TreeItemCollapsibleState, SymbolKind, ThemeIcon } from "vscode";
+import { Commands } from "@/commands";
 import type { Event, TreeDataProvider } from "vscode";
 import { type FileNode } from "@/utils/node";
 
@@ -7,11 +7,6 @@ import { type FileNode } from "@/utils/node";
 export class OutlineProvider implements TreeDataProvider<OutlineTreeItem> {
 
     list: FileNode[] = [];
-    document?: TextDocument;
-
-    constructor(document: TextDocument) {
-        this.document = document;
-    }
 
     private _onDidChangeTreeData: EventEmitter<OutlineTreeItem | undefined | null | void> = new EventEmitter<OutlineTreeItem | undefined | null | void>();
     readonly onDidChangeTreeData: Event<OutlineTreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
@@ -23,14 +18,13 @@ export class OutlineProvider implements TreeDataProvider<OutlineTreeItem> {
     getChildren(element?: OutlineTreeItem): Thenable<OutlineTreeItem[]> {
         const list = element ? element.children : this.list;
         const data = list.map((item) => {
-            return new OutlineTreeItem(item, item.collapsibleState, this.document);
+            return new OutlineTreeItem(item, item.collapsibleState);
         });
         return Promise.resolve(data);
     }
 
-    refresh(data?: FileNode[], document?: TextDocument): void {
+    refresh(data?: FileNode[]): void {
         this.list = data || [];
-        this.document = document;
         this._onDidChangeTreeData.fire();
     }
 
@@ -48,7 +42,6 @@ export class OutlineTreeItem extends TreeItem {
     constructor(
         public readonly data: FileNode,
         public readonly collapsibleState: TreeItemCollapsibleState,
-        public readonly doc?: TextDocument,
     ) {
         super(data.name, collapsibleState);
         this.children = data.children as FileNode[];

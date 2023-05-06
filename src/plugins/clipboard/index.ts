@@ -1,9 +1,9 @@
 import { window, env, workspace, Uri, Selection, TextEditorRevealType, commands } from "vscode";
-import type { ToolsPluginCallback } from "@/core";
+import type { ToolsPluginCallback } from "@/tools";
 import { ClipboardProvider, type ClipboardItem } from "./treeView";
 import i18n from "@/utils/i18n";
 import GlobStorage from "@/utils/globStorage";
-import { Commands } from "@/core/commands";
+import { Commands } from "@/commands";
 
 export function add(clipboard: ClipboardProvider) {
     const editor = window.activeTextEditor!;
@@ -71,7 +71,7 @@ export default <ToolsPluginCallback> function(app) {
 
     const clipboardStore = new GlobStorage<ClipboardItem[]>(app.ctx, CLIPBOARD_STORE_KEY);
     const clipboard = new ClipboardProvider(clipboardStore);
-    window.createTreeView("tools.clipboard", {
+    window.createTreeView("vue-tools.clipboard", {
         treeDataProvider: clipboard,
     });
 

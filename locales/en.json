@@ -1,5 +1,6 @@
 {
-    "title": "Tools",
+    "activitybar.tools": "Tools",
+    "activitybar.outline": "Vue outline",
     "category": "Tools",
     "view.clipboard": "Clipboard",
     "view.outline": "Vue outline",
