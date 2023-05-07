@@ -1,5 +1,5 @@
 import { commands, window, workspace } from "vscode";
-import { Commands } from "@/commands";
+import { Commands } from "@/maps";
 import type { ToolsPluginCallback } from "@/tools";
 
 export async function openPosition() {

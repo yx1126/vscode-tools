@@ -3,7 +3,7 @@ import type { ToolsPluginCallback } from "@/tools";
 import { ClipboardProvider, type ClipboardItem } from "./treeView";
 import i18n from "@/utils/i18n";
 import GlobStorage from "@/utils/globStorage";
-import { Commands } from "@/commands";
+import { TreeViews, Commands } from "@/maps";
 
 export function add(clipboard: ClipboardProvider) {
     const editor = window.activeTextEditor!;
@@ -71,7 +71,7 @@ export default <ToolsPluginCallback> function(app) {
 
     const clipboardStore = new GlobStorage<ClipboardItem[]>(app.ctx, CLIPBOARD_STORE_KEY);
     const clipboard = new ClipboardProvider(clipboardStore);
-    window.createTreeView("vue-tools.clipboard", {
+    window.createTreeView(TreeViews.Cliboard, {
         treeDataProvider: clipboard,
     });
 

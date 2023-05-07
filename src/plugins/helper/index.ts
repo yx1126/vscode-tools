@@ -1,7 +1,7 @@
 import { Selection, TextEditorRevealType, commands, window, Position, Uri, env, type Range } from "vscode";
 import { type ToolsPluginCallback } from "@/tools";
-import { Commands } from "@/commands";
 import { HelperProvider } from "./treeView";
+import { TreeViews, Commands } from "@/maps";
 
 export async function scrollTo(range: Range, at: TextEditorRevealType = TextEditorRevealType.InCenter) {
     const document = window.activeTextEditor?.document;
@@ -22,7 +22,7 @@ export async function onOpenUrl(url: string) {
 export default <ToolsPluginCallback> function(app) {
 
     const helper = new HelperProvider(app.ctx);
-    window.createTreeView("vue-tools.helpAndFeedback", {
+    window.createTreeView(TreeViews.HelpAndFeedback, {
         treeDataProvider: helper,
     });
 

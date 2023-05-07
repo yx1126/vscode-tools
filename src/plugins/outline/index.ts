@@ -1,13 +1,13 @@
 import { commands, window } from "vscode";
 import { type ToolsPluginCallback } from "@/tools";
 import { OutlineProvider } from "./treeView";
-import { Commands } from "@/commands";
+import { TreeViews, Commands } from "@/maps";
 
 export default <ToolsPluginCallback> function(app) {
 
     const outline = new OutlineProvider();
 
-    window.createTreeView("vue-tools.outline", {
+    window.createTreeView(TreeViews.Outline, {
         treeDataProvider: outline,
         showCollapseAll: true,
     });
