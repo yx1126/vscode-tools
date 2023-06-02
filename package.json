@@ -87,6 +87,11 @@
                     "command": "vue-tools.outline.refresh",
                     "when": "view == vue-tools.outline",
                     "group": "navigation"
+                },
+                {
+                    "command": "vue-tools.explorer.preview",
+                    "when": "view == workbench.explorer.fileView && vue-tools.plugin.preview",
+                    "group": "navigation"
                 }
             ],
             "view/item/context": [
@@ -184,6 +189,15 @@
                 "command": "vue-tools.helper.scroll_to",
                 "title": "%utils.scroll_to%",
                 "category": "%category%"
+            },
+            {
+                "command": "vue-tools.explorer.preview",
+                "title": "%menu.explorer.preview%",
+                "category": "%category%",
+                "icon": {
+                    "dark": "resources/dark/svg.svg",
+                    "light": "resources/light/svg.svg"
+                }
             }
         ],
         "views": {
@@ -230,7 +244,7 @@
                             "clipboard",
                             "location",
                             "outline",
-                            "ellipsis"
+                            "preview"
                         ]
                     }
                 },

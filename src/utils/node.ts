@@ -128,21 +128,26 @@ function getState(node: FileNode, { deepExpand }: FormatOptions) {
 export function getBeginTag(str: string) {
     const map = new Map();
     const symbol = ["\'", "\"", "\`"];
-    let index: undefined | number;
-    end:
+    let index: number;
+    label:
     for(let i = 0; i < str.length; i++) {
         const t = str[i];
         if(symbol.includes(t)) {
             if(map.has(t)) {
+                map.forEach((v, k) => {
+                    if(v > map.get(t) && v < i) {
+                        map.delete(k);
+                    }
+                });
                 map.delete(t);
             } else {
-                map.set(t, true);
+                map.set(t, i);
             }
             continue;
         }
         if(map.size === 0 && t === ">") {
             index = i;
-            break end;
+            break label;
         }
     }
     return str.substring(0, index! + 1);

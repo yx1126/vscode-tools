@@ -12,6 +12,7 @@ export const enum Commands {
     clipboard_clear = "vue-tools.clipboard.clear",
     clipboard_goto_file = "vue-tools.clipboard.goto_file",
     explorer_position = "vue-tools.explorer.position",
+    explorer_preview = "vue-tools.explorer.preview",
     outline_refresh = "vue-tools.outline.refresh",
     outline_collapsed = "vue-tools.outline.collapsed",
     helper_open_url = "vue-tools.helper.open_url",
