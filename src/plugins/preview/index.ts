@@ -1,11 +1,12 @@
-import { ViewColumn, commands, window, workspace } from "vscode";
-import type {  WebviewPanel, ExtensionContext, WorkspaceFolder } from "vscode";
+import { ViewColumn, commands, env, window, workspace } from "vscode";
+import type { WebviewPanel, ExtensionContext, WorkspaceFolder } from "vscode";
 import { type ToolsPluginCallback } from "@/tools";
 import { Commands } from "@/maps";
 import i18n from "@/utils/i18n";
 import fs from "fs-extra";
 import path from "node:path";
 import { Tools } from "@/tools";
+import svgo from "svgo";
 
 interface SVGItem {
     folder: WorkspaceFolder;
@@ -14,7 +15,6 @@ interface SVGItem {
 
 function readFile(fsPath: string) {
     const result: SVGItem["list"] = [];
-
     function start(_path: string) {
         if(fs.statSync(_path).isDirectory()) {
             const list = fs.readdirSync(_path);
@@ -30,11 +30,31 @@ function readFile(fsPath: string) {
             const { ext, name } = path.parse(_path);
             if(ext === ".svg") {
                 const file = fs.readFileSync(_path, "utf-8");
-                result.push({
+                const svgBody = file.substring(file.indexOf("<svg"), file.lastIndexOf("</svg>") + 6);
+                const value = {
                     name,
                     path: _path,
-                    value: file.toString().replace(/(width|height)=(\'|\")(.+?)(\'|\")/g, ""),
-                });
+                    value: "",
+                };
+                try {
+                    const { data } = svgo.optimize(svgBody, {
+                        plugins: [
+                            "removeDimensions",
+                            "removeXMLNS",
+                            {
+                                name: "addAttributesToSVGElement",
+                                params: {
+                                    attributes: [{ id: name }],
+                                },
+                            },
+                        ],
+                    });
+                    value.value = data;
+                } catch (error) {
+                    value.value = (`<svg id="${name}" ` + svgBody.substring(4)).replace(/(width|height)=(\'|\")(.+?)(\'|\")/g, "");
+
+                }
+                result.push(value);
             }
         }
     }
@@ -43,10 +63,41 @@ function readFile(fsPath: string) {
 }
 
 function createHTML(ctx: ExtensionContext) {
-    const html = fs.readFileSync(path.join(ctx.extensionPath, "src/plugins/preview", "index.html"), "utf-8");
+    const html = fs.readFileSync(path.join(ctx.extensionPath, "preview.html"), "utf-8");
     const data: Record<string, any> = {
         title: i18n.t("menu.explorer.preview.title"),
+        symbols: "",
+        icons: "",
     };
+    const svgList = (workspace.workspaceFolders || []).reduce<SVGItem[]>((pre, item) => {
+        pre.push({ folder: item, list: readFile(item.uri.fsPath) });
+        return pre;
+    }, []);
+    const { svgChild, icons } = svgList.reduce((pre, item) => {
+        let iconItems = "";
+        let symbols = "";
+        item.list.forEach((v) => {
+            symbols += `<symbol ${v.value.substring(v.value.indexOf("<svg") + 4, v.value.lastIndexOf("</svg>"))}</symbol>`;
+            iconItems += `
+                <div class="icon-item" data-name="${v.name}">
+                    <span>
+                        <i class="icon">
+                            <svg aria-hidden="true"> <use xlink:href="#${v.name}"></use></svg>
+                        </i>
+                        <span class="icon-name">${v.name}</span>
+                    </span>
+                </div>
+            `;
+        });
+        pre.icons += `<div class="folder-item">
+            <h2>${item.folder.name}</h2>
+            <div class="icon-box">${iconItems}</div>
+        </div>`;
+        pre.svgChild += symbols;
+        return pre;
+    }, { svgChild: "", icons: "" });
+    data.symbols = svgChild;
+    data.icons = icons;
     return html.replace(/{{(.+?)}}/g, (_, key: string) => {
         return data[key.trim()] || "";
     });
@@ -59,11 +110,10 @@ function onPreview(app: Tools) {
     });
     const page = createHTML(app.ctx);
     panel.webview.html = page;
-    const svgList = (workspace.workspaceFolders || []).reduce<SVGItem[]>((pre, item) => {
-        pre.push({ folder: item, list: readFile(item.uri.fsPath) });
-        return pre;
-    }, []);
-    panel.webview.postMessage(svgList);
+    panel.webview.onDidReceiveMessage((name: string) => {
+        env.clipboard.writeText(name);
+        window.showInformationMessage(i18n.t("prompt.clipboard.copy"));
+    });
     return panel;
 }
 

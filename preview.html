@@ -57,6 +57,14 @@
             margin: 24px;
         }
 
+        .folder-item+.folder-item {
+            margin-top: 20px;
+        }
+
+        .folder-item>h2 {
+            margin-bottom: 5px;
+        }
+
         .icon-box {
             display: grid;
             grid-template-columns: repeat(auto-fill, 100px);
@@ -106,61 +114,35 @@
     <div class="app">
         <h1>{{ title }}</h1>
         <div class="icon-wrapper">
-            <div>
-                <div class="icon-item" index="57">
-                    <span>
-                        <i class="icon">
-                            <svg aria-hidden="true">
-                                <use xlink:href="#icon-money"></use>
-                            </svg>
-                        </i>
-                        <span class="icon-name">money</span>
-                    </span>
-                </div>
-            </div>
+            {{icons}}
         </div>
     </div>
     <svg id="__svg__icons__dom__" xmlns="http://www.w3.org/2000/svg" xmlns:link="http://www.w3.org/1999/xlink"
         style="position: absolute; width: 0px; height: 0px;">
-        <symbol viewBox="0 0 128 128" id="icon-money">
-            <path
-                d="M54.122 127.892v-28.68H7.513V87.274h46.609v-12.4H7.513v-12.86h38.003L.099 0h22.6l32.556 45.07c3.617 5.144 6.44 9.611 8.487 13.385 1.788-3.05 4.89-7.779 9.301-14.186L103.93 0h24.01L82.385 62.013h38.34v12.862h-46.41v12.4h46.41v11.937h-46.41v28.68H54.123z">
-            </path>
-        </symbol>
+        {{ symbols }}
     </svg>
     <script>
-        let list = [];
-        window.addEventListener("message", ({ data }) => {
-            list = data || [];
-            const iconWrapper = document.querySelector(".icon-wrapper");
-            const svg = document.querySelector("#__svg__icons__dom__");
-
-            const { svgChild, html } = list.reduce((pre, item, i) => {
-                let iconItems = "";
-                let symbols = "";
-                item.list.forEach(v => {
-                    symbols += `<symbol id="${v.name}" ${v.value.substring(4, v.value.length - 6)}</symbol>`;
-                    iconItems += `
-                        <div class="icon-item" index="${i}">
-                            <span>
-                                <i class="icon">
-                                    <svg aria-hidden="true"> <use xlink:href="#${v.name}"></use></svg>
-                                </i>
-                                <span class="icon-name">${v.name}</span>
-                            </span>
-                        </div>
-                    `
-                })
-                pre.html += `<div>
-                    <h2>${item.folder.name}</h2>
-                    <div class="icon-box">${iconItems}</div>
-                </div>`
-                pre.svgChild += symbols;
-                return pre;
-            }, { svgChild: "", html: "" });
-            svg.innerHTML = svgChild;
-            iconWrapper.innerHTML = html;
-        })
+        (function () {
+            const vscode = acquireVsCodeApi();
+            const wrapper = document.querySelector(".icon-wrapper");
+            wrapper.addEventListener("click", (e) => {
+                if (e.currentTarget === e.target) {
+                    return;
+                }
+                let target = e.target;
+                let name = target.getAttribute("data-name");
+                while (!name) {
+                    if (e.currentTarget === target) {
+                        break;
+                    }
+                    target = target.parentNode;
+                    name = target.getAttribute("data-name");
+                }
+                if (name) {
+                    vscode.postMessage(name);
+                }
+            })
+        }())
     </script>
 </body>
 
