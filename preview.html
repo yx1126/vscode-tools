@@ -9,6 +9,7 @@
         html {
             box-sizing: border-box;
             font-size: 16px;
+            height: 100%;
         }
 
         *,
@@ -46,15 +47,22 @@
             font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji,
                 Segoe UI Emoji;
             margin: 0;
-            padding: 10px 20px;
             color: var(--vscode-foreground);
             background-color: var(--vscode-editor-background);
+            height: 100%;
         }
 
         h1 {
             text-align: center;
             font-weight: bold;
             margin: 24px;
+        }
+
+        .app {
+            width: 100%;
+            height: 100%;
+            padding: 10px 20px;
+            overflow-y: auto;
         }
 
         .folder-item+.folder-item {
@@ -67,7 +75,7 @@
 
         .icon-box {
             display: grid;
-            grid-template-columns: repeat(auto-fill, 100px);
+            grid-template-columns: repeat(auto-fill, 10%);
             border-top: 1px solid var(--vscode-foreground);
             border-left: 1px solid var(--vscode-foreground);
         }
@@ -107,6 +115,66 @@
             width: 1em;
             height: 1em;
         }
+
+        @media only screen and (min-width: 100px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, 100%);
+            }
+        }
+
+        @media only screen and (min-width: 200px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 2));
+            }
+        }
+
+        @media only screen and (min-width: 300px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 3));
+            }
+        }
+
+        @media only screen and (min-width: 400px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 4));
+            }
+        }
+
+        @media only screen and (min-width: 500px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 5));
+            }
+        }
+
+        @media only screen and (min-width: 600px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 6));
+            }
+        }
+
+        @media only screen and (min-width: 700px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 7));
+            }
+        }
+
+        @media only screen and (min-width: 800px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 8));
+            }
+        }
+
+        @media only screen and (min-width: 900px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 9));
+            }
+        }
+
+        @media only screen and (min-width: 1000px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 10));
+            }
+        }
     </style>
 </head>
 
@@ -122,9 +190,18 @@
         {{ symbols }}
     </svg>
     <script>
+
         (function () {
-            const vscode = acquireVsCodeApi();
+
+            const app = document.querySelector(".app");
             const wrapper = document.querySelector(".icon-wrapper");
+            const vscode = acquireVsCodeApi();
+
+            window.onload = function () {
+                const state = vscode.getState();
+                app.scrollTo({ top: state?.scrollTop || 0 });
+            }
+
             wrapper.addEventListener("click", (e) => {
                 if (e.currentTarget === e.target) {
                     return;
@@ -142,7 +219,25 @@
                     vscode.postMessage(name);
                 }
             })
+
+            app.addEventListener("scroll", deounce((e) => {
+                const scrollTop = e.target.scrollTop;
+                vscode.setState({ scrollTop });
+            }))
         }())
+
+        function deounce(fn, delay = 100) {
+            let timer = null;
+            return function (...args) {
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+                timer = setTimeout(() => {
+                    fn.apply(null, args);
+                }, delay)
+            }
+        }
     </script>
 </body>
 

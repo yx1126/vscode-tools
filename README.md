@@ -9,3 +9,4 @@ Tools for VS Code.
 1. Clipboard
 2. Current file location
 3. Vue outline
+4. Preview SVG

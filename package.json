@@ -2,7 +2,7 @@
     "name": "vsocde-tools",
     "displayName": "Vue Tools",
     "description": "Some small tools for VS Code",
-    "version": "1.4.1",
+    "version": "1.5.0",
     "publisher": "yx1126",
     "repository": {
         "type": "git",
