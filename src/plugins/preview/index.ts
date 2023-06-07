@@ -10,30 +10,31 @@ import svgo from "svgo";
 
 interface SVGItem {
     folder: WorkspaceFolder;
-    list: Array<{ name: string; path: string; value: string }>;
+    list: Array<{ name: string; path: string; fsPath: string; value: string }>;
 }
 
-function readFile(fsPath: string) {
+function readFile(fsPath: string, basePath: string) {
     const result: SVGItem["list"] = [];
-    function start(_path: string) {
-        if(fs.statSync(_path).isDirectory()) {
-            const list = fs.readdirSync(_path);
+    function start(_fsPath: string, _path: string) {
+        if(fs.statSync(_fsPath).isDirectory()) {
+            const list = fs.readdirSync(_fsPath);
             for(let i = 0; i < list.length; i++) {
                 const filename = list[i];
-                if(["node_modules"].includes(filename)) {
+                if(["node_modules", "scripts", "dist", ".vscode", ".idea"].includes(filename)) {
                     continue;
                 } else {
-                    start(path.join(_path, filename));
+                    start(path.join(_fsPath, filename), path.join(_path, filename));
                 }
             }
         } else {
-            const { ext, name } = path.parse(_path);
+            const { ext, name } = path.parse(_fsPath);
             if(ext === ".svg") {
-                const file = fs.readFileSync(_path, "utf-8");
+                const file = fs.readFileSync(_fsPath, "utf-8");
                 const svgBody = file.substring(file.indexOf("<svg"), file.lastIndexOf("</svg>") + 6);
                 const value = {
                     name,
                     path: _path,
+                    fsPath: _fsPath,
                     value: "",
                 };
                 try {
@@ -52,13 +53,12 @@ function readFile(fsPath: string) {
                     value.value = data;
                 } catch (error) {
                     value.value = (`<svg id="${name}" ` + svgBody.substring(4)).replace(/(width|height)=(\'|\")(.+?)(\'|\")/g, "");
-
                 }
                 result.push(value);
             }
         }
     }
-    start(fsPath);
+    start(fsPath, basePath);
     return result;
 }
 
@@ -70,7 +70,7 @@ function createHTML(ctx: ExtensionContext) {
         icons: "",
     };
     const svgList = (workspace.workspaceFolders || []).reduce<SVGItem[]>((pre, item) => {
-        pre.push({ folder: item, list: readFile(item.uri.fsPath) });
+        pre.push({ folder: item, list: readFile(item.uri.fsPath, item.name) });
         return pre;
     }, []);
     const { svgChild, icons } = svgList.reduce((pre, item) => {
@@ -79,10 +79,10 @@ function createHTML(ctx: ExtensionContext) {
         item.list.forEach((v) => {
             symbols += `<symbol ${v.value.substring(v.value.indexOf("<svg") + 4, v.value.lastIndexOf("</svg>"))}</symbol>`;
             iconItems += `
-                <div class="icon-item" data-name="${v.name}">
+                <div class="icon-item" title="${v.path}" data-name="${v.name}">
                     <span>
                         <i class="icon">
-                            <svg aria-hidden="true"> <use xlink:href="#${v.name}"></use></svg>
+                            <svg aria-hidden="true"><use xlink:href="#${v.name}"></use></svg>
                         </i>
                         <span class="icon-name">${v.name}</span>
                     </span>
