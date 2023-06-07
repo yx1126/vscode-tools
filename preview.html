@@ -80,12 +80,14 @@
             border-left: 1px solid var(--vscode-foreground);
         }
 
+
         .icon-item {
             text-align: center;
             height: 100px;
             font-size: 13px;
             border-right: 1px solid var(--vscode-foreground);
             border-bottom: 1px solid var(--vscode-foreground);
+            overflow: hidden;
         }
 
         .icon-item>span {
@@ -95,6 +97,7 @@
             justify-content: center;
             height: 100%;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .icon-item .icon {
@@ -103,7 +106,6 @@
             line-height: 1em;
             display: inline-block;
             position: relative;
-            fill: currentColor;
             font-size: 20px;
         }
 
@@ -111,9 +113,37 @@
             margin-top: 8px;
         }
 
+        .icon-item-hover {
+            width: 100%;
+            height: 0;
+            background-color: var(--vscode-editor-background);
+            border-top: 1px solid var(--vscode-foreground);
+            display: grid;
+            grid-template-columns: repeat(2, 50%);
+            transition: all 0.2s;
+        }
+
+        .icon-item-hover>div {
+            line-height: 30px;
+            cursor: pointer;
+        }
+
+        .icon-item-hover>div:first-child {
+            border-right: 1px solid var(--vscode-foreground);
+        }
+
+        .icon-item:hover>span {
+            height: calc(100% - 30px);
+        }
+
+        .icon-item:hover .icon-item-hover {
+            height: 30px;
+        }
+
         svg {
             width: 1em;
             height: 1em;
+            fill: currentColor;
         }
 
         @media only screen and (min-width: 100px) {
@@ -185,13 +215,11 @@
             {{icons}}
         </div>
     </div>
-    <svg id="__svg__icons__dom__" xmlns="http://www.w3.org/2000/svg" xmlns:link="http://www.w3.org/1999/xlink"
-        style="position: absolute; width: 0px; height: 0px;">
-        {{ symbols }}
-    </svg>
     <script>
 
         (function () {
+
+            document.onselectstart = () => false;
 
             const app = document.querySelector(".app");
             const wrapper = document.querySelector(".icon-wrapper");
@@ -206,17 +234,24 @@
                 if (e.currentTarget === e.target) {
                     return;
                 }
-                let target = e.target;
-                let name = target.getAttribute("data-name");
-                while (!name) {
+                let target = e.target,
+                    clickEvent = null,
+                    data = null;
+                while (!data) {
                     if (e.currentTarget === target) {
                         break;
                     }
+                    const dataJsonStr = target.getAttribute("data-json");
+                    if (dataJsonStr) data = JSON.parse(dataJsonStr);
+                    const dataClick = target.getAttribute("data-click");
+                    if (dataClick) clickEvent = dataClick;
                     target = target.parentNode;
-                    name = target.getAttribute("data-name");
                 }
-                if (name) {
-                    vscode.postMessage(name);
+                if (data && clickEvent) {
+                    vscode.postMessage({
+                        type: clickEvent,
+                        data
+                    });
                 }
             })
 

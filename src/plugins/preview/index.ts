@@ -6,15 +6,43 @@ import i18n from "@/utils/i18n";
 import fs from "fs-extra";
 import path from "node:path";
 import { Tools } from "@/tools";
-import svgo from "svgo";
+import svgo, { type PluginConfig } from "svgo";
+import { Uri } from "vscode";
 
 interface SVGItem {
+    name: string;
+    path: string;
+    fsPath: string;
+    value: string;
+}
+
+interface SVGFolder {
     folder: WorkspaceFolder;
-    list: Array<{ name: string; path: string; fsPath: string; value: string }>;
+    list: Array<SVGItem>;
+}
+
+interface ReceiveMessageOption {
+    type: "copy" | "rename";
+    data: Omit<SVGItem, "value">;
+}
+
+function formatSVG(file: string, plugins: PluginConfig[] = []) {
+    try {
+        return svgo.optimize(file, {
+            plugins: [
+                "preset-default",
+                "removeDimensions",
+                "removeXMLNS",
+                ...plugins,
+            ],
+        });
+    } catch (error) {
+        return { data: "" };
+    }
 }
 
 function readFile(fsPath: string, basePath: string) {
-    const result: SVGItem["list"] = [];
+    const result: SVGFolder["list"] = [];
     function start(_fsPath: string, _path: string) {
         if(fs.statSync(_fsPath).isDirectory()) {
             const list = fs.readdirSync(_fsPath);
@@ -37,21 +65,16 @@ function readFile(fsPath: string, basePath: string) {
                     fsPath: _fsPath,
                     value: "",
                 };
-                try {
-                    const { data } = svgo.optimize(svgBody, {
-                        plugins: [
-                            "removeDimensions",
-                            "removeXMLNS",
-                            {
-                                name: "addAttributesToSVGElement",
-                                params: {
-                                    attributes: [{ id: name }],
-                                },
-                            },
-                        ],
-                    });
+                const { data } = formatSVG(svgBody, [
+                    {
+                        name: "addAttributesToSVGElement", params: {
+                            attributes: [{ id: name }],
+                        },
+                    },
+                ]);
+                if(data) {
                     value.value = data;
-                } catch (error) {
+                } else {
                     value.value = (`<svg id="${name}" ` + svgBody.substring(4)).replace(/(width|height)=(\'|\")(.+?)(\'|\")/g, "");
                 }
                 result.push(value);
@@ -64,40 +87,40 @@ function readFile(fsPath: string, basePath: string) {
 
 function createHTML(ctx: ExtensionContext) {
     const html = fs.readFileSync(path.join(ctx.extensionPath, "preview.html"), "utf-8");
+    const copy = fs.readFileSync(path.join(ctx.extensionPath, "resources/preview", "copy.svg"), "utf-8");
+    const rename = fs.readFileSync(path.join(ctx.extensionPath, "resources/preview", "rename.svg"), "utf-8");
     const data: Record<string, any> = {
         title: i18n.t("menu.explorer.preview.title"),
-        symbols: "",
         icons: "",
     };
-    const svgList = (workspace.workspaceFolders || []).reduce<SVGItem[]>((pre, item) => {
+    const svgList = (workspace.workspaceFolders || []).reduce<SVGFolder[]>((pre, item) => {
         pre.push({ folder: item, list: readFile(item.uri.fsPath, item.name) });
         return pre;
     }, []);
-    const { svgChild, icons } = svgList.reduce((pre, item) => {
+    data.icons = svgList.reduce((pre, item) => {
         let iconItems = "";
-        let symbols = "";
-        item.list.forEach((v) => {
-            symbols += `<symbol ${v.value.substring(v.value.indexOf("<svg") + 4, v.value.lastIndexOf("</svg>"))}</symbol>`;
+        item.list.forEach((svg) => {
+            const dataJson: any = Object.assign({}, svg);
+            delete dataJson.value;
             iconItems += `
-                <div class="icon-item" title="${v.path}" data-name="${v.name}">
+                <div class="icon-item" title="${svg.path}" data-json='${JSON.stringify(dataJson)}'>
                     <span>
-                        <i class="icon">
-                            <svg aria-hidden="true"><use xlink:href="#${v.name}"></use></svg>
-                        </i>
-                        <span class="icon-name">${v.name}</span>
+                        <i class="icon">${svg.value}</i>
+                        <span class="icon-name">${svg.name}</span>
                     </span>
+                    <div class="icon-item-hover">
+                        <div title="${i18n.t("preview.icon.copy")}" data-click="copy"><i>${formatSVG(copy).data}</i></div>
+                        <div title="${i18n.t("preview.icon.rename")}" data-click="rename"><i>${formatSVG(rename).data}</i></div>
+                    </div>
                 </div>
             `;
         });
-        pre.icons += `<div class="folder-item">
+        pre += `<div class="folder-item">
             <h2>${item.folder.name}</h2>
             <div class="icon-box">${iconItems}</div>
         </div>`;
-        pre.svgChild += symbols;
         return pre;
-    }, { svgChild: "", icons: "" });
-    data.symbols = svgChild;
-    data.icons = icons;
+    }, "");
     return html.replace(/{{(.+?)}}/g, (_, key: string) => {
         return data[key.trim()] || "";
     });
@@ -108,11 +131,27 @@ function onPreview(app: Tools) {
     const panel = window.createWebviewPanel("preview", i18n.t("menu.explorer.preview.title"), ViewColumn.One, {
         enableScripts: true,
     });
-    const page = createHTML(app.ctx);
-    panel.webview.html = page;
-    panel.webview.onDidReceiveMessage((name: string) => {
-        env.clipboard.writeText(name);
-        window.showInformationMessage(i18n.t("prompt.clipboard.copy"));
+    panel.webview.html = createHTML(app.ctx);
+    panel.webview.onDidReceiveMessage(async ({ type, data }: ReceiveMessageOption) => {
+        if(type === "copy") {
+            env.clipboard.writeText(data.name);
+            window.showInformationMessage(i18n.t("prompt.clipboard.copy"));
+        } else if(type === "rename") {
+            const input = await window.showInputBox({
+                placeHolder: i18n.t("prompt.preview.treeinput.placeholder"),
+                value: data.name,
+            });
+            if(input && (input !== data.name)) {
+                try {
+                    const pathConfig = path.parse(data.fsPath);
+                    const fsPath = path.format({ ...pathConfig, name: input, base: input + ".svg" });
+                    await workspace.fs.rename(Uri.file(data.fsPath), Uri.file(fsPath));
+                    panel.webview.html = createHTML(app.ctx);
+                } catch (error) {
+                    window.showErrorMessage(String(error));
+                }
+            }
+        }
     });
     return panel;
 }

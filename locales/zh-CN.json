@@ -21,12 +21,14 @@
     "prompt.clipboard.copy": "复制成功",
     "prompt.clipboard.delete": "删除成功",
     "prompt.clipboard.clear": "清除成功",
-    "prompt.clipboard.treeinput.title": "标题",
     "prompt.clipboard.treeinput.placeholder": "请输入标题",
+    "prompt.preview.treeinput.placeholder": "请输入SVG名称",
     "tools.description": "默认启用的功能列表",
     "bar.description": "默认打开辅助侧栏",
     "outline.description": "显示全部节点的名称列表",
     "outline.script.default": "当存在默认导出时是否只显示默认导出",
     "outline.expand.deep": "Vue 大纲模块默认展开的深度",
+    "preview.icon.copy": "复制",
+    "preview.icon.rename": "重命名",
     "utils.scroll_to": "滚动到当前行"
 }

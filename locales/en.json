@@ -22,12 +22,14 @@
     "prompt.clipboard.copy": " Copy successful",
     "prompt.clipboard.delete": "Deleted successfully",
     "prompt.clipboard.clear": "Clear successfully",
-    "prompt.clipboard.treeinput.title": "title",
     "prompt.clipboard.treeinput.placeholder": "Please enter the title",
+    "prompt.preview.treeinput.placeholder": "Please enter the SVG name",
     "tools.description": "List of functions enabled by default",
     "bar.description": "The auxiliary sidebar opens by default",
     "outline.description": "Displays a list of all node names",
     "outline.script.default": "Whether to display only default exports when default exports exist",
     "outline.expand.deep": "The depth of the Vue outline module's default expansion",
+    "preview.icon.copy": "Copy",
+    "preview.icon.rename": "Rename",
     "utils.scroll_to": "Scroll to the current row"
 }
