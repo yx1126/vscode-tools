@@ -1,4 +1,4 @@
-import { ViewColumn, commands, env, window, workspace } from "vscode";
+import { FileSystemWatcher, ViewColumn, commands, env, window, workspace } from "vscode";
 import type { WebviewPanel, ExtensionContext, WorkspaceFolder } from "vscode";
 import { type ToolsPluginCallback } from "@/tools";
 import { Commands } from "@/maps";
@@ -142,6 +142,7 @@ function onPreview(app: Tools) {
 
 export default <ToolsPluginCallback> function(app) {
     let currentPanel: WebviewPanel | undefined = undefined;
+    let svgFileWatcher: FileSystemWatcher | undefined;
     let timer: any = null;
 
     function onSVGChange() {
@@ -162,11 +163,13 @@ export default <ToolsPluginCallback> function(app) {
                 commands.registerCommand(Commands.explorer_preview, () => {
                     const columnToShowIn = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
 
-                    const svgFileWatcher = workspace.createFileSystemWatcher("**/*.svg");
+                    if(!svgFileWatcher) {
+                        svgFileWatcher = workspace.createFileSystemWatcher("**/*.svg");
 
-                    svgFileWatcher.onDidCreate(onSVGChange);
-                    svgFileWatcher.onDidChange(onSVGChange);
-                    svgFileWatcher.onDidDelete(onSVGChange);
+                        svgFileWatcher.onDidCreate(onSVGChange);
+                        svgFileWatcher.onDidChange(onSVGChange);
+                        svgFileWatcher.onDidDelete(onSVGChange);
+                    }
 
                     if(currentPanel) {
                         currentPanel.reveal(columnToShowIn);
@@ -174,7 +177,10 @@ export default <ToolsPluginCallback> function(app) {
                         currentPanel = onPreview(app);
                         currentPanel.onDidDispose(() => {
                             currentPanel = undefined;
-                            svgFileWatcher.dispose();
+                            if(svgFileWatcher) {
+                                svgFileWatcher.dispose();
+                                svgFileWatcher = undefined;
+                            }
                         }, null, app.ctx.subscriptions);
                     }
                 }),
