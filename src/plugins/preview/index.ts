@@ -6,7 +6,7 @@ import i18n from "@/utils/i18n";
 import fs from "fs-extra";
 import path from "node:path";
 import { Tools } from "@/tools";
-import svgo, { type PluginConfig } from "svgo";
+import { formatSVG } from "@/utils//svgo";
 import { Uri } from "vscode";
 
 interface SVGItem {
@@ -24,21 +24,6 @@ interface SVGFolder {
 interface ReceiveMessageOption {
     type: "copy" | "rename";
     data: Omit<SVGItem, "value">;
-}
-
-function formatSVG(file: string, plugins: PluginConfig[] = []) {
-    try {
-        return svgo.optimize(file, {
-            plugins: [
-                "preset-default",
-                "removeDimensions",
-                "removeXMLNS",
-                ...plugins,
-            ],
-        });
-    } catch (error) {
-        return { data: "" };
-    }
 }
 
 function readFile(fsPath: string, basePath: string) {
@@ -65,13 +50,12 @@ function readFile(fsPath: string, basePath: string) {
                     fsPath: _fsPath,
                     value: "",
                 };
-                const { data } = formatSVG(svgBody, [
-                    {
-                        name: "addAttributesToSVGElement", params: {
-                            attributes: [{ id: name }],
-                        },
+                const { data } = formatSVG(svgBody, {
+                    name: "addAttributesToSVGElement",
+                    params: {
+                        attributes: [{ id: name }],
                     },
-                ]);
+                });
                 if(data) {
                     value.value = data;
                 } else {
@@ -158,18 +142,39 @@ function onPreview(app: Tools) {
 
 export default <ToolsPluginCallback> function(app) {
     let currentPanel: WebviewPanel | undefined = undefined;
+    let timer: any = null;
+
+    function onSVGChange() {
+        if(!currentPanel) return;
+        if(timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
+        timer = setTimeout(() => {
+            currentPanel!.webview.html = createHTML(app.ctx);
+        }, 400);
+    }
+
     return {
         name: "preview",
         install() {
             return [
                 commands.registerCommand(Commands.explorer_preview, () => {
                     const columnToShowIn = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
+
+                    const svgFileWatcher = workspace.createFileSystemWatcher("**/*.svg");
+
+                    svgFileWatcher.onDidCreate(onSVGChange);
+                    svgFileWatcher.onDidChange(onSVGChange);
+                    svgFileWatcher.onDidDelete(onSVGChange);
+
                     if(currentPanel) {
                         currentPanel.reveal(columnToShowIn);
                     } else {
                         currentPanel = onPreview(app);
                         currentPanel.onDidDispose(() => {
                             currentPanel = undefined;
+                            svgFileWatcher.dispose();
                         }, null, app.ctx.subscriptions);
                     }
                 }),
