@@ -30,5 +30,8 @@
     "outline.expand.deep": "Vue 大纲模块默认展开的深度",
     "preview.icon.copy": "复制",
     "preview.icon.rename": "重命名",
-    "utils.scroll_to": "滚动到当前行"
+    "preview.folder.description": "svg 文件所在的目录",
+    "utils.scroll_to": "滚动到当前行",
+    "preview.folder.index.description": "是否显示图标索引",
+    "preview.folder.ignore.description": "用于排除匹配数组。[fast-glob docs](https://github.com/mrmlnc/fast-glob#ignore)"
 }

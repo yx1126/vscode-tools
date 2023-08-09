@@ -30,5 +30,8 @@
     "outline.expand.deep": "The depth of the Vue outline module's default expansion",
     "preview.icon.copy": "Copy",
     "preview.icon.rename": "Rename",
-    "utils.scroll_to": "Scroll to the current row"
+    "preview.folder.description": "The directory where the svg file is located",
+    "utils.scroll_to": "Scroll to the current row",
+    "preview.folder.index.description": "Whether to display icon index",
+    "preview.folder.ignore.description": "Used to exclude matching arrays. [fast-glob docs](https://github.com/mrmlnc/fast-glob#ignore)"
 }

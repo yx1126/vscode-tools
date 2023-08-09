@@ -2,7 +2,7 @@
     "name": "vsocde-tools",
     "displayName": "Vue Tools",
     "description": "Some small tools for VS Code",
-    "version": "1.5.3",
+    "version": "1.6.0",
     "publisher": "yx1126",
     "repository": {
         "type": "git",
@@ -45,7 +45,7 @@
         "cross-env": "^7.0.3",
         "eslint": "^8.36.0",
         "esno": "^0.16.3",
-        "fast-glob": "^3.2.12",
+        "fast-glob": "^3.3.1",
         "fs-extra": "^11.1.0",
         "glob": "^8.1.0",
         "mocha": "^10.2.0",
@@ -276,6 +276,23 @@
                     ],
                     "default": 0,
                     "description": "%outline.expand.deep%"
+                },
+                "vue-tools.preview.folder": {
+                    "type": "array",
+                    "default": null,
+                    "description": "%preview.folder.description%"
+                },
+                "vue-tools.preview.index": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "%preview.folder.index.description%"
+                },
+                "vue-tools.preview.ignore": {
+                    "type": "array",
+                    "default": [
+                        "node_modules/**"
+                    ],
+                    "markdownDescription": "%preview.folder.ignore.description%"
                 }
             }
         }

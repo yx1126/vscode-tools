@@ -1,7 +1,7 @@
+import type Tools from "@/tools";
+import type { DocumentSymbol, TextDocument, Disposable, TextDocumentChangeEvent } from "vscode";
 import { SymbolKind, TreeItemCollapsibleState, commands, window, workspace } from "vscode";
-import { type DocumentSymbol, TextDocument, Disposable, TextDocumentChangeEvent } from "vscode";
 import debounce from "./debounce";
-import { Tools } from "@/tools";
 
 export interface NodeOptions {
     deep: number;

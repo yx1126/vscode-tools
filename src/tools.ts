@@ -22,7 +22,7 @@ export function createTools(...args: ConstructorParameters<typeof Tools>) {
     return new Tools(...args);
 }
 
-export class Tools {
+export default class Tools {
 
     ctx: ExtensionContext;
     disposable: Disposable[] = [];

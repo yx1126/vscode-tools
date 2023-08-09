@@ -80,7 +80,6 @@
             border-left: 1px solid var(--vscode-foreground);
         }
 
-
         .icon-item {
             text-align: center;
             height: 100px;
@@ -98,6 +97,7 @@
             height: 100%;
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
         }
 
         .icon-item .icon {
@@ -107,6 +107,15 @@
             display: inline-block;
             position: relative;
             font-size: 20px;
+        }
+
+        .icon-item .icon-index {
+            position: absolute;
+            left: 0;
+            top: 0;
+            padding: 0 5px;
+            border-right: 1px solid var(--vscode-foreground);
+            border-bottom: 1px solid var(--vscode-foreground);
         }
 
         .icon-item .icon-name {

@@ -8,6 +8,9 @@ import { TreeViews, Commands } from "@/maps";
 export function add(clipboard: ClipboardProvider) {
     const editor = window.activeTextEditor!;
     const selectText = editor.document.getText(editor.selection);
+    if(selectText) {
+        env.clipboard.writeText(selectText);
+    }
     clipboard.insert({
         label: selectText.replace(/\s/g, ""),
         content: selectText,

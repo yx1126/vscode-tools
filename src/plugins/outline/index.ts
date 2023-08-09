@@ -1,5 +1,5 @@
-import { commands, window } from "vscode";
 import { type ToolsPluginCallback } from "@/tools";
+import { commands, window } from "vscode";
 import { OutlineProvider } from "./treeView";
 import { TreeViews, Commands } from "@/maps";
 

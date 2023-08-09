@@ -1,24 +1,32 @@
-import { FileSystemWatcher, ViewColumn, commands, env, window, workspace } from "vscode";
-import type { WebviewPanel, ExtensionContext, WorkspaceFolder } from "vscode";
+import type Tools from "@/tools";
+import type { WebviewPanel, WorkspaceFolder } from "vscode";
 import { type ToolsPluginCallback } from "@/tools";
+import { FileSystemWatcher, ViewColumn, commands, env, window, workspace } from "vscode";
 import { Commands } from "@/maps";
 import i18n from "@/utils/i18n";
 import fs from "fs-extra";
 import path from "node:path";
-import { Tools } from "@/tools";
-import { formatSVG } from "@/utils//svgo";
 import { Uri } from "vscode";
+import { formatSVG } from "@/utils/svgo";
+import fg from "fast-glob";
+
+const SVG_BEGIN = "<svg>";
+const SVG_END = "</svg>";
 
 interface SVGItem {
     name: string;
-    path: string;
     fsPath: string;
     value: string;
 }
 
 interface SVGFolder {
-    folder: WorkspaceFolder;
+    readonly folder: WorkspaceFolder;
     list: Array<SVGItem>;
+}
+
+interface SVGFile {
+    readonly folder: WorkspaceFolder;
+    list: Array<string>;
 }
 
 interface ReceiveMessageOption {
@@ -26,75 +34,97 @@ interface ReceiveMessageOption {
     data: Omit<SVGItem, "value">;
 }
 
-function readFile(fsPath: string, basePath: string) {
-    const result: SVGFolder["list"] = [];
-    function start(_fsPath: string, _path: string) {
-        if(fs.statSync(_fsPath).isDirectory()) {
-            const list = fs.readdirSync(_fsPath);
-            for(let i = 0; i < list.length; i++) {
-                const filename = list[i];
-                if(["node_modules", "scripts", "dist", ".vscode", ".idea"].includes(filename)) {
-                    continue;
+export function getSvgPath(folders?: null | string[]) {
+    const scanFiles = (workspace.workspaceFolders || []).map(item => {
+        const value: SVGFile = {
+            folder: item,
+            list: [],
+        };
+        if(folders) {
+            folders.forEach(s => {
+                const fsPath = path.join(item.uri.fsPath, s);
+                if(!fs.existsSync(fsPath)) return;
+                if(fs.statSync(fsPath).isDirectory()) {
+                    value.list.push(path.join(fsPath, "**/*.svg"));
                 } else {
-                    start(path.join(_fsPath, filename), path.join(_path, filename));
+                    if(fsPath.endsWith(".svg")) {
+                        value.list.push(fsPath);
+                    }
                 }
-            }
+            });
         } else {
-            const { ext, name } = path.parse(_fsPath);
-            if(ext === ".svg") {
-                const file = fs.readFileSync(_fsPath, "utf-8");
-                const svgBody = file.substring(file.indexOf("<svg"), file.lastIndexOf("</svg>") + 6);
-                const value = {
-                    name,
-                    path: _path,
-                    fsPath: _fsPath,
-                    value: "",
-                };
-                const { data } = formatSVG(svgBody, {
-                    name: "addAttributesToSVGElement",
-                    params: {
-                        attributes: [{ id: name }],
-                    },
-                });
-                if(data) {
-                    value.value = data;
-                } else {
-                    value.value = (`<svg id="${name}" ` + svgBody.substring(4)).replace(/(width|height)=(\'|\")(.+?)(\'|\")/g, "");
-                }
-                result.push(value);
-            }
+            value.list.push(path.join(item.uri.fsPath, "**/*.svg"));
         }
-    }
-    start(fsPath, basePath);
-    return result;
+        return value;
+    });
+    return scanFiles;
 }
 
-function createHTML(ctx: ExtensionContext) {
-    const html = fs.readFileSync(path.join(ctx.extensionPath, "preview.html"), "utf-8");
-    const copy = fs.readFileSync(path.join(ctx.extensionPath, "resources/preview", "copy.svg"), "utf-8");
-    const rename = fs.readFileSync(path.join(ctx.extensionPath, "resources/preview", "rename.svg"), "utf-8");
+function getSvgFile(fsPath: string) {
+    const file = fs.readFileSync(fsPath, "utf-8");
+    const svgBody = file.substring(file.indexOf(SVG_BEGIN), file.lastIndexOf(SVG_END) + SVG_END.length);
+    const svgitem: SVGItem = {
+        name: path.parse(fsPath).name,
+        fsPath: fsPath,
+        value: "",
+    };
+    const { data } = formatSVG(svgBody, {
+        name: "addAttributesToSVGElement",
+        params: {
+            attributes: [{ id: svgitem.name }],
+        },
+    });
+    if(data) {
+        svgitem.value = data;
+    } else {
+        svgitem.value = (`<svg id="${svgitem.name}" ` + svgBody.substring(4)).replace(/(width|height)=[\'\"](.+?)[\'\"]/g, "");
+    }
+    return svgitem;
+}
+
+
+function formatPath(value: string) {
+    return path.normalize(value).replace(/\\/g, "/");
+}
+
+function createHTML(app: Tools) {
+    const folders = getSvgPath(app.config.get<null | string[]>("preview.folder"));
+    const isShowSvgIndex = app.config.get<boolean>("preview.index");
+    const ignore = app.config.get<string[]>("preview.ignore");
+    const svgList = folders.reduce<SVGFolder[]>((pre, item) => {
+        const list = fg.sync(item.list.map(s => formatPath(s)), {
+            ignore: ignore ? ignore.map(s => formatPath(path.join(item.folder.uri.fsPath, s))) : ignore,
+        });
+        pre.push({
+            folder: item.folder,
+            list: list.map(fsPath => getSvgFile(fsPath)),
+        });
+        return pre;
+    }, []);
+
+    const html = fs.readFileSync(path.join(app.ctx.extensionPath, "preview.html"), "utf-8");
+    const copy = fs.readFileSync(path.join(app.ctx.extensionPath, "resources/preview", "copy.svg"), "utf-8");
+    const rename = fs.readFileSync(path.join(app.ctx.extensionPath, "resources/preview", "rename.svg"), "utf-8");
     const data: Record<string, any> = {
         title: i18n.t("menu.explorer.preview.title"),
         icons: "",
     };
-    const svgList = (workspace.workspaceFolders || []).reduce<SVGFolder[]>((pre, item) => {
-        pre.push({ folder: item, list: readFile(item.uri.fsPath, item.name) });
-        return pre;
-    }, []);
+
     data.icons = svgList.reduce((pre, item) => {
         let iconItems = "";
-        item.list.forEach((svg) => {
+        item.list.forEach((svg, index) => {
             const dataJson: any = Object.assign({}, svg);
             delete dataJson.value;
             iconItems += `
-                <div class="icon-item" title="${svg.path}" data-json='${JSON.stringify(dataJson)}'>
+                <div class="icon-item" title="${svg.fsPath.substring(svg.fsPath.indexOf(item.folder.name))}" data-json='${JSON.stringify(dataJson)}'>
                     <span>
                         <i class="icon">${svg.value}</i>
                         <span class="icon-name">${svg.name}</span>
+                        ${isShowSvgIndex ? `<span class="icon-index">${index + 1}</span>` : ""}
                     </span>
                     <div class="icon-item-hover">
-                        <div title="${i18n.t("preview.icon.copy")}" data-click="copy"><i>${formatSVG(copy).data}</i></div>
-                        <div title="${i18n.t("preview.icon.rename")}" data-click="rename"><i>${formatSVG(rename).data}</i></div>
+                        <div title="${i18n.t("preview.icon.copy")}" data-click="copy"><i>${copy}</i></div>
+                        <div title="${i18n.t("preview.icon.rename")}" data-click="rename"><i>${rename}</i></div>
                     </div>
                 </div>
             `;
@@ -115,7 +145,8 @@ function onPreview(app: Tools) {
     const panel = window.createWebviewPanel("preview", i18n.t("menu.explorer.preview.title"), ViewColumn.One, {
         enableScripts: true,
     });
-    panel.webview.html = createHTML(app.ctx);
+
+    panel.webview.html = createHTML(app);
     panel.webview.onDidReceiveMessage(async ({ type, data }: ReceiveMessageOption) => {
         if(type === "copy") {
             env.clipboard.writeText(data.name);
@@ -130,7 +161,7 @@ function onPreview(app: Tools) {
                     const pathConfig = path.parse(data.fsPath);
                     const fsPath = path.format({ ...pathConfig, name: input, base: input + ".svg" });
                     await workspace.fs.rename(Uri.file(data.fsPath), Uri.file(fsPath));
-                    panel.webview.html = createHTML(app.ctx);
+                    panel.webview.html = createHTML(app);
                 } catch (error) {
                     window.showErrorMessage(String(error));
                 }
@@ -152,12 +183,17 @@ export default <ToolsPluginCallback> function(app) {
             timer = null;
         }
         timer = setTimeout(() => {
-            currentPanel!.webview.html = createHTML(app.ctx);
+            currentPanel!.webview.html = createHTML(app);
         }, 400);
     }
 
     return {
         name: "preview",
+        onDidChangeConfiguration(e) {
+            if(["vue-tools.preview.index", "vue-tools.preview.ignore"].some(s => e.affectsConfiguration(s))) {
+                onSVGChange();
+            }
+        },
         install() {
             return [
                 commands.registerCommand(Commands.explorer_preview, () => {
