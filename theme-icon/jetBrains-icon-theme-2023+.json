@@ -1,307 +1,310 @@
 {
     "iconDefinitions": {
         "file_actionScript": {
-            "iconPath": "../resource/jetBrains/dark-icon/actionScript.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/actionScript.svg"
         },
         "file_actionScript_light": {
-            "iconPath": "../resource/jetBrains/light-icon/actionScript.svg"
+            "iconPath": "../resources/jetBrains/light-icon/actionScript.svg"
         },
         "file_addAny": {
-            "iconPath": "../resource/jetBrains/dark-icon/addAny.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/addAny.svg"
         },
         "file_addAny_light": {
-            "iconPath": "../resource/jetBrains/light-icon/addAny.svg"
+            "iconPath": "../resources/jetBrains/light-icon/addAny.svg"
         },
         "file_angularJS": {
-            "iconPath": "../resource/jetBrains/dark-icon/angularJS.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/angularJS.svg"
         },
         "file_anyType": {
-            "iconPath": "../resource/jetBrains/dark-icon/anyType.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/anyType.svg"
         },
         "file_anyType_light": {
-            "iconPath": "../resource/jetBrains/light-icon/anyType.svg"
+            "iconPath": "../resources/jetBrains/light-icon/anyType.svg"
         },
         "file_archive": {
-            "iconPath": "../resource/jetBrains/dark-icon/archive.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/archive.svg"
         },
         "file_archive_light": {
-            "iconPath": "../resource/jetBrains/light-icon/archive.svg"
+            "iconPath": "../resources/jetBrains/light-icon/archive.svg"
         },
         "file_config": {
-            "iconPath": "../resource/jetBrains/dark-icon/config.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/config.svg"
         },
         "file_config_light": {
-            "iconPath": "../resource/jetBrains/light-icon/config.svg"
+            "iconPath": "../resources/jetBrains/light-icon/config.svg"
         },
         "file_css": {
-            "iconPath": "../resource/jetBrains/dark-icon/css.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/css.svg"
         },
         "file_csv": {
-            "iconPath": "../resource/jetBrains/dark-icon/csv.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/csv.svg"
         },
         "file_csv_light": {
-            "iconPath": "../resource/jetBrains/light-icon/csv.svg"
+            "iconPath": "../resources/jetBrains/light-icon/csv.svg"
         },
         "file_editorConfig": {
-            "iconPath": "../resource/jetBrains/dark-icon/editorConfig.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/editorConfig.svg"
         },
         "file_editorConfig_light": {
-            "iconPath": "../resource/jetBrains/light-icon/editorConfig.svg"
+            "iconPath": "../resources/jetBrains/light-icon/editorConfig.svg"
         },
         "file_folder_open": {
-            "iconPath": "../resource/jetBrains/dark-icon/folder_open.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/folder_open.svg"
         },
         "file_folder_open_light": {
-            "iconPath": "../resource/jetBrains/light-icon/folder_open.svg"
+            "iconPath": "../resources/jetBrains/light-icon/folder_open.svg"
         },
         "file_folder": {
-            "iconPath": "../resource/jetBrains/dark-icon/folder.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/folder.svg"
         },
         "file_folder_light": {
-            "iconPath": "../resource/jetBrains/light-icon/folder.svg"
+            "iconPath": "../resources/jetBrains/light-icon/folder.svg"
         },
         "file_font": {
-            "iconPath": "../resource/jetBrains/dark-icon/font.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/font.svg"
         },
         "file_font_light": {
-            "iconPath": "../resource/jetBrains/light-icon/font.svg"
+            "iconPath": "../resources/jetBrains/light-icon/font.svg"
         },
         "file_gitignore": {
-            "iconPath": "../resource/jetBrains/dark-icon/gitignore.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/gitignore.svg"
         },
         "file_html": {
-            "iconPath": "../resource/jetBrains/dark-icon/html.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/html.svg"
         },
         "file_ignored": {
-            "iconPath": "../resource/jetBrains/dark-icon/ignored.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/ignored.svg"
         },
         "file_ignored_light": {
-            "iconPath": "../resource/jetBrains/light-icon/ignored.svg"
+            "iconPath": "../resources/jetBrains/light-icon/ignored.svg"
         },
         "file_image": {
-            "iconPath": "../resource/jetBrains/dark-icon/image.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/image.svg"
         },
         "file_image_light": {
-            "iconPath": "../resource/jetBrains/light-icon/image.svg"
+            "iconPath": "../resources/jetBrains/light-icon/image.svg"
         },
         "file_java": {
-            "iconPath": "../resource/jetBrains/dark-icon/java.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/java.svg"
         },
         "file_java_light": {
-            "iconPath": "../resource/jetBrains/light-icon/java.svg"
+            "iconPath": "../resources/jetBrains/light-icon/java.svg"
         },
         "file_javaScript": {
-            "iconPath": "../resource/jetBrains/dark-icon/javaScript.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/javaScript.svg"
         },
         "file_javaScript_light": {
-            "iconPath": "../resource/jetBrains/light-icon/javaScript.svg"
+            "iconPath": "../resources/jetBrains/light-icon/javaScript.svg"
         },
         "file_jest": {
-            "iconPath": "../resource/jetBrains/dark-icon/jest.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/jest.svg"
         },
         "file_json": {
-            "iconPath": "../resource/jetBrains/dark-icon/json.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/json.svg"
         },
         "file_json_light": {
-            "iconPath": "../resource/jetBrains/light-icon/json.svg"
+            "iconPath": "../resources/jetBrains/light-icon/json.svg"
         },
         "file_jsp": {
-            "iconPath": "../resource/jetBrains/dark-icon/jsp.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/jsp.svg"
         },
         "file_jsp_light": {
-            "iconPath": "../resource/jetBrains/light-icon/jsp.svg"
+            "iconPath": "../resources/jetBrains/light-icon/jsp.svg"
         },
         "file_jspx": {
-            "iconPath": "../resource/jetBrains/dark-icon/jspx.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/jspx.svg"
         },
         "file_jspx_light": {
-            "iconPath": "../resource/jetBrains/light-icon/jspx.svg"
+            "iconPath": "../resources/jetBrains/light-icon/jspx.svg"
         },
         "file_less": {
-            "iconPath": "../resource/jetBrains/dark-icon/less.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/less.svg"
         },
         "file_less_light": {
-            "iconPath": "../resource/jetBrains/light-icon/less.svg"
+            "iconPath": "../resources/jetBrains/light-icon/less.svg"
         },
         "file_lombok": {
-            "iconPath": "../resource/jetBrains/dark-icon/lombok.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/lombok.svg"
         },
         "file_lombok_light": {
-            "iconPath": "../resource/jetBrains/light-icon/lombok.svg"
+            "iconPath": "../resources/jetBrains/light-icon/lombok.svg"
         },
         "file_lombokConfig": {
-            "iconPath": "../resource/jetBrains/dark-icon/lombokConfig.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/lombokConfig.svg"
         },
         "file_lombokConfig_light": {
-            "iconPath": "../resource/jetBrains/light-icon/lombokConfig.svg"
+            "iconPath": "../resources/jetBrains/light-icon/lombokConfig.svg"
         },
         "file_manifest": {
-            "iconPath": "../resource/jetBrains/dark-icon/manifest.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/manifest.svg"
         },
         "file_manifest_light": {
-            "iconPath": "../resource/jetBrains/light-icon/manifest.svg"
+            "iconPath": "../resources/jetBrains/light-icon/manifest.svg"
         },
         "file_markdown": {
-            "iconPath": "../resource/jetBrains/dark-icon/markdown.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/markdown.svg"
         },
         "file_patch": {
-            "iconPath": "../resource/jetBrains/dark-icon/patch.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/patch.svg"
         },
         "file_patch_light": {
-            "iconPath": "../resource/jetBrains/light-icon/patch.svg"
+            "iconPath": "../resources/jetBrains/light-icon/patch.svg"
         },
         "file_properties": {
-            "iconPath": "../resource/jetBrains/dark-icon/properties.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/properties.svg"
         },
         "file_properties_light": {
-            "iconPath": "../resource/jetBrains/light-icon/properties.svg"
+            "iconPath": "../resources/jetBrains/light-icon/properties.svg"
         },
         "file_protobuf": {
-            "iconPath": "../resource/jetBrains/dark-icon/protobuf.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/protobuf.svg"
         },
         "file_react": {
-            "iconPath": "../resource/jetBrains/dark-icon/react.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/react.svg"
         },
         "file_react_light": {
-            "iconPath": "../resource/jetBrains/light-icon/react.svg"
+            "iconPath": "../resources/jetBrains/light-icon/react.svg"
         },
         "file_scss": {
-            "iconPath": "../resource/jetBrains/dark-icon/scss.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/scss.svg"
         },
         "file_shell": {
-            "iconPath": "../resource/jetBrains/dark-icon/shell.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/shell.svg"
         },
         "file_shell_light": {
-            "iconPath": "../resource/jetBrains/light-icon/shell.svg"
+            "iconPath": "../resources/jetBrains/light-icon/shell.svg"
         },
         "file_sourceMap": {
-            "iconPath": "../resource/jetBrains/dark-icon/sourceMap.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/sourceMap.svg"
         },
         "file_sourceMap_light": {
-            "iconPath": "../resource/jetBrains/light-icon/sourceMap.svg"
+            "iconPath": "../resources/jetBrains/light-icon/sourceMap.svg"
         },
         "file_sql": {
-            "iconPath": "../resource/jetBrains/dark-icon/sql.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/sql.svg"
         },
         "file_sql_light": {
-            "iconPath": "../resource/jetBrains/light-icon/sql.svg"
+            "iconPath": "../resources/jetBrains/light-icon/sql.svg"
         },
         "file_text": {
-            "iconPath": "../resource/jetBrains/dark-icon/text.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/text.svg"
         },
         "file_text_light": {
-            "iconPath": "../resource/jetBrains/light-icon/text.svg"
+            "iconPath": "../resources/jetBrains/light-icon/text.svg"
         },
         "file_typescript": {
-            "iconPath": "../resource/jetBrains/dark-icon/typescript.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/typescript.svg"
         },
         "file_unknown": {
-            "iconPath": "../resource/jetBrains/dark-icon/unknown.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/unknown.svg"
         },
         "file_unknown_light": {
-            "iconPath": "../resource/jetBrains/light-icon/unknown.svg"
+            "iconPath": "../resources/jetBrains/light-icon/unknown.svg"
         },
         "file_vueJs": {
-            "iconPath": "../resource/jetBrains/dark-icon/vueJs.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/vueJs.svg"
         },
         "file_xhtml": {
-            "iconPath": "../resource/jetBrains/dark-icon/xhtml.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/xhtml.svg"
         },
         "file_xhtml_light": {
-            "iconPath": "../resource/jetBrains/light-icon/xhtml.svg"
+            "iconPath": "../resources/jetBrains/light-icon/xhtml.svg"
         },
         "file_xml": {
-            "iconPath": "../resource/jetBrains/dark-icon/xml.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/xml.svg"
         },
         "file_xml_light": {
-            "iconPath": "../resource/jetBrains/light-icon/xml.svg"
+            "iconPath": "../resources/jetBrains/light-icon/xml.svg"
         },
         "file_yaml": {
-            "iconPath": "../resource/jetBrains/dark-icon/yaml.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/yaml.svg"
         },
         "file_yaml_light": {
-            "iconPath": "../resource/jetBrains/light-icon/yaml.svg"
+            "iconPath": "../resources/jetBrains/light-icon/yaml.svg"
         },
         "file_yarn": {
-            "iconPath": "../resource/jetBrains/dark-icon/yarn.svg"
+            "iconPath": "../resources/jetBrains/dark-icon/yarn.svg"
         },
         "file_c": {
-            "iconPath": "../resource/custom-icon/dark-icon/c.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/c.svg"
         },
         "file_c_light": {
-            "iconPath": "../resource/custom-icon/light-icon/c.svg"
+            "iconPath": "../resources/custom-icon/light-icon/c.svg"
         },
         "file_cpp": {
-            "iconPath": "../resource/custom-icon/dark-icon/cpp.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/cpp.svg"
         },
         "file_cpp_light": {
-            "iconPath": "../resource/custom-icon/light-icon/cpp.svg"
+            "iconPath": "../resources/custom-icon/light-icon/cpp.svg"
         },
         "file_eslint": {
-            "iconPath": "../resource/custom-icon/dark-icon/eslint.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/eslint.svg"
         },
         "file_go": {
-            "iconPath": "../resource/custom-icon/dark-icon/go.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/go.svg"
         },
         "file_go_light": {
-            "iconPath": "../resource/custom-icon/light-icon/go.svg"
+            "iconPath": "../resources/custom-icon/light-icon/go.svg"
         },
         "file_kotlin": {
-            "iconPath": "../resource/custom-icon/dark-icon/kotlin.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/kotlin.svg"
         },
         "file_kotlin_light": {
-            "iconPath": "../resource/custom-icon/light-icon/kotlin.svg"
+            "iconPath": "../resources/custom-icon/light-icon/kotlin.svg"
         },
         "file_php": {
-            "iconPath": "../resource/custom-icon/dark-icon/php.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/php.svg"
         },
         "file_php_light": {
-            "iconPath": "../resource/custom-icon/light-icon/php.svg"
+            "iconPath": "../resources/custom-icon/light-icon/php.svg"
         },
         "file_pnpm": {
-            "iconPath": "../resource/custom-icon/dark-icon/pnpm.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/pnpm.svg"
         },
         "file_postcss": {
-            "iconPath": "../resource/custom-icon/dark-icon/postcss.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/postcss.svg"
         },
         "file_python": {
-            "iconPath": "../resource/custom-icon/dark-icon/python.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/python.svg"
         },
         "file_rust": {
-            "iconPath": "../resource/custom-icon/dark-icon/rust.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/rust.svg"
         },
         "file_rust_light": {
-            "iconPath": "../resource/custom-icon/light-icon/rust.svg"
+            "iconPath": "../resources/custom-icon/light-icon/rust.svg"
         },
         "file_stylelint": {
-            "iconPath": "../resource/custom-icon/dark-icon/stylelint.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/stylelint.svg"
         },
         "file_stylelint_light": {
-            "iconPath": "../resource/custom-icon/light-icon/stylelint.svg"
+            "iconPath": "../resources/custom-icon/light-icon/stylelint.svg"
         },
         "file_svelte": {
-            "iconPath": "../resource/custom-icon/dark-icon/svelte.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/svelte.svg"
         },
         "file_tailwindcss": {
-            "iconPath": "../resource/custom-icon/dark-icon/tailwindcss.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/tailwindcss.svg"
         },
         "file_unocss": {
-            "iconPath": "../resource/custom-icon/dark-icon/unocss.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/unocss.svg"
         },
         "file_vite": {
-            "iconPath": "../resource/custom-icon/dark-icon/vite.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/vite.svg"
         },
         "file_vitest": {
-            "iconPath": "../resource/custom-icon/dark-icon/vitest.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/vitest.svg"
         },
         "file_webpack": {
-            "iconPath": "../resource/custom-icon/dark-icon/webpack.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/webpack.svg"
         },
         "file_babel": {
-            "iconPath": "../resource/custom-icon/dark-icon/babel.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/babel.svg"
         },
         "file_rollup": {
-            "iconPath": "../resource/custom-icon/dark-icon/rollup.svg"
+            "iconPath": "../resources/custom-icon/dark-icon/rollup.svg"
+        },
+        "file_vscode": {
+            "iconPath": "../resources/custom-icon/dark-icon/vscode.svg"
         }
     },
     "file": "file_text",
@@ -314,7 +317,7 @@
         "yarn.clean": "file_yarn",
         "yarn.lock": "file_yarn",
         ".env": "file_anyType",
-        ".env.local": "file_anyTypeType",
+        ".env.local": "file_anyType",
         ".env.test": "file_anyType",
         ".env.development": "file_anyType",
         ".env.production": "file_anyType",
@@ -373,7 +376,8 @@
         "babel.config.mts": "file_babel",
         "babel.config.json": "file_babel",
         "rollup.config.js": "file_rollup",
-        "rollup.config.ts": "file_rollup"
+        "rollup.config.ts": "file_rollup",
+        ".vscodeignore": "file_vscode"
     },
     "fileExtensions": {
         "css": "file_css",
@@ -429,7 +433,8 @@
         "proto": "file_protobuf",
         "kt": "file_kotlin",
         "kts": "file_kotlin",
-        "toml": "file_editorConfig"
+        "toml": "file_editorConfig",
+        "log": "file_anyType"
     },
     "light": {
         "file": "file_text_light",
@@ -496,7 +501,8 @@
             "jspx": "file_jspx_light",
             "kt": "file_kotlin_light",
             "kts": "file_kotlin_light",
-            "toml": "file_editorConfig_light"
+            "toml": "file_editorConfig_light",
+            "log": "file_anyType_light"
         }
     }
 }
