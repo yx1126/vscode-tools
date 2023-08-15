@@ -1,0 +1,502 @@
+{
+    "iconDefinitions": {
+        "file_actionScript": {
+            "iconPath": "../resource/jetBrains/dark-icon/actionScript.svg"
+        },
+        "file_actionScript_light": {
+            "iconPath": "../resource/jetBrains/light-icon/actionScript.svg"
+        },
+        "file_addAny": {
+            "iconPath": "../resource/jetBrains/dark-icon/addAny.svg"
+        },
+        "file_addAny_light": {
+            "iconPath": "../resource/jetBrains/light-icon/addAny.svg"
+        },
+        "file_angularJS": {
+            "iconPath": "../resource/jetBrains/dark-icon/angularJS.svg"
+        },
+        "file_anyType": {
+            "iconPath": "../resource/jetBrains/dark-icon/anyType.svg"
+        },
+        "file_anyType_light": {
+            "iconPath": "../resource/jetBrains/light-icon/anyType.svg"
+        },
+        "file_archive": {
+            "iconPath": "../resource/jetBrains/dark-icon/archive.svg"
+        },
+        "file_archive_light": {
+            "iconPath": "../resource/jetBrains/light-icon/archive.svg"
+        },
+        "file_config": {
+            "iconPath": "../resource/jetBrains/dark-icon/config.svg"
+        },
+        "file_config_light": {
+            "iconPath": "../resource/jetBrains/light-icon/config.svg"
+        },
+        "file_css": {
+            "iconPath": "../resource/jetBrains/dark-icon/css.svg"
+        },
+        "file_csv": {
+            "iconPath": "../resource/jetBrains/dark-icon/csv.svg"
+        },
+        "file_csv_light": {
+            "iconPath": "../resource/jetBrains/light-icon/csv.svg"
+        },
+        "file_editorConfig": {
+            "iconPath": "../resource/jetBrains/dark-icon/editorConfig.svg"
+        },
+        "file_editorConfig_light": {
+            "iconPath": "../resource/jetBrains/light-icon/editorConfig.svg"
+        },
+        "file_folder_open": {
+            "iconPath": "../resource/jetBrains/dark-icon/folder_open.svg"
+        },
+        "file_folder_open_light": {
+            "iconPath": "../resource/jetBrains/light-icon/folder_open.svg"
+        },
+        "file_folder": {
+            "iconPath": "../resource/jetBrains/dark-icon/folder.svg"
+        },
+        "file_folder_light": {
+            "iconPath": "../resource/jetBrains/light-icon/folder.svg"
+        },
+        "file_font": {
+            "iconPath": "../resource/jetBrains/dark-icon/font.svg"
+        },
+        "file_font_light": {
+            "iconPath": "../resource/jetBrains/light-icon/font.svg"
+        },
+        "file_gitignore": {
+            "iconPath": "../resource/jetBrains/dark-icon/gitignore.svg"
+        },
+        "file_html": {
+            "iconPath": "../resource/jetBrains/dark-icon/html.svg"
+        },
+        "file_ignored": {
+            "iconPath": "../resource/jetBrains/dark-icon/ignored.svg"
+        },
+        "file_ignored_light": {
+            "iconPath": "../resource/jetBrains/light-icon/ignored.svg"
+        },
+        "file_image": {
+            "iconPath": "../resource/jetBrains/dark-icon/image.svg"
+        },
+        "file_image_light": {
+            "iconPath": "../resource/jetBrains/light-icon/image.svg"
+        },
+        "file_java": {
+            "iconPath": "../resource/jetBrains/dark-icon/java.svg"
+        },
+        "file_java_light": {
+            "iconPath": "../resource/jetBrains/light-icon/java.svg"
+        },
+        "file_javaScript": {
+            "iconPath": "../resource/jetBrains/dark-icon/javaScript.svg"
+        },
+        "file_javaScript_light": {
+            "iconPath": "../resource/jetBrains/light-icon/javaScript.svg"
+        },
+        "file_jest": {
+            "iconPath": "../resource/jetBrains/dark-icon/jest.svg"
+        },
+        "file_json": {
+            "iconPath": "../resource/jetBrains/dark-icon/json.svg"
+        },
+        "file_json_light": {
+            "iconPath": "../resource/jetBrains/light-icon/json.svg"
+        },
+        "file_jsp": {
+            "iconPath": "../resource/jetBrains/dark-icon/jsp.svg"
+        },
+        "file_jsp_light": {
+            "iconPath": "../resource/jetBrains/light-icon/jsp.svg"
+        },
+        "file_jspx": {
+            "iconPath": "../resource/jetBrains/dark-icon/jspx.svg"
+        },
+        "file_jspx_light": {
+            "iconPath": "../resource/jetBrains/light-icon/jspx.svg"
+        },
+        "file_less": {
+            "iconPath": "../resource/jetBrains/dark-icon/less.svg"
+        },
+        "file_less_light": {
+            "iconPath": "../resource/jetBrains/light-icon/less.svg"
+        },
+        "file_lombok": {
+            "iconPath": "../resource/jetBrains/dark-icon/lombok.svg"
+        },
+        "file_lombok_light": {
+            "iconPath": "../resource/jetBrains/light-icon/lombok.svg"
+        },
+        "file_lombokConfig": {
+            "iconPath": "../resource/jetBrains/dark-icon/lombokConfig.svg"
+        },
+        "file_lombokConfig_light": {
+            "iconPath": "../resource/jetBrains/light-icon/lombokConfig.svg"
+        },
+        "file_manifest": {
+            "iconPath": "../resource/jetBrains/dark-icon/manifest.svg"
+        },
+        "file_manifest_light": {
+            "iconPath": "../resource/jetBrains/light-icon/manifest.svg"
+        },
+        "file_markdown": {
+            "iconPath": "../resource/jetBrains/dark-icon/markdown.svg"
+        },
+        "file_patch": {
+            "iconPath": "../resource/jetBrains/dark-icon/patch.svg"
+        },
+        "file_patch_light": {
+            "iconPath": "../resource/jetBrains/light-icon/patch.svg"
+        },
+        "file_properties": {
+            "iconPath": "../resource/jetBrains/dark-icon/properties.svg"
+        },
+        "file_properties_light": {
+            "iconPath": "../resource/jetBrains/light-icon/properties.svg"
+        },
+        "file_protobuf": {
+            "iconPath": "../resource/jetBrains/dark-icon/protobuf.svg"
+        },
+        "file_react": {
+            "iconPath": "../resource/jetBrains/dark-icon/react.svg"
+        },
+        "file_react_light": {
+            "iconPath": "../resource/jetBrains/light-icon/react.svg"
+        },
+        "file_scss": {
+            "iconPath": "../resource/jetBrains/dark-icon/scss.svg"
+        },
+        "file_shell": {
+            "iconPath": "../resource/jetBrains/dark-icon/shell.svg"
+        },
+        "file_shell_light": {
+            "iconPath": "../resource/jetBrains/light-icon/shell.svg"
+        },
+        "file_sourceMap": {
+            "iconPath": "../resource/jetBrains/dark-icon/sourceMap.svg"
+        },
+        "file_sourceMap_light": {
+            "iconPath": "../resource/jetBrains/light-icon/sourceMap.svg"
+        },
+        "file_sql": {
+            "iconPath": "../resource/jetBrains/dark-icon/sql.svg"
+        },
+        "file_sql_light": {
+            "iconPath": "../resource/jetBrains/light-icon/sql.svg"
+        },
+        "file_text": {
+            "iconPath": "../resource/jetBrains/dark-icon/text.svg"
+        },
+        "file_text_light": {
+            "iconPath": "../resource/jetBrains/light-icon/text.svg"
+        },
+        "file_typescript": {
+            "iconPath": "../resource/jetBrains/dark-icon/typescript.svg"
+        },
+        "file_unknown": {
+            "iconPath": "../resource/jetBrains/dark-icon/unknown.svg"
+        },
+        "file_unknown_light": {
+            "iconPath": "../resource/jetBrains/light-icon/unknown.svg"
+        },
+        "file_vueJs": {
+            "iconPath": "../resource/jetBrains/dark-icon/vueJs.svg"
+        },
+        "file_xhtml": {
+            "iconPath": "../resource/jetBrains/dark-icon/xhtml.svg"
+        },
+        "file_xhtml_light": {
+            "iconPath": "../resource/jetBrains/light-icon/xhtml.svg"
+        },
+        "file_xml": {
+            "iconPath": "../resource/jetBrains/dark-icon/xml.svg"
+        },
+        "file_xml_light": {
+            "iconPath": "../resource/jetBrains/light-icon/xml.svg"
+        },
+        "file_yaml": {
+            "iconPath": "../resource/jetBrains/dark-icon/yaml.svg"
+        },
+        "file_yaml_light": {
+            "iconPath": "../resource/jetBrains/light-icon/yaml.svg"
+        },
+        "file_yarn": {
+            "iconPath": "../resource/jetBrains/dark-icon/yarn.svg"
+        },
+        "file_c": {
+            "iconPath": "../resource/custom-icon/dark-icon/c.svg"
+        },
+        "file_c_light": {
+            "iconPath": "../resource/custom-icon/light-icon/c.svg"
+        },
+        "file_cpp": {
+            "iconPath": "../resource/custom-icon/dark-icon/cpp.svg"
+        },
+        "file_cpp_light": {
+            "iconPath": "../resource/custom-icon/light-icon/cpp.svg"
+        },
+        "file_eslint": {
+            "iconPath": "../resource/custom-icon/dark-icon/eslint.svg"
+        },
+        "file_go": {
+            "iconPath": "../resource/custom-icon/dark-icon/go.svg"
+        },
+        "file_go_light": {
+            "iconPath": "../resource/custom-icon/light-icon/go.svg"
+        },
+        "file_kotlin": {
+            "iconPath": "../resource/custom-icon/dark-icon/kotlin.svg"
+        },
+        "file_kotlin_light": {
+            "iconPath": "../resource/custom-icon/light-icon/kotlin.svg"
+        },
+        "file_php": {
+            "iconPath": "../resource/custom-icon/dark-icon/php.svg"
+        },
+        "file_php_light": {
+            "iconPath": "../resource/custom-icon/light-icon/php.svg"
+        },
+        "file_pnpm": {
+            "iconPath": "../resource/custom-icon/dark-icon/pnpm.svg"
+        },
+        "file_postcss": {
+            "iconPath": "../resource/custom-icon/dark-icon/postcss.svg"
+        },
+        "file_python": {
+            "iconPath": "../resource/custom-icon/dark-icon/python.svg"
+        },
+        "file_rust": {
+            "iconPath": "../resource/custom-icon/dark-icon/rust.svg"
+        },
+        "file_rust_light": {
+            "iconPath": "../resource/custom-icon/light-icon/rust.svg"
+        },
+        "file_stylelint": {
+            "iconPath": "../resource/custom-icon/dark-icon/stylelint.svg"
+        },
+        "file_stylelint_light": {
+            "iconPath": "../resource/custom-icon/light-icon/stylelint.svg"
+        },
+        "file_svelte": {
+            "iconPath": "../resource/custom-icon/dark-icon/svelte.svg"
+        },
+        "file_tailwindcss": {
+            "iconPath": "../resource/custom-icon/dark-icon/tailwindcss.svg"
+        },
+        "file_unocss": {
+            "iconPath": "../resource/custom-icon/dark-icon/unocss.svg"
+        },
+        "file_vite": {
+            "iconPath": "../resource/custom-icon/dark-icon/vite.svg"
+        },
+        "file_vitest": {
+            "iconPath": "../resource/custom-icon/dark-icon/vitest.svg"
+        },
+        "file_webpack": {
+            "iconPath": "../resource/custom-icon/dark-icon/webpack.svg"
+        },
+        "file_babel": {
+            "iconPath": "../resource/custom-icon/dark-icon/babel.svg"
+        },
+        "file_rollup": {
+            "iconPath": "../resource/custom-icon/dark-icon/rollup.svg"
+        }
+    },
+    "file": "file_text",
+    "folder": "file_folder",
+    "rootFolderExpanded": "file_folder_open",
+    "folderName": {},
+    "fileNames": {
+        ".gitignore": "file_gitignore",
+        ".editorconfig": "file_editorConfig",
+        "yarn.clean": "file_yarn",
+        "yarn.lock": "file_yarn",
+        ".env": "file_anyType",
+        ".env.local": "file_anyTypeType",
+        ".env.test": "file_anyType",
+        ".env.development": "file_anyType",
+        ".env.production": "file_anyType",
+        "tailwind.config.js": "file_tailwindcss",
+        "tailwind.config.cjs": "file_tailwindcss",
+        "tailwind.config.ts": "file_tailwindcss",
+        "vite.config.js": "file_vite",
+        "vite.config.cjs": "file_vite",
+        "vite.config.ts": "file_vite",
+        "postcss.config.js": "file_postcss",
+        "postcss.config.cjs": "file_postcss",
+        "postcss.config.ts": "file_postcss",
+        ".eslintrc": "file_eslint",
+        ".eslintrc.cjs": "file_eslint",
+        ".eslintrc.js": "file_eslint",
+        ".eslintrc.ts": "file_eslint",
+        ".eslintignore": "file_eslint",
+        ".stylelintrc": "file_stylelint",
+        "stylelint.config.js": "file_stylelint",
+        "stylelint.config.cjs": "file_stylelint",
+        "stylelint.config.ts": "file_stylelint",
+        ".stylelintrc.json": "file_stylelint",
+        ".stylelintrc.yaml": "file_stylelint",
+        ".stylelintrc.yml": "file_stylelint",
+        "pnpm-lock.yaml": "file_pnpm",
+        "uno.config.js": "file_unocss",
+        "uno.config.ts": "file_unocss",
+        "uno.config.mjs": "file_unocss",
+        "uno.config.mts": "file_unocss",
+        "unocss.config.js": "file_unocss",
+        "unocss.config.ts": "file_unocss",
+        "unocss.config.mjs": "file_unocss",
+        "unocss.config.mts": "file_unocss",
+        "angular.json": "file_angularJS",
+        "manifest.json": "file_manifest",
+        "webpack.config.js": "file_webpack",
+        "webpack.config.cjs": "file_webpack",
+        "webpack.config.ts": "file_webpack",
+        "webpack.config.build.js": "file_webpack",
+        "webpack.config.build.cjs": "file_webpack",
+        "webpack.config.build.ts": "file_webpack",
+        "webpack.common.js": "file_webpack",
+        "webpack.common.cjs": "file_webpack",
+        "webpack.common.ts": "file_webpack",
+        "webpack.dev.js": "file_webpack",
+        "webpack.dev.cjs": "file_webpack",
+        "webpack.dev.ts": "file_webpack",
+        "webpack.prod.js": "file_webpack",
+        "webpack.prod.cjs": "file_webpack",
+        "webpack.prod.ts": "file_webpack",
+        ".babelrc": "file_babel",
+        "babel.config.js": "file_babel",
+        "babel.config.ts": "file_babel",
+        "babel.config.cjs": "file_babel",
+        "babel.config.mjs": "file_babel",
+        "babel.config.mts": "file_babel",
+        "babel.config.json": "file_babel",
+        "rollup.config.js": "file_rollup",
+        "rollup.config.ts": "file_rollup"
+    },
+    "fileExtensions": {
+        "css": "file_css",
+        "scss": "file_scss",
+        "sass": "file_scss",
+        "less": "file_less",
+        "json": "file_json",
+        "html": "file_html",
+        "jsx": "file_react",
+        "tsx": "file_react",
+        "js": "file_javaScript",
+        "ts": "file_typescript",
+        "csv": "file_csv",
+        "vue": "file_vueJs",
+        "png": "file_image",
+        "webp": "file_image",
+        "jpg": "file_image",
+        "gif": "file_image",
+        "ico": "file_image",
+        "svg": "file_image",
+        "ttf": "file_font",
+        "woff": "file_font",
+        "oft": "file_font",
+        "eot": "file_font",
+        "yaml": "file_yaml",
+        "yml": "file_yaml",
+        "java": "file_java",
+        "xml": "file_xml",
+        "sql": "file_sql",
+        "md": "file_markdown",
+        "properties": "file_properties",
+        "sh": "file_shell",
+        "zsh": "file_shell",
+        "bash": "file_shell",
+        "gz": "file_archive",
+        "zip": "file_archive",
+        "rar": "file_archive",
+        "7z": "file_archive",
+        "tar": "file_archive",
+        "as": "file_actionScript",
+        "cfg": "file_config",
+        "c": "file_c",
+        "cpp": "file_cpp",
+        "py": "file_python",
+        "go": "file_go",
+        "php": "file_php",
+        "svelte": "file_svelte",
+        "rs": "file_rust",
+        "map": "file_sourceMap",
+        "patch": "file_patch",
+        "jsp": "file_jsp",
+        "jspx": "file_jspx",
+        "proto": "file_protobuf",
+        "kt": "file_kotlin",
+        "kts": "file_kotlin",
+        "toml": "file_editorConfig"
+    },
+    "light": {
+        "file": "file_text_light",
+        "folder": "file_folder_light",
+        "rootFolderExpanded": "file_folder_open_light",
+        "folderName": {},
+        "fileNames": {
+            ".editorconfig": "file_editorConfig_light",
+            ".env": "file_anyType_light",
+            ".env.local": "file_anyType_light",
+            ".env.test": "file_anyType_light",
+            ".env.development": "file_anyType_light",
+            ".env.production": "file_anyType_light",
+            ".stylelintrc": "file_stylelint_light",
+            "stylelint.config.js": "file_stylelint_light",
+            "stylelint.config.cjs": "file_stylelint_light",
+            "stylelint.config.ts": "file_stylelint_light",
+            ".stylelintrc.json": "file_stylelint_light",
+            ".stylelintrc.yaml": "file_stylelint_light",
+            ".stylelintrc.yml": "file_stylelint_light",
+            "manifest.json": "file_manifest_light"
+        },
+        "fileExtensions": {
+            "less": "file_less_light",
+            "json": "file_json_light",
+            "jsx": "file_react_light",
+            "tsx": "file_react_light",
+            "js": "file_javaScript_light",
+            "csv": "file_csv_light",
+            "png": "file_image_light",
+            "webp": "file_image_light",
+            "jpg": "file_image_light",
+            "gif": "file_image_light",
+            "ico": "file_image_light",
+            "svg": "file_image_light",
+            "ttf": "file_font_light",
+            "woff": "file_font_light",
+            "oft": "file_font_light",
+            "eot": "file_font_light",
+            "yaml": "file_yaml_light",
+            "yml": "file_yaml_light",
+            "java": "file_java_light",
+            "xml": "file_xml_light",
+            "sql": "file_sql_light",
+            "properties": "file_properties_light",
+            "sh": "file_shell_light",
+            "zsh": "file_shell_light",
+            "bash": "file_shell_light",
+            "gz": "file_archive_light",
+            "zip": "file_archive_light",
+            "rar": "file_archive_light",
+            "7z": "file_archive_light",
+            "tar": "file_archive_light",
+            "as": "file_actionScript_light",
+            "cfg": "file_config_light",
+            "c": "file_c_light",
+            "cpp": "file_cpp_light",
+            "go": "file_go_light",
+            "php": "file_php_light",
+            "rs": "file_rust_light",
+            "map": "file_sourceMap_light",
+            "patch": "file_patch_light",
+            "jsp": "file_jsp_light",
+            "jspx": "file_jspx_light",
+            "kt": "file_kotlin_light",
+            "kts": "file_kotlin_light",
+            "toml": "file_editorConfig_light"
+        }
+    }
+}
