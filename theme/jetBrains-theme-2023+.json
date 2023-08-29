@@ -68,7 +68,6 @@
                 "source.shell constant.language",
                 "comment.block.documentation entity.name.type",
                 "variable.other.readwrite",
-                "meta.import variable.other.readwrite.alias",
                 "entity.name.type.module",
                 "source.css support.type.property-name",
                 "source.css variable.language.expanded-namespace",
@@ -90,6 +89,7 @@
         {
             "scope": [
                 "entity.name.tag",
+                "meta.template-tag entity.name.tag.template",
                 "punctuation.definition.tag",
                 "meta.selector.css constant.other.unicode-range",
                 "source.css meta.function.url",
@@ -115,7 +115,10 @@
             "scope": [
                 "meta.tag.custom entity.name.tag",
                 "meta.tag.other.unrecognized entity.name.tag",
-                "entity.name.tag support.class.component"
+                "entity.name.tag support.class.component",
+                "entity.name.tag.template",
+                "entity.name.tag.script",
+                "entity.name.tag.style"
             ],
             "settings": {
                 "foreground": "#2FBAA3"
@@ -229,7 +232,9 @@
                 "meta.function-call support.class",
                 "meta.definition.property entity.name.function",
                 "meta.objectliteral meta.object.member variable.other.readwrite",
-                "text.pug entity.other.attribute-name.class"
+                "text.pug entity.other.attribute-name.class",
+                "text.html.derivative variable.other.readwrite",
+                "meta.import variable.other.readwrite.alias"
             ],
             "settings": {
                 "foreground": "#C77DBB"

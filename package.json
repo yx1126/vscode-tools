@@ -2,7 +2,7 @@
     "name": "vsocde-tools",
     "displayName": "Dev Tools",
     "description": "Some small tools for VS Code",
-    "version": "1.8.0",
+    "version": "1.8.1",
     "publisher": "yx1126",
     "repository": {
         "type": "git",
