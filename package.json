@@ -1,8 +1,8 @@
 {
     "name": "vsocde-tools",
-    "displayName": "Vue Tools",
+    "displayName": "Dev Tools",
     "description": "Some small tools for VS Code",
-    "version": "1.7.0",
+    "version": "1.8.0",
     "publisher": "yx1126",
     "repository": {
         "type": "git",
@@ -58,10 +58,18 @@
         "onStartupFinished"
     ],
     "contributes": {
+        "themes": [
+            {
+                "id": "vscode-theme-yx1126",
+                "label": "JetBrains Theme 2023+ (yx1126)",
+                "uiTheme": "vs-dark",
+                "path": "./theme/jetBrains-theme-2023+.json"
+            }
+        ],
         "iconThemes": [
             {
-                "id": "vscode-icon-test-theme",
-                "label": "JetBrains Icon Theme 2023+",
+                "id": "vscode-icon-theme-yx1126",
+                "label": "JetBrains Icon Theme 2023+ (yx1126)",
                 "path": "./theme-icon/jetBrains-icon-theme-2023+.json"
             }
         ],
