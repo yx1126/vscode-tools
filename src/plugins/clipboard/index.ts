@@ -44,7 +44,7 @@ export function deleteFn(item: { data: ClipboardItem }, clipboard: ClipboardProv
 export function clear(clipboard: ClipboardProvider) {
     clipboard.clear();
     window.showInformationMessage(i18n.t("prompt.clipboard.clear"));
-};
+}
 
 export async function gotoFile(item: { data: ClipboardItem }) {
     try {

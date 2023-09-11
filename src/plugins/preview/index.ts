@@ -1,7 +1,7 @@
 import type Tools from "@/tools";
-import type { WebviewPanel, WorkspaceFolder } from "vscode";
+import type { WebviewPanel, WorkspaceFolder, FileSystemWatcher } from "vscode";
 import { type ToolsPluginCallback } from "@/tools";
-import { FileSystemWatcher, ViewColumn, commands, env, window, workspace } from "vscode";
+import { ViewColumn, commands, env, window, workspace } from "vscode";
 import { Commands } from "@/maps";
 import i18n from "@/utils/i18n";
 import fs from "fs-extra";

@@ -1,5 +1,5 @@
-import { workspace, Disposable, commands, TextDocument, window } from "vscode";
-import type { ExtensionContext, ConfigurationChangeEvent } from "vscode";
+import { workspace, Disposable, commands, window } from "vscode";
+import type { ExtensionContext, ConfigurationChangeEvent, TextDocument } from "vscode";
 import Node, { type FileNode } from "./utils/node";
 import debounce from "./utils/debounce";
 

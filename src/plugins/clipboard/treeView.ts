@@ -8,7 +8,7 @@ export interface ClipboardItem {
     content: string;
     filePath: string;
     selection: Selection;
-};
+}
 
 export class ClipboardProvider implements TreeDataProvider<ClipboardTreeItem> {
 
@@ -79,7 +79,7 @@ class ClipboardTreeItem extends TreeItem {
     constructor(
         public readonly data: ClipboardItem,
         public readonly index: number,
-        public readonly collapsibleState: TreeItemCollapsibleState
+        public readonly collapsibleState: TreeItemCollapsibleState,
     ) {
         super(data.label, collapsibleState);
         this.data = data;

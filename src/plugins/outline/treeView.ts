@@ -1,6 +1,6 @@
-import type { Event, TreeDataProvider } from "vscode";
+import type { Event, TreeDataProvider, TreeItemCollapsibleState } from "vscode";
 import { type FileNode } from "@/utils/node";
-import { EventEmitter, TreeItem, TreeItemCollapsibleState, SymbolKind, ThemeIcon } from "vscode";
+import { EventEmitter, TreeItem, SymbolKind, ThemeIcon } from "vscode";
 import { Commands } from "@/maps";
 
 

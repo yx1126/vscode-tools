@@ -13,7 +13,7 @@ export interface NodeOptions {
 export interface FileNode extends Omit<NodeOptions, "collapsibleState">, DocumentSymbol {
     children: FileNode[];
     collapsibleState: TreeItemCollapsibleState;
-};
+}
 
 export interface FormatOptions {
     readonly modules: string[];
@@ -50,7 +50,7 @@ export default class Node {
         const tools = this.tools.tools;
         if(!tools) return true;
         return tools.includes("outline") || tools.includes("ellipsis");
-    };
+    }
 
     private emit(data: FileNode[]) {
         this.fileNodes = data;
@@ -177,7 +177,7 @@ function formatModules(nodes: FileNode[], options: FormatOptions): FileNode[] {
 
 function formatScriptModules(nodes: FileNode[], options: FormatOptions): FileNode[] {
     const { onlyDefault, modules } = options;
-    let hasDefault: boolean = false;
+    let hasDefault = false;
     function filter(node: FileNode): FileNode {
         const defaultModule = node.children.find(n => n.name === "default" && n.kind === SymbolKind.Variable);
         if(defaultModule && onlyDefault) {
@@ -191,7 +191,7 @@ function formatScriptModules(nodes: FileNode[], options: FormatOptions): FileNod
             }
         }
         return node;
-    };
+    }
     return formatModules(nodes, {
         ...options,
         filter,
