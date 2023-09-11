@@ -1,7 +1,7 @@
 {
     "name": "vsocde-tools",
     "displayName": "Dev Tools",
-    "version": "1.8.1",
+    "version": "1.8.2",
     "description": "Some small tools for VS Code",
     "publisher": "yx1126",
     "main": "./dist/extension.js",
@@ -17,8 +17,8 @@
         "build": "pnpm build:i18n && cross-env NODE_ENV=production rollup -c --bundleConfigAsCjs",
         "build:i18n": "esno scripts/build-i18n.ts",
         "pretest": "pnpm run compile && pnpm run lint",
-        "lint": "eslint src --ext ts",
-        "lint:fix": "eslint . --ext ts",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
         "test": "node ./out/test/runTest.js"
     },
     "dependencies": {
@@ -60,9 +60,7 @@
         "Other"
     ],
     "icon": "resources/tool.png",
-    "activationEvents": [
-        "onStartupFinished"
-    ],
+    "activationEvents": ["onStartupFinished"],
     "contributes": {
         "themes": [
             {
@@ -311,9 +309,7 @@
                 },
                 "vue-tools.preview.ignore": {
                     "type": "array",
-                    "default": [
-                        "node_modules/**"
-                    ],
+                    "default": ["node_modules/**"],
                     "markdownDescription": "%preview.folder.ignore.description%"
                 }
             }
