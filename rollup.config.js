@@ -11,7 +11,6 @@ export default defineConfig({
     input: "./src/extension.ts",
     output: {
         file: "./dist/extension.js",
-        sourcemap: true,
         format: "cjs",
     },
     treeshake: true,

@@ -1,7 +1,7 @@
 {
     "name": "vsocde-tools",
     "displayName": "Dev Tools",
-    "version": "1.8.2",
+    "version": "1.8.3",
     "description": "Some small tools for VS Code",
     "publisher": "yx1126",
     "main": "./dist/extension.js",
