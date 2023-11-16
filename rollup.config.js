@@ -1,38 +1,34 @@
 import { defineConfig } from "rollup";
-import ts from "rollup-plugin-typescript2";
-import terser from "@rollup/plugin-terser";
-import resolve from "@rollup/plugin-node-resolve";
-import json from "@rollup/plugin-json";
+import nodeResolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import alias from "@rollup/plugin-alias";
+import typescript from "@rollup/plugin-typescript";
+import eslint from "@rollup/plugin-eslint";
+import json from "@rollup/plugin-json";
 import path from "path";
 
 export default defineConfig({
     input: "./src/extension.ts",
     output: {
-        file: "./dist/extension.js",
+        file: "./out/extension.js",
         format: "cjs",
+        sourcemap: true,
     },
     treeshake: true,
     external: [
         "vscode",
-        "commonjs",
-        "path",
-        "fs",
     ],
     plugins: [
-        ts({
-            tsconfigOverride: { compilerOptions: { module: "esnext" } },
-        }),
-        terser(),
-        resolve(),
-        json(),
+        eslint({ fix: true }),
+        typescript(),
         commonjs(),
+        json(),
         alias({
             entries: [
-                { find: "@", replacement: path.resolve(__dirname, "./src") },
+                { find: "@", replacement: path.resolve(process.cwd(), "./src") },
             ],
         }),
+        nodeResolve(),
     ],
     watch: {
         buildDelay: 1500,

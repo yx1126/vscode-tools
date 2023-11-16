@@ -1,23 +1,21 @@
 {
+    "include": ["src/**/*.ts", "scripts/**/*.ts"],
     "compilerOptions": {
         "baseUrl": ".",
-        "module": "commonjs",
-        "target": "ES2017",
-        "outDir": "dist",
-        "checkJs": true,
-        "lib": ["ES2020"],
-        "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "experimentalDecorators": true,
-        "declaration": true,
+        "rootDir": ".",
+        "module": "ESNext",
+        "target": "ESNext",
+        "outDir": "out",
+        "lib": ["ESNext"],
         "sourceMap": true,
-        "strict": true, /* enable all strict type-checking options */
         "moduleResolution": "node",
-        "allowSyntheticDefaultImports": true,
+        "strict": true,   /* enable all strict type-checking options */
         /* Additional Checks */
         // "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
         // "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
         // "noUnusedParameters": true,  /* Report errors on unused parameters. */
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
         "paths": {
             "@/*": ["src/*"]
         }

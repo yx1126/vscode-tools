@@ -3,13 +3,9 @@
 src/**
 .gitignore
 .yarnrc
-.editorconfig
+rollup.config.js
 vsc-extension-quickstart.md
 **/tsconfig.json
-**/.eslintrc.json
+**/.eslintrc.cjs
 **/*.map
 **/*.ts
-scripts/**
-locales/**
-assets/**
-rollup.config.js

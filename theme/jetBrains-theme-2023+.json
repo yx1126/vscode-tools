@@ -12,7 +12,6 @@
         "terminal.foreground": "#BCBEC4",
         "breadcrumb.background": "#2b2d30"
     },
-    "semanticHighlighting": true,
     "semanticTokenColors": {
         "interface": "#BCBEC4",
         "function": "#56A8F5",
@@ -258,7 +257,9 @@
                 "constant.other.color.rgb-value.hex.css",
                 "punctuation.definition.constant.css",
                 "text.xml constant.character.entity",
-                "text.xml constant.character.entity punctuation.definition.constant"
+                "text.xml constant.character.entity punctuation.definition.constant",
+                "constant.character.entity.named",
+                "constant.character.entity.named punctuation.definition.entity.html"
             ],
             "settings": {
                 "foreground": "#56A8F5"
@@ -464,6 +465,37 @@
             "scope": ["markup.table"],
             "settings": {
                 "foreground": "#EEFFFF"
+            }
+        },
+        {
+            "name": "keyword",
+            "scope": ["source.go keyword"],
+            "settings": {
+                "foreground": "#CF8E6D"
+            }
+        },
+        {
+            "name": "word",
+            "scope": [
+                "source.go entity.name.package",
+                "source.go entity.alias.import"
+            ],
+            "settings": {
+                "foreground": "#AFBF7E"
+            }
+        },
+        {
+            "name": "function",
+            "scope": ["source.go support.function"],
+            "settings": {
+                "foreground": "#56A8F5"
+            }
+        },
+        {
+            "name": "function",
+            "scope": ["source.go support.function.builtin"],
+            "settings": {
+                "foreground": "#CC7832"
             }
         }
     ]

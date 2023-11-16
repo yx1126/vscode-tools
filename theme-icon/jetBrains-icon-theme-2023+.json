@@ -342,6 +342,8 @@
         ".stylelintrc.json": "file_stylelint",
         ".stylelintrc.yaml": "file_stylelint",
         ".stylelintrc.yml": "file_stylelint",
+        ".stylelintrc.js": "file_stylelint",
+        ".stylelintrc.cjs": "file_stylelint",
         "pnpm-lock.yaml": "file_pnpm",
         "uno.config.js": "file_unocss",
         "uno.config.ts": "file_unocss",
@@ -459,6 +461,8 @@
             ".stylelintrc.json": "file_stylelint_light",
             ".stylelintrc.yaml": "file_stylelint_light",
             ".stylelintrc.yml": "file_stylelint_light",
+            ".stylelintrc.js": "file_stylelint_light",
+            ".stylelintrc.cjs": "file_stylelint_light",
             "manifest.json": "file_manifest_light"
         },
         "fileExtensions": {

@@ -1,5 +1,5 @@
 import path from "path";
-import * as fs from "fs-extra";
+import fs from "fs-extra";
 import fg from "fast-glob";
 
 const DEFAULT_LOCAL = "en";

@@ -75,7 +75,6 @@ export default class Node {
         }
         this.tools.document = document;
         const data = await this.getFileNodes(document);
-        console.log("update", data);
         this.emit(data);
     }
 
