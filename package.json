@@ -1,7 +1,7 @@
 {
     "name": "vsocde-tools",
     "displayName": "Dev Tools",
-    "version": "1.8.4",
+    "version": "1.8.5",
     "description": "Some small tools for VS Code",
     "publisher": "yx1126",
     "main": "./out/extension.js",
@@ -12,6 +12,7 @@
     "scripts": {
         "vscode:prepublish": "pnpm run build",
         "publish": "vsce publish --no-dependencies",
+        "watch": "tsc -watch -p ./",
         "compile": "tsc -p ./",
         "dev": "rollup -c --watch",
         "build:dev": "pnpm build:i18n && rollup -c --bundleConfigAsCjs",

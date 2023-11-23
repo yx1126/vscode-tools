@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        html {
+            box-sizing: border-box;
+            font-size: 16px;
+            height: 100%;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        ol,
+        ul {
+            margin: 0;
+            padding: 0;
+            font-weight: normal;
+        }
+
+        ol,
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji,
+                Segoe UI Emoji;
+            margin: 0;
+            color: var(--vscode-foreground);
+            background-color: var(--vscode-editor-background);
+            height: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: bold;
+            margin: 24px;
+        }
+
+        .app {
+            width: 100%;
+            height: 100%;
+            padding: 10px 20px;
+            overflow-y: auto;
+        }
+
+        .folder-item+.folder-item {
+            margin-top: 20px;
+        }
+
+        .folder-item>h2 {
+            margin-bottom: 5px;
+        }
+
+        .icon-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 10%);
+            border-top: 1px solid var(--vscode-foreground);
+            border-left: 1px solid var(--vscode-foreground);
+        }
+
+        .icon-item {
+            text-align: center;
+            height: 100px;
+            font-size: 13px;
+            border-right: 1px solid var(--vscode-foreground);
+            border-bottom: 1px solid var(--vscode-foreground);
+            overflow: hidden;
+        }
+
+        .icon-item>span {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .icon-item .icon {
+            height: 1em;
+            width: 1em;
+            line-height: 1em;
+            display: inline-block;
+            position: relative;
+            font-size: 20px;
+        }
+
+        .icon-item .icon-index {
+            position: absolute;
+            left: 0;
+            top: 0;
+            padding: 0 5px;
+            border-right: 1px solid var(--vscode-foreground);
+            border-bottom: 1px solid var(--vscode-foreground);
+        }
+
+        .icon-item .icon-name {
+            margin-top: 8px;
+        }
+
+        .icon-item-hover {
+            width: 100%;
+            height: 0;
+            background-color: var(--vscode-editor-background);
+            border-top: 1px solid var(--vscode-foreground);
+            display: grid;
+            grid-template-columns: repeat(2, 50%);
+            transition: all 0.2s;
+        }
+
+        .icon-item-hover>div {
+            line-height: 30px;
+            cursor: pointer;
+        }
+
+        .icon-item-hover>div:first-child {
+            border-right: 1px solid var(--vscode-foreground);
+        }
+
+        .icon-item:hover>span {
+            height: calc(100% - 30px);
+        }
+
+        .icon-item:hover .icon-item-hover {
+            height: 30px;
+        }
+
+        svg {
+            width: 1em;
+            height: 1em;
+            fill: currentColor;
+        }
+
+        @media only screen and (min-width: 100px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, 100%);
+            }
+        }
+
+        @media only screen and (min-width: 200px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 2));
+            }
+        }
+
+        @media only screen and (min-width: 300px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 3));
+            }
+        }
+
+        @media only screen and (min-width: 400px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 4));
+            }
+        }
+
+        @media only screen and (min-width: 500px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 5));
+            }
+        }
+
+        @media only screen and (min-width: 600px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 6));
+            }
+        }
+
+        @media only screen and (min-width: 700px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 7));
+            }
+        }
+
+        @media only screen and (min-width: 800px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 8));
+            }
+        }
+
+        @media only screen and (min-width: 900px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 9));
+            }
+        }
+
+        @media only screen and (min-width: 1000px) {
+            .icon-box {
+                grid-template-columns: repeat(auto-fill, calc(100% / 10));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <h1>{{ title }}</h1>
+        <div class="icon-wrapper">
+            {{icons}}
+        </div>
+    </div>
+    <script>
+
+        (function () {
+
+            document.onselectstart = () => false;
+
+            const app = document.querySelector(".app");
+            const wrapper = document.querySelector(".icon-wrapper");
+            const vscode = acquireVsCodeApi();
+
+            window.onload = function () {
+                const state = vscode.getState();
+                app.scrollTo({ top: state?.scrollTop || 0 });
+            }
+
+            wrapper.addEventListener("click", (e) => {
+                if (e.currentTarget === e.target) {
+                    return;
+                }
+                let target = e.target,
+                    clickEvent = null,
+                    data = null;
+                while (!data) {
+                    if (e.currentTarget === target) {
+                        break;
+                    }
+                    const dataJsonStr = target.getAttribute("data-json");
+                    if (dataJsonStr) data = JSON.parse(dataJsonStr);
+                    const dataClick = target.getAttribute("data-click");
+                    if (dataClick) clickEvent = dataClick;
+                    target = target.parentNode;
+                }
+                if (data && clickEvent) {
+                    vscode.postMessage({
+                        type: clickEvent,
+                        data
+                    });
+                }
+            })
+
+            app.addEventListener("scroll", deounce((e) => {
+                const scrollTop = e.target.scrollTop;
+                vscode.setState({ scrollTop });
+            }))
+        }())
+
+        function deounce(fn, delay = 100) {
+            let timer = null;
+            return function (...args) {
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+                timer = setTimeout(() => {
+                    fn.apply(null, args);
+                }, delay)
+            }
+        }
+    </script>
+</body>
+
+</html>
