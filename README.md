@@ -8,7 +8,7 @@ Tools for VS Code.
 
 1. Clipboard
 2. Current file location
-3. Vue outline
+3. Ooutline
 4. Preview SVG
 5. JetBrains Icon Theme 2023+
 6. JetBrains Theme 2023+

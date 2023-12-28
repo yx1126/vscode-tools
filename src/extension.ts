@@ -2,7 +2,8 @@
 // Import the module and reference it with the alias vscode in your code below
 import { type ExtensionContext } from "vscode";
 import i18n from "@/utils/i18n";
-import { createTools } from "./tools";
+// import { createTools } from "./tools";
+import { VsocdeContext } from "./vscode-context";
 import plugins from "@/plugins";
 
 // This method is called when your extension is activated
@@ -15,14 +16,14 @@ export async function activate(context: ExtensionContext) {
     // init i18n
     i18n.init(context.extensionPath);
 
-    const tools = createTools(context);
+    const vctx = new VsocdeContext(context);
 
-    tools.use(plugins);
+    plugins.forEach(p => {
+        vctx.use(p);
+    });
+    vctx.init();
 
-    tools.init();
-
-    context.subscriptions.push(tools);
-
+    context.subscriptions.push(vctx);
 }
 
 // This method is called when your extension is deactivated

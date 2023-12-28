@@ -1,4 +1,5 @@
-import {  EventEmitter, TreeItem, type TreeDataProvider, type Event, type ExtensionContext } from "vscode";
+import { TreeItem, type ExtensionContext } from "vscode";
+import { TreeProvider } from "@/utils/provider";
 import i18n from "@/utils/i18n";
 import { Commands } from "@/maps";
 
@@ -8,13 +9,12 @@ export interface HelpItemDefine {
     url: string;
 }
 
-export class HelperProvider implements TreeDataProvider<HelpItem> {
+export class HelperProvider extends TreeProvider<HelpItem, HelpItemDefine> {
 
     ctx: ExtensionContext;
-    private _onDidChangeTreeData: EventEmitter<HelpItem | undefined | null | void> = new EventEmitter<HelpItem | undefined | null | void>();
-    readonly onDidChangeTreeData: Event<HelpItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
     constructor(ctx: ExtensionContext) {
+        super();
         this.ctx = ctx;
     }
 

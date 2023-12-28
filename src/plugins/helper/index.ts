@@ -1,4 +1,4 @@
-import { type ToolsPluginCallback } from "@/tools";
+import { type Plugin } from "@/vscode-context";
 import { Selection, TextEditorRevealType, commands, window, Position, Uri, env, type Range } from "vscode";
 import { HelperProvider } from "./treeView";
 import { TreeViews, Commands } from "@/maps";
@@ -19,17 +19,20 @@ export async function onOpenUrl(url: string) {
     await env.openExternal(Uri.parse(url));
 }
 
-export default <ToolsPluginCallback> function(app) {
-
-    const helper = new HelperProvider(app.ctx);
-    window.createTreeView(TreeViews.HelpAndFeedback, {
-        treeDataProvider: helper,
-    });
+export default <Plugin> function() {
 
     return {
         name: "helper",
-        install() {
+        always: true,
+        install(app) {
+            const helper = new HelperProvider(app.ctx);
+
+            const treeView = window.createTreeView(TreeViews.HelpAndFeedback, {
+                treeDataProvider: helper,
+            });
+
             return [
+                treeView,
                 commands.registerCommand(Commands.helper_scrollTo, scrollTo),
                 commands.registerCommand(Commands.helper_open_url, onOpenUrl),
             ];

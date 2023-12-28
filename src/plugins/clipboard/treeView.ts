@@ -1,7 +1,9 @@
 import { Commands } from "@/maps";
-import { EventEmitter, TreeItem, TreeItemCollapsibleState, workspace, Uri } from "vscode";
-import type { TreeDataProvider, Event, Selection } from "vscode";
-import type GlobStorage from "@/utils/globStorage";
+import { TreeItem, TreeItemCollapsibleState, workspace, Uri } from "vscode";
+import type { Selection } from "vscode";
+import { TreeProvider } from "@/utils/provider";
+import { type Local } from "@/utils/storage";
+import { toArray } from "@/utils/array";
 
 export interface ClipboardItem {
     label: string;
@@ -10,18 +12,14 @@ export interface ClipboardItem {
     selection: Selection;
 }
 
-export class ClipboardProvider implements TreeDataProvider<ClipboardTreeItem> {
+export class ClipboardProvider extends TreeProvider<ClipboardTreeItem, ClipboardItem> {
 
-    list: ClipboardItem[] = [];
-    stroage: GlobStorage<ClipboardItem[]>;
+    stroage: Local<ClipboardItem[]>;
 
-
-    private _onDidChangeTreeData: EventEmitter<ClipboardTreeItem | undefined | null | void> = new EventEmitter<ClipboardTreeItem | undefined | null | void>();
-    readonly onDidChangeTreeData: Event<ClipboardTreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
-
-    constructor(stroage: GlobStorage<ClipboardItem[]>) {
+    constructor(stroage: Local<ClipboardItem[]>) {
+        super();
         this.stroage = stroage;
-        this.list = this.stroage.getItem() || [];
+        this.dataList = this.stroage.getItem() || [];
     }
 
     getTreeItem(element: ClipboardTreeItem): TreeItem {
@@ -29,46 +27,37 @@ export class ClipboardProvider implements TreeDataProvider<ClipboardTreeItem> {
     }
 
     getChildren(): Thenable<ClipboardTreeItem[]> {
-        const data = this.list.map((item, i) => {
+        const data = this.dataList.map((item, i) => {
             return new ClipboardTreeItem(item, i, TreeItemCollapsibleState.None);
         });
         return Promise.resolve(data);
     }
 
-    refresh(data?: ClipboardItem[]): void {
+    refresh(data?: ClipboardItem | ClipboardItem[]) {
         if(data) {
-            this.list = data;
+            this.dataList = toArray(data);
         }
-        this.stroage.setItem(this.list);
+        this.stroage.setItem(this.dataList);
         this._onDidChangeTreeData.fire();
+        return this;
     }
 
     insert(data: ClipboardItem) {
-        const isIn = this.list.find(item => item.content === data.content);
+        const isIn = this.dataList.find(item => item.content === data.content);
         if(data.content && !isIn) {
-            this.list = [...this.list, data];
-            this.refresh();
+            this.append(data);
         }
-    }
-
-    clear() {
-        this.list = [];
-        this.refresh();
     }
 
     remove(data: ClipboardItem) {
-        const index = this.list.findIndex(item => item.content === data.content);
-        if(index !== -1) {
-            this.list.splice(index, 1);
-            this.refresh();
-        }
+        this.delete(data, "content");
     }
 
     update(data: ClipboardItem) {
-        const index = this.list.findIndex(item => item.content === data.content);
-        const isHasLabel = this.list.findIndex(item => item.label === data.label);
+        const index = this.dataList.findIndex(item => item.content === data.content);
+        const isHasLabel = this.dataList.findIndex(item => item.label === data.label);
         if(index !== -1 && isHasLabel === -1) {
-            this.list[index] = data;
+            this.dataList[index] = data;
             this.refresh();
         }
     }

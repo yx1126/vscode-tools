@@ -1,13 +1,12 @@
-import type Tools from "@/tools";
 import type { WebviewPanel, WorkspaceFolder, FileSystemWatcher } from "vscode";
-import { type ToolsPluginCallback } from "@/tools";
+import { type Plugin, type VsocdeContext } from "@/vscode-context";
 import { ViewColumn, commands, env, window, workspace } from "vscode";
 import { Commands } from "@/maps";
 import i18n from "@/utils/i18n";
 import fs from "fs-extra";
 import path from "node:path";
 import { Uri } from "vscode";
-import { formatSVG } from "@/utils/svgo";
+import { parse } from "@/utils/svgo";
 import fg from "fast-glob";
 
 const SVG_BEGIN = "<svg>";
@@ -68,7 +67,7 @@ function getSvgFile(fsPath: string) {
         fsPath: fsPath,
         value: "",
     };
-    const { data } = formatSVG(svgBody, {
+    const { data } = parse(svgBody, {
         name: "addAttributesToSVGElement",
         params: {
             attributes: [{ id: svgitem.name }],
@@ -87,7 +86,7 @@ function formatPath(value: string) {
     return path.normalize(value).replace(/\\/g, "/");
 }
 
-function createHTML(app: Tools) {
+function createHTML(app: VsocdeContext) {
     const folders = getSvgPath(app.config.get<null | string[]>("preview.folder"));
     const isShowSvgIndex = app.config.get<boolean>("preview.index");
     const ignore = app.config.get<string[]>("preview.ignore");
@@ -141,7 +140,7 @@ function createHTML(app: Tools) {
 }
 
 
-function onPreview(app: Tools) {
+function onPreview(app: VsocdeContext) {
     const panel = window.createWebviewPanel("preview", i18n.t("menu.explorer.preview.title"), ViewColumn.One, {
         enableScripts: true,
     });
@@ -171,12 +170,12 @@ function onPreview(app: Tools) {
     return panel;
 }
 
-export default <ToolsPluginCallback> function(app) {
+export default <Plugin> function() {
     let currentPanel: WebviewPanel | undefined = undefined;
     let svgFileWatcher: FileSystemWatcher | undefined;
     let timer: any = null;
 
-    function onSVGChange() {
+    function onSVGChange(app: VsocdeContext) {
         if(!currentPanel) return;
         if(timer) {
             clearTimeout(timer);
@@ -189,12 +188,12 @@ export default <ToolsPluginCallback> function(app) {
 
     return {
         name: "preview",
-        onDidChangeConfiguration(e) {
-            if(["vue-tools.preview.index", "vue-tools.preview.ignore"].some(s => e.affectsConfiguration(s))) {
-                onSVGChange();
+        onConfigurationChange(e, app) {
+            if(["dev-tools.preview.index", "dev-tools.preview.ignore"].some(s => e.affectsConfiguration(s))) {
+                onSVGChange(app);
             }
         },
-        install() {
+        install(app) {
             return [
                 commands.registerCommand(Commands.explorer_preview, () => {
                     const columnToShowIn = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
@@ -202,9 +201,9 @@ export default <ToolsPluginCallback> function(app) {
                     if(!svgFileWatcher) {
                         svgFileWatcher = workspace.createFileSystemWatcher("**/*.svg");
 
-                        svgFileWatcher.onDidCreate(onSVGChange);
-                        svgFileWatcher.onDidChange(onSVGChange);
-                        svgFileWatcher.onDidDelete(onSVGChange);
+                        svgFileWatcher.onDidCreate(() => onSVGChange(app));
+                        svgFileWatcher.onDidChange(() => onSVGChange(app));
+                        svgFileWatcher.onDidDelete(() => onSVGChange(app));
                     }
 
                     if(currentPanel) {

@@ -1,4 +1,4 @@
-import type { ToolsPluginCallback } from "@/tools";
+import type { Plugin } from "@/vscode-context";
 import { commands, window, workspace } from "vscode";
 import { Commands } from "@/maps";
 
@@ -12,7 +12,7 @@ export async function openPosition() {
     }
 }
 
-export default <ToolsPluginCallback> function() {
+export default <Plugin> function() {
     return {
         name: "location",
         install() {

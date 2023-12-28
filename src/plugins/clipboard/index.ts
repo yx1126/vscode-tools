@@ -1,9 +1,9 @@
 import { window, env, workspace, Uri, Selection, TextEditorRevealType, commands } from "vscode";
-import type { ToolsPluginCallback } from "@/tools";
+import type { Plugin } from "@/vscode-context";
 import { ClipboardProvider, type ClipboardItem } from "./treeView";
 import i18n from "@/utils/i18n";
-import GlobStorage from "@/utils/globStorage";
-import { TreeViews, Commands } from "@/maps";
+import { TreeViews, Commands, LocalKey } from "@/maps";
+import { Local } from "@/utils/storage";
 
 export function add(clipboard: ClipboardProvider) {
     const editor = window.activeTextEditor!;
@@ -33,17 +33,17 @@ export async function edit(item: { data: ClipboardItem }, clipboard: ClipboardPr
 
 export function copytext(item: { data: ClipboardItem }) {
     env.clipboard.writeText(item.data.content);
-    window.showInformationMessage(i18n.t("prompt.clipboard.copy"));
+    // window.showInformationMessage(i18n.t("prompt.clipboard.copy"));
 }
 
 export function deleteFn(item: { data: ClipboardItem }, clipboard: ClipboardProvider) {
     clipboard.remove(item.data);
-    window.showInformationMessage(i18n.t("prompt.clipboard.delete"));
+    // window.showInformationMessage(i18n.t("prompt.clipboard.delete"));
 }
 
 export function clear(clipboard: ClipboardProvider) {
     clipboard.clear();
-    window.showInformationMessage(i18n.t("prompt.clipboard.clear"));
+    // window.showInformationMessage(i18n.t("prompt.clipboard.clear"));
 }
 
 export async function gotoFile(item: { data: ClipboardItem }) {
@@ -66,21 +66,21 @@ export async function gotoFile(item: { data: ClipboardItem }) {
         window.showErrorMessage(String(error));
     }
 }
-// clipboard store key
-export const CLIPBOARD_STORE_KEY = "clipboardKeys";
 
-export default <ToolsPluginCallback> function(app) {
-
-    const clipboardStore = new GlobStorage<ClipboardItem[]>(app.ctx, CLIPBOARD_STORE_KEY);
-    const clipboard = new ClipboardProvider(clipboardStore);
-    window.createTreeView(TreeViews.Cliboard, {
-        treeDataProvider: clipboard,
-    });
+export default <Plugin> function() {
 
     return {
         name: "clipboard",
-        install() {
+        install(app) {
+
+            const local = new Local<ClipboardItem[]>(app.ctx, LocalKey.Clipboard);
+            const clipboard = new ClipboardProvider(local);
+            const treeView = window.createTreeView(TreeViews.Cliboard, {
+                treeDataProvider: clipboard,
+            });
+
             return [
+                treeView,
                 commands.registerCommand(Commands.clipboard_add, () => add.call(null, clipboard)),
                 commands.registerCommand(Commands.clipboard_edit, (item) => edit.call(null, item, clipboard)),
                 commands.registerCommand(Commands.clipboard_copytext, (item) => copytext.call(null, item)),
