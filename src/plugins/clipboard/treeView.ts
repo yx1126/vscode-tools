@@ -77,8 +77,8 @@ class ClipboardTreeItem extends TreeItem {
         this.contextValue = workspace.getWorkspaceFolder(Uri.file(data.filePath)) ? "goto_file" : "";
         this.command = {
             title: this.label,
-            command: Commands.clipboard_copytext,
-            arguments: [{ data }],
+            command: Commands.helper_copytext,
+            arguments: [data.content],
         };
     }
 }

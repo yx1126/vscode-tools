@@ -6,4 +6,7 @@ module.exports = {
         "dist",
         "**/*.d.ts",
     ],
+    rules: {
+        "no-case-declarations": "off",
+    },
 };

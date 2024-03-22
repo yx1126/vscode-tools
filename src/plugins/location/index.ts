@@ -17,7 +17,7 @@ export default <Plugin> function() {
         name: "location",
         install() {
             return [
-                commands.registerCommand(Commands.explorer_position, openPosition),
+                commands.registerCommand(Commands.location_position, openPosition),
             ];
         },
     };

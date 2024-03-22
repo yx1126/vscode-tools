@@ -5,6 +5,10 @@ import i18n from "@/utils/i18n";
 import { TreeViews, Commands, LocalKey } from "@/maps";
 import { Local } from "@/utils/storage";
 
+interface CommandData {
+    data: ClipboardItem;
+}
+
 export function add(clipboard: ClipboardProvider) {
     const editor = window.activeTextEditor!;
     const selectText = editor.document.getText(editor.selection);
@@ -19,7 +23,7 @@ export function add(clipboard: ClipboardProvider) {
     });
 }
 
-export async function edit(item: { data: ClipboardItem }, clipboard: ClipboardProvider) {
+export async function edit(item: CommandData, clipboard: ClipboardProvider) {
     const input = await window.showInputBox({
         placeHolder: i18n.t("prompt.clipboard.treeinput.placeholder"),
         value: item.data.label,
@@ -31,12 +35,7 @@ export async function edit(item: { data: ClipboardItem }, clipboard: ClipboardPr
     });
 }
 
-export function copytext(item: { data: ClipboardItem }) {
-    env.clipboard.writeText(item.data.content);
-    // window.showInformationMessage(i18n.t("prompt.clipboard.copy"));
-}
-
-export function deleteFn(item: { data: ClipboardItem }, clipboard: ClipboardProvider) {
+export function deleteFn(item: CommandData, clipboard: ClipboardProvider) {
     clipboard.remove(item.data);
     // window.showInformationMessage(i18n.t("prompt.clipboard.delete"));
 }
@@ -46,7 +45,7 @@ export function clear(clipboard: ClipboardProvider) {
     // window.showInformationMessage(i18n.t("prompt.clipboard.clear"));
 }
 
-export async function gotoFile(item: { data: ClipboardItem }) {
+export async function gotoFile(item: CommandData) {
     try {
         const wsFolder = workspace.getWorkspaceFolder(Uri.file(item.data.filePath));
         if(!wsFolder)
@@ -67,11 +66,11 @@ export async function gotoFile(item: { data: ClipboardItem }) {
     }
 }
 
-export default <Plugin> function() {
+export default <Plugin> function(app) {
 
     return {
         name: "clipboard",
-        install(app) {
+        install() {
 
             const local = new Local<ClipboardItem[]>(app.ctx, LocalKey.Clipboard);
             const clipboard = new ClipboardProvider(local);
@@ -83,7 +82,6 @@ export default <Plugin> function() {
                 treeView,
                 commands.registerCommand(Commands.clipboard_add, () => add.call(null, clipboard)),
                 commands.registerCommand(Commands.clipboard_edit, (item) => edit.call(null, item, clipboard)),
-                commands.registerCommand(Commands.clipboard_copytext, (item) => copytext.call(null, item)),
                 commands.registerCommand(Commands.clipboard_delete, (item) => deleteFn.call(null, item, clipboard)),
                 commands.registerCommand(Commands.clipboard_clear, () => clear.call(null, clipboard)),
                 commands.registerCommand(Commands.clipboard_goto_file, (item) => gotoFile.call(null, item)),

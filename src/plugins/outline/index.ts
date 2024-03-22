@@ -7,13 +7,13 @@ import { NodeContext } from "./node-context";
 import { Local } from "@/utils/storage";
 import { setContext } from "@/utils/setContext";
 
-export default <Plugin> function() {
+export default <Plugin> function(vsCtx) {
 
     const outline = new OutlineProvider();
 
     return {
         name: "outline",
-        install(vsCtx) {
+        install() {
             const treeView = window.createTreeView(TreeViews.Outline, {
                 treeDataProvider: outline,
                 showCollapseAll: true,

@@ -77,7 +77,7 @@
         "menus": {
             "editor/title": [
                 {
-                    "command": "dev-tools.commands.explorer.position",
+                    "command": "dev-tools.commands.location.position",
                     "group": "navigation",
                     "when": "dev-tools.plugin.location"
                 }
@@ -96,7 +96,7 @@
                     "group": "navigation"
                 },
                 {
-                    "command": "dev-tools.commands.explorer.position",
+                    "command": "dev-tools.commands.location.position",
                     "when": "view == workbench.explorer.fileView && dev-tools.plugin.location",
                     "group": "navigation"
                 },
@@ -116,31 +116,31 @@
                     "group": "navigation@3"
                 },
                 {
-                    "command": "dev-tools.commands.explorer.preview",
-                    "when": "view == workbench.explorer.fileView && dev-tools.plugin.preview",
+                    "command": "dev-tools.commands.preview.webview",
+                    "when": "view == dev-tools.treeViews.svg && dev-tools.plugin.preview",
                     "group": "navigation"
                 }
             ],
             "view/item/context": [
                 {
                     "command": "dev-tools.commands.clipboard.edit",
-                    "group": "inline",
-                    "when": "view == dev-tools.treeViews.clipboard"
-                },
-                {
-                    "command": "dev-tools.commands.clipboard.delete",
-                    "group": "inline",
-                    "when": "view == dev-tools.treeViews.clipboard"
-                },
-                {
-                    "command": "dev-tools.commands.clipboard.copytext",
-                    "group": "inline",
+                    "group": "inline@2",
                     "when": "view == dev-tools.treeViews.clipboard"
                 },
                 {
                     "command": "dev-tools.commands.clipboard.goto_file",
-                    "group": "inline",
+                    "group": "inline@3",
                     "when": "view == dev-tools.treeViews.clipboard && viewItem == goto_file"
+                },
+                {
+                    "command": "dev-tools.commands.clipboard.delete",
+                    "group": "inline@4",
+                    "when": "view == dev-tools.treeViews.clipboard"
+                },
+                {
+                    "command": "dev-tools.commands.preview.rename",
+                    "group": "inline",
+                    "when": "view == dev-tools.treeViews.svg"
                 }
             ]
         },
@@ -178,15 +178,6 @@
                 }
             },
             {
-                "command": "dev-tools.commands.clipboard.copytext",
-                "title": "%menu.clipboard.copy%",
-                "category": "%category%",
-                "icon": {
-                    "dark": "resources/dark/copy.svg",
-                    "light": "resources/light/copy.svg"
-                }
-            },
-            {
                 "command": "dev-tools.commands.clipboard.goto_file",
                 "title": "%menu.clipboard.goto_file%",
                 "category": "%category%",
@@ -194,11 +185,16 @@
             },
             {
                 "command": "dev-tools.commands.helper.open_url",
-                "title": "%menu.help.open_url%",
+                "title": "%menu.helper.open_url%",
                 "category": "%category%"
             },
             {
-                "command": "dev-tools.commands.explorer.position",
+                "command": "dev-tools.commands.helper.scroll_to",
+                "title": "%menu.helper.scroll_to%",
+                "category": "%category%"
+            },
+            {
+                "command": "dev-tools.commands.location.position",
                 "title": "%menu.explorer.position%",
                 "category": "%category%",
                 "icon": {
@@ -231,17 +227,21 @@
                 }
             },
             {
-                "command": "dev-tools.commands.helper.scroll_to",
-                "title": "%utils.scroll_to%",
-                "category": "%category%"
-            },
-            {
-                "command": "dev-tools.commands.explorer.preview",
-                "title": "%menu.explorer.preview%",
+                "command": "dev-tools.commands.preview.webview",
+                "title": "%menu.preview%",
                 "category": "%category%",
                 "icon": {
                     "dark": "resources/dark/svg.svg",
                     "light": "resources/light/svg.svg"
+                }
+            },
+            {
+                "command": "dev-tools.commands.preview.rename",
+                "title": "%menu.preview.rename%",
+                "category": "%category%",
+                "icon": {
+                    "dark": "resources/dark/edit.svg",
+                    "light": "resources/light/edit.svg"
                 }
             }
         ],
@@ -256,6 +256,11 @@
                     "id": "dev-tools.treeViews.outline",
                     "name": "%view.outline%",
                     "when": "dev-tools.plugin.outline"
+                },
+                {
+                    "id": "dev-tools.treeViews.svg",
+                    "name": "%view.svg_icons%",
+                    "when": "dev-tools.plugin.preview"
                 },
                 {
                     "id": "dev-tools.treeViews.helpAndFeedback",
@@ -335,7 +340,7 @@
                 },
                 "dev-tools.preview.ignore": {
                     "type": "array",
-                    "default": ["node_modules/**"],
+                    "default": ["node_modules/**", "dist/**", "out/**"],
                     "markdownDescription": "%preview.folder.ignore.description%"
                 }
             }

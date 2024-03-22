@@ -6,12 +6,12 @@ import { setContext } from "./utils/setContext";
 interface ToolsPluginBase {
     name: string;
     always?: boolean;
-    onConfigurationChange?: (e: ConfigurationChangeEvent, context: VsocdeContext) => void;
-    install: (context: VsocdeContext) => Disposable[] | void;
-    destory?: (context: VsocdeContext) => void;
+    onConfigurationChange?: (e: ConfigurationChangeEvent) => void;
+    install: () => Disposable[] | void;
+    destory?: () => void;
 }
 
-export type Plugin = () => ToolsPluginBase;
+export type Plugin = (app: VsocdeContext) => ToolsPluginBase;
 
 type PluginOption = {
     enable: boolean;
@@ -62,7 +62,7 @@ export class VsocdeContext {
             if(enable) {
                 if(!p.enable) {
                     p.enable = enable;
-                    const disposables = p.plugin.install(this);
+                    const disposables = p.plugin.install();
                     if(disposables) {
                         this.disposableMap.set(p.plugin.name, disposables);
                     }
@@ -75,7 +75,7 @@ export class VsocdeContext {
                     Disposable.from(...disposables).dispose();
                 }
                 if(p.plugin.destory) {
-                    p.plugin.destory(this);
+                    p.plugin.destory();
                 }
                 this.disposableMap.delete(pname);
             }
@@ -83,7 +83,7 @@ export class VsocdeContext {
     }
 
     use(plugin: Plugin) {
-        const pluginCtx = plugin();
+        const pluginCtx = plugin(this);
         if(this.pluginMap.has(pluginCtx.name)) {
             throw new Error(`The Plugin '${pluginCtx.name}' already exists, please do not add it again`);
         } else {
@@ -98,7 +98,7 @@ export class VsocdeContext {
             }
             this.pluginMap.forEach((p) => {
                 if(p.enable && p.plugin.onConfigurationChange) {
-                    p.plugin.onConfigurationChange(e, this);
+                    p.plugin.onConfigurationChange(e);
                 }
             });
         }, 300));

@@ -16,7 +16,7 @@ export class TreeProvider<T extends TreeItem, D extends object> implements TreeD
         return element;
     }
 
-    getChildren(): ProviderResult<T[]> {
+    getChildren(_element: T): ProviderResult<T[]> {
         return [];
     }
 
