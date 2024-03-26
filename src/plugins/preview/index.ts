@@ -1,5 +1,5 @@
 import { ViewColumn, commands, window, workspace, Uri } from "vscode";
-import type { WebviewPanel, WorkspaceFolder, FileSystemWatcher } from "vscode";
+import type { WebviewPanel, WorkspaceFolder } from "vscode";
 import { type Plugin, type VsocdeContext } from "@/vscode-context";
 import { TreeViews, Commands } from "@/maps";
 import { PreviewProvider } from "./treeView";
@@ -44,7 +44,6 @@ interface ReceiveMessageOption {
 
 export default <Plugin> function(app) {
     let currentPanel: WebviewPanel | undefined;
-    let svgFileWatcher: FileSystemWatcher | undefined;
     let timer: any = null;
     let preview: PreviewProvider;
     let svgFolders: SVGFolder[] = [];
@@ -69,14 +68,6 @@ export default <Plugin> function(app) {
     function onPreview() {
         const columnToShowIn = window.activeTextEditor ? window.activeTextEditor.viewColumn : undefined;
 
-        if(!svgFileWatcher) {
-            svgFileWatcher = workspace.createFileSystemWatcher("**/*.svg");
-
-            svgFileWatcher.onDidCreate(onSVGFileChange);
-            svgFileWatcher.onDidChange(onSVGFileChange);
-            svgFileWatcher.onDidDelete(onSVGFileChange);
-        }
-
         if(currentPanel) {
             currentPanel.reveal(columnToShowIn);
         } else {
@@ -94,15 +85,10 @@ export default <Plugin> function(app) {
                     window.showInformationMessage(i18n.t("prompt.clipboard.copy"));
                 } else if(type === "rename") {
                     await commands.executeCommand(Commands.helper_rename, { path: data.fsPath, name: data.name });
-                    onSVGFileChange();
                 }
             });
             currentPanel.onDidDispose(() => {
                 currentPanel = undefined;
-                if(svgFileWatcher) {
-                    svgFileWatcher.dispose();
-                    svgFileWatcher = undefined;
-                }
             }, null, app.ctx.subscriptions);
         }
     }
@@ -115,9 +101,16 @@ export default <Plugin> function(app) {
             }
         },
         install() {
+            const svgFileWatcher = workspace.createFileSystemWatcher("**/*.svg");
+
+            svgFileWatcher.onDidCreate(onSVGFileChange);
+            svgFileWatcher.onDidChange(onSVGFileChange);
+            svgFileWatcher.onDidDelete(onSVGFileChange);
+
             svgFolders = getSvgIcons(app);
 
             preview = new PreviewProvider(app.ctx);
+
             preview.refresh(svgFolders);
 
             const treeView = window.createTreeView(TreeViews.SvgIcon, {
@@ -127,10 +120,10 @@ export default <Plugin> function(app) {
 
             return [
                 treeView,
+                svgFileWatcher,
                 commands.registerCommand(Commands.preview_webview, onPreview),
                 commands.registerCommand(Commands.preview_rename, async ({ data }: { data: SVGItem }) => {
                     await commands.executeCommand(Commands.helper_rename, { path: data.fsPath, name: data.name });
-                    onSVGFileChange();
                 }),
                 workspace.onDidChangeWorkspaceFolders(onSVGFileChange),
             ];
@@ -145,7 +138,7 @@ function renderHtml(app: VsocdeContext, svgList: SVGFolder[]) {
     const copy = fs.readFileSync(path.join(app.ctx.extensionPath, "resources/preview", "copy.svg"), "utf-8");
     const rename = fs.readFileSync(path.join(app.ctx.extensionPath, "resources/preview", "rename.svg"), "utf-8");
     const data: Record<string, any> = {
-        title: i18n.t("menu.preview.webview.title"),
+        title: i18n.t("menu.preview.webview.title").replace(/\.html/, ""),
         icons: "",
     };
 
