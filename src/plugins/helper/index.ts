@@ -5,7 +5,7 @@ import { TreeViews, Commands } from "@/maps";
 import path from "node:path";
 import i18n from "@/utils/i18n";
 
-export async function scrollTo(range: Range, at: TextEditorRevealType = TextEditorRevealType.InCenter) {
+async function onScrollTo(range: Range, at: TextEditorRevealType = TextEditorRevealType.InCenter) {
     const document = window.activeTextEditor?.document;
     if(document) {
         const textEditor = await window.showTextDocument(document);
@@ -17,17 +17,17 @@ export async function scrollTo(range: Range, at: TextEditorRevealType = TextEdit
     }
 }
 
-export async function onOpenUrl(url: string) {
+async function onOpenUrl(url: string) {
     await env.openExternal(Uri.parse(url));
 }
 
-export function copytext(text: string) {
+function onCopytext(text: string) {
     if(typeof text !== "string") return;
     env.clipboard.writeText(text);
     // window.showInformationMessage(i18n.t("prompt.clipboard.copy"));
 }
 
-export async function rename(data: { path: string; name: string }) {
+async function onRename(data: { path: string; name: string }) {
     const input = await window.showInputBox({
         placeHolder: i18n.t("prompt.preview.treeinput.placeholder"),
         value: data.name,
@@ -41,7 +41,15 @@ export async function rename(data: { path: string; name: string }) {
             window.showErrorMessage(String(error));
         }
     }
+}
 
+async function onPosition({ data }: { data: { fsPath: string } }) {
+    const uri = Uri.file(data.fsPath);
+    const wsFolder = workspace.getWorkspaceFolder(uri);
+    if(wsFolder) {
+        await commands.executeCommand("workbench.files.action.collapseExplorerFolders");
+        await commands.executeCommand("revealInExplorer", uri);
+    }
 }
 
 export default <Plugin> function(app) {
@@ -58,10 +66,11 @@ export default <Plugin> function(app) {
 
             return [
                 treeView,
-                commands.registerCommand(Commands.helper_scrollTo, scrollTo),
+                commands.registerCommand(Commands.helper_scrollTo, onScrollTo),
                 commands.registerCommand(Commands.helper_open_url, onOpenUrl),
-                commands.registerCommand(Commands.helper_copytext, copytext),
-                commands.registerCommand(Commands.helper_rename, rename),
+                commands.registerCommand(Commands.helper_copytext, onCopytext),
+                commands.registerCommand(Commands.helper_rename, onRename),
+                commands.registerCommand(Commands.helper_position, onPosition),
             ];
         },
     };

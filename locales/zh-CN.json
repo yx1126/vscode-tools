@@ -21,6 +21,7 @@
     "menu.helper.copytext": "复制",
     "menu.helper.rename": "重命名",
     "menu.helper.copy_path": "复制路径",
+    "menu.helper.position": "定位到编辑器中当前文件",
     "menu.outline.refresh": "刷新",
     "menu.outline.show_vue_modules_open": "显示所有vue节点",
     "menu.outline.show_vue_modules_close": "显示默认vue节点",

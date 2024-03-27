@@ -1,7 +1,7 @@
 {
     "name": "vsocde-tools",
     "displayName": "Dev Tools",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "description": "Some small tools for VS Code",
     "publisher": "yx1126",
     "main": "./out/extension.js",
@@ -138,8 +138,13 @@
                     "when": "view == dev-tools.treeViews.clipboard"
                 },
                 {
+                    "command": "dev-tools.commands.helper.position",
+                    "group": "inline@1",
+                    "when": "view == dev-tools.treeViews.svg"
+                },
+                {
                     "command": "dev-tools.commands.preview.rename",
-                    "group": "inline",
+                    "group": "inline@2",
                     "when": "view == dev-tools.treeViews.svg"
                 }
             ]
@@ -192,6 +197,15 @@
                 "command": "dev-tools.commands.helper.scroll_to",
                 "title": "%menu.helper.scroll_to%",
                 "category": "%category%"
+            },
+            {
+                "command": "dev-tools.commands.helper.position",
+                "title": "%menu.helper.position%",
+                "category": "%category%",
+                "icon": {
+                    "dark": "resources/dark/position.svg",
+                    "light": "resources/light/position.svg"
+                }
             },
             {
                 "command": "dev-tools.commands.location.position",

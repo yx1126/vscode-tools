@@ -21,6 +21,7 @@
     "menu.helper.copytext": "Copy",
     "menu.helper.rename": "Rename",
     "menu.helper.copy_path": "Copy path",
+    "menu.helper.position": "Navigate to the currently file in the editor",
     "menu.outline.refresh": "Refresh",
     "menu.outline.show_vue_modules_open": "Show all vue nodes",
     "menu.outline.show_vue_modules_close": "Show default vue nodes",

@@ -9,7 +9,7 @@ interface CommandData {
     data: ClipboardItem;
 }
 
-export function add(clipboard: ClipboardProvider) {
+function add(clipboard: ClipboardProvider) {
     const editor = window.activeTextEditor!;
     const selectText = editor.document.getText(editor.selection);
     if(selectText) {
@@ -23,7 +23,7 @@ export function add(clipboard: ClipboardProvider) {
     });
 }
 
-export async function edit(item: CommandData, clipboard: ClipboardProvider) {
+async function edit(item: CommandData, clipboard: ClipboardProvider) {
     const input = await window.showInputBox({
         placeHolder: i18n.t("prompt.clipboard.treeinput.placeholder"),
         value: item.data.label,
@@ -35,17 +35,17 @@ export async function edit(item: CommandData, clipboard: ClipboardProvider) {
     });
 }
 
-export function deleteFn(item: CommandData, clipboard: ClipboardProvider) {
+function deleteFn(item: CommandData, clipboard: ClipboardProvider) {
     clipboard.remove(item.data);
     // window.showInformationMessage(i18n.t("prompt.clipboard.delete"));
 }
 
-export function clear(clipboard: ClipboardProvider) {
+function clear(clipboard: ClipboardProvider) {
     clipboard.clear();
     // window.showInformationMessage(i18n.t("prompt.clipboard.clear"));
 }
 
-export async function gotoFile(item: CommandData) {
+async function gotoFile(item: CommandData) {
     try {
         const wsFolder = workspace.getWorkspaceFolder(Uri.file(item.data.filePath));
         if(!wsFolder)

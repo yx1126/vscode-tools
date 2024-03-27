@@ -36,4 +36,5 @@ export enum Commands {
     helper_scrollTo = "dev-tools.commands.helper.scroll_to",
     helper_copytext = "dev-tools.commands.helper.copytext",
     helper_rename = "dev-tools.commands.helper.rename",
+    helper_position = "dev-tools.commands.helper.position",
 }
