@@ -1,6 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { type ExtensionContext } from "vscode";
+import type { ExtensionContext } from "vscode";
 import i18n from "@/utils/i18n";
 // import { createTools } from "./tools";
 import { VsocdeContext } from "./vscode-context";

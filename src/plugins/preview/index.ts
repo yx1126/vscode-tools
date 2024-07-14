@@ -1,6 +1,6 @@
 import { ViewColumn, commands, window, workspace, Uri } from "vscode";
 import type { WebviewPanel, WorkspaceFolder } from "vscode";
-import { type Plugin, type VsocdeContext } from "@/vscode-context";
+import type { Plugin, VsocdeContext } from "@/vscode-context";
 import { TreeViews, Commands } from "@/maps";
 import { PreviewProvider } from "./treeView";
 import i18n from "@/utils/i18n";

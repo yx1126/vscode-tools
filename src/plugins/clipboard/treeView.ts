@@ -2,7 +2,7 @@ import { Commands } from "@/maps";
 import { TreeItem, TreeItemCollapsibleState, workspace, Uri } from "vscode";
 import type { Selection } from "vscode";
 import { TreeProvider } from "@/utils/provider";
-import { type Local } from "@/utils/storage";
+import type { Local } from "@/utils/storage";
 import { toArray } from "@/utils/array";
 
 export interface ClipboardItem {

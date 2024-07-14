@@ -40,8 +40,8 @@
         "@types/node": "~16.18.68",
         "@types/vscode": "^1.84.0",
         "@vscode/test-electron": "^2.3.8",
-        "@yx1126/eslint-config": "^0.1.5",
-        "eslint": "^8.56.0",
+        "@yx1126/eslint-config": "^1.0.1",
+        "eslint": "^9.7.0",
         "esno": "^4.0.0",
         "glob": "^8.1.0",
         "mocha": "^10.2.0",
@@ -354,7 +354,11 @@
                 },
                 "dev-tools.preview.ignore": {
                     "type": "array",
-                    "default": ["node_modules/**", "dist/**", "out/**"],
+                    "default": [
+                        "node_modules/**",
+                        "dist/**",
+                        "out/**"
+                    ],
                     "markdownDescription": "%preview.folder.ignore.description%"
                 }
             }

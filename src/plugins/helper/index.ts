@@ -1,4 +1,4 @@
-import { type Plugin } from "@/vscode-context";
+import type { Plugin } from "@/vscode-context";
 import { Selection, TextEditorRevealType, commands, window, Position, Uri, env, workspace, type Range } from "vscode";
 import { HelperProvider } from "./treeView";
 import { TreeViews, Commands } from "@/maps";

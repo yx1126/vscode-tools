@@ -1,4 +1,4 @@
-import { type Plugin } from "@/vscode-context";
+import type { Plugin } from "@/vscode-context";
 import { commands, window, workspace, type TextDocumentChangeEvent } from "vscode";
 import { OutlineProvider } from "./treeView";
 import { TreeViews, Commands, LocalKey } from "@/maps";
